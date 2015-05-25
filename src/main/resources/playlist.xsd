@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="playlist">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="playlistelement" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="source"/>
+              <xs:element type="xs:long" name="length" />
+              <xs:element type="xs:int" name="bitrate" />
+              <xs:element type="xs:string" name="artist" minOccurs="0"/>
+              <xs:element type="xs:string" name="title" />
+              <xs:element type="xs:string" name="album" minOccurs="0"/>
+              <xs:element type="xs:string" name="year" minOccurs="0"/>
+              <xs:element type="xs:int" name="yearinInteger" />
+              <xs:element type="xs:string" name="trackno" minOccurs="0"/>
+              <xs:element type="xs:int" name="tracknoinInteger"/>
+              <xs:element type="xs:string" name="genre" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
