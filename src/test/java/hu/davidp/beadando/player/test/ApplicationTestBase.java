@@ -153,7 +153,7 @@ public class ApplicationTestBase {
 		
 		
 	}
-
+	/*
 	@Test
 	public void openPlaylistTester() {
 		if (OS.startsWith("Windows")) {
@@ -197,7 +197,7 @@ public class ApplicationTestBase {
 			}
 		}
 	}
-
+*/
 	@Test(expected = SAXException.class)
 	public void openPlaylistTesterForFail() throws SAXException, IOException, JAXBException {
 		if (OS.startsWith("Windows")) {

@@ -4,7 +4,7 @@
 	<groupId>hu.davidp.beadando</groupId>
 	<artifactId>LightningPlayer</artifactId>
 	<version>1.0</version>
-	<description>Mp3 lejátszó</description>
+	<description>Egyszerű MP3 lejátszó program, lejátszólista kezelési lehetőséggel, XML fájlba történő mentéssel és betöltéssel.</description>
 
 	<developers>
 		<developer>
@@ -35,6 +35,11 @@
 	</properties>
 
 	<dependencies>
+        <dependency>
+	        <groupId>com.zenjava</groupId>
+	        <artifactId>javafx-maven-plugin</artifactId>
+	        <version>8.1.2</version>
+        </dependency>
 		<dependency>
 			<groupId>com.mpatric</groupId>
 			<artifactId>mp3agic</artifactId>
@@ -151,6 +156,9 @@
 						<include>**/JavaFxJUnit4Application.java</include>
 						<include>**/ApplicationTestBase.java</include>
 					</includes>
+<classpathDependencyExcludes>
+            <classpathDependencyExclude>ch.qos.logback</classpathDependencyExclude>
+          </classpathDependencyExcludes>
 				</configuration>
 			</plugin>
 		</plugins>
