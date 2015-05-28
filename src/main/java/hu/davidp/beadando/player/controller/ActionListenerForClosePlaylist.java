@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Eseményfigyelő a lejátszólista bezárásához.
+ * Eseményfigyelő a Close Playlist menüelemhez.
  *  
  * @author Pintér Dávid
  */
@@ -50,7 +50,7 @@ public class ActionListenerForClosePlaylist extends Controller implements
 	 * Szülőosztály konstruktorát meghívó konstruktor.
 	 * 
 	 * @param theView a View osztály egy példánya
-	 * @param theModel a Model osztály egy példánya
+	 * @param theModel a {@link Model} osztály egy példánya
 	 */
 	public ActionListenerForClosePlaylist(View theView, Model theModel) {
 		super(theView, theModel);

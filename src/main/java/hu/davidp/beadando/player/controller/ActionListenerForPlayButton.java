@@ -50,7 +50,7 @@ class ActionListenerForPlayButton extends Controller implements ActionListener {
 	 * Szülőosztály konstruktorát meghívó konstruktor.
 	 * 
 	 * @param theView a View osztály egy példánya
-	 * @param theModel a Model osztály egy példánya
+	 * @param theModel a {@link Model} osztály egy példánya
 	 */
 	public ActionListenerForPlayButton(View theView, Model theModel) {
 		super(theView, theModel);
@@ -59,7 +59,8 @@ class ActionListenerForPlayButton extends Controller implements ActionListener {
 	/**
 	 * Mikor kattintást észlel, vezérli a lejátszót. 
 	 * A vezérlés attól függően változik, hogy éppen játszik-e lejátszó.
-	 * Ha játszik megállítja, ha áll, akkor játszik tovább onnan, ahol abbahagyta.
+	 * Mindeközben változtatja a Play gomb szövegét.
+	 * Ha játszik szünetelteti, ha szünetel, akkor játszik tovább onnan, ahol abbahagyta.
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */

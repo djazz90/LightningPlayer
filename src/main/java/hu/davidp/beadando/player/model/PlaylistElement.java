@@ -54,7 +54,7 @@ public class PlaylistElement {
 	
 	// TODO: album artwork
 	/**
-	 * A feldolgozáshoz szükséges MP3 fájl.
+	 * A feldolgozáshoz szükséges {@link Mp3File}.
 	 */
 	@XmlTransient
 	private Mp3File mp3File;
@@ -132,7 +132,7 @@ public class PlaylistElement {
 
 	
 	/**
-	 * Üres konstruktor.
+	 * Üres konstruktor JAXB-hez.
 	 */
 	public PlaylistElement() {
 		super();
@@ -144,8 +144,8 @@ public class PlaylistElement {
 	 * Ha több taggel is rendelkezik az MP3 fájl, akkor a kapott metaadatok közül azt választja ki, amelyiknek hosszabb a
 	 * mérete.
 	 * 
-	 * @param mp3File a megnyitni kívánt fájl
-	 * @param file a megnyitni kívánt fájl
+	 * @param mp3File a megnyitni kívánt {@link Mp3File}
+	 * @param file a megnyitni kívánt file
 	 */
 	public PlaylistElement(Mp3File mp3File, File file) {
 

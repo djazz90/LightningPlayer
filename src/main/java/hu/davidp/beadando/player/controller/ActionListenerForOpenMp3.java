@@ -63,7 +63,7 @@ public class ActionListenerForOpenMp3 extends Controller implements
 	 * Szülőosztály konstruktorát meghívó konstruktor.
 	 * 
 	 * @param theView a View osztály egy példánya
-	 * @param theModel a Model osztály egy példánya
+	 * @param theModel a {@link Model} osztály egy példánya
 	 */
 	public ActionListenerForOpenMp3(View theView, Model theModel) {
 		super(theView, theModel);
@@ -71,8 +71,9 @@ public class ActionListenerForOpenMp3 extends Controller implements
 	}
 
 	/**
-	 * Mikor kattintást észlel, egy megadott XML fáljt beolvas a megadott helyről.
-	 * A fájl helyének megadása JFileChooser segítségével történik. Miután a fájl sikeresen betöltődött, megjeleníti.
+	 * Mikor kattintást észlel, egy vagy több megadott MP3 fájlt olvas be.
+	 * A fájl helyének megadása JFileChooser segítségével történik. Miután a fájl vagy fájlok sikeresen betöltődtek,
+	 * a {@link Model} lejátszólistáját feltölti a fájlokkal és megjeleníti azokat.
 	 * 
 	 * @see javax.swing.JFileChooser
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)

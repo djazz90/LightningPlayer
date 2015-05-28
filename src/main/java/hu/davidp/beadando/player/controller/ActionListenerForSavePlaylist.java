@@ -43,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Eseményfigyelő a Save Playlist gombhoz.
+ * Eseményfigyelő a Save Playlist menüelemhez.
  * 
  * @author Pintér Dávid
  *
@@ -57,7 +57,7 @@ public class ActionListenerForSavePlaylist extends Controller implements ActionL
 	 * Szülőosztály konstruktorát meghívó konstruktor.
 	 * 
 	 * @param theView a View osztály egy példánya
-	 * @param theModel a Model osztály egy példánya
+	 * @param theModel a {@link Model} osztály egy példánya
 	 */
 	public ActionListenerForSavePlaylist(View theView, Model theModel) {
 		super(theView, theModel);

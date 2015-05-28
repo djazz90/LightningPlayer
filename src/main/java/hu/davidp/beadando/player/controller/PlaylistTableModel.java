@@ -47,7 +47,7 @@ public class PlaylistTableModel extends DefaultTableModel {
 
 	/**
 	 * Beállítja hogy a táblának amelyet megjelenít, kezdetkor hány sora és hány oszlopa legyen.
-	 * Azt, hogy hány oszlopa van, az oszlopnevek számából számolja ki.
+	 * 
 	 * 
 	 * @param columnNames az oszlopnevek
 	 * @param rowCount a sorok száma

@@ -4,7 +4,7 @@
 	<groupId>hu.davidp.beadando</groupId>
 	<artifactId>LightningPlayer</artifactId>
 	<version>1.0</version>
-	<description>Mp3 lejátszó</description>
+	<description>Egyszerű MP3 lejátszó program, lejátszólista kezelési lehetőséggel, XML fájlba történő mentéssel és betöltéssel.</description>
 
 	<developers>
 		<developer>
