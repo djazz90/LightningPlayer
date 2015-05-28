@@ -151,6 +151,9 @@
 						<include>**/JavaFxJUnit4Application.java</include>
 						<include>**/ApplicationTestBase.java</include>
 					</includes>
+<classpathDependencyExcludes>
+            <classpathDependencyExclude>ch.qos.logback</classpathDependencyExclude>
+          </classpathDependencyExcludes>
 				</configuration>
 			</plugin>
 		</plugins>
