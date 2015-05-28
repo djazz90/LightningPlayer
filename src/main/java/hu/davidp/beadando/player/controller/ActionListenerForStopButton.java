@@ -50,7 +50,7 @@ public class ActionListenerForStopButton extends Controller implements ActionLis
 	 * Szülőosztály konstruktorát meghívó konstruktor.
 	 * 
 	 * @param theView a View osztály egy példánya
-	 * @param theModel a Model osztály egy példánya
+	 * @param theModel a {@link Model} osztály egy példánya
 	 */
 	public ActionListenerForStopButton(View theView, Model theModel) {
 		super(theView, theModel);
@@ -58,7 +58,8 @@ public class ActionListenerForStopButton extends Controller implements ActionLis
 	}
 
 	/**
-	 * Ha kattintást észlel, leállítja a lejátszást. 
+	 * Ha kattintást észlel, leállítja a lejátszást.
+	 * A Play gomb szövegét visszaállítja "Play"-re
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */

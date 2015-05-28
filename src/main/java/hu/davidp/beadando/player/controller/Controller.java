@@ -34,7 +34,7 @@ import hu.davidp.beadando.player.view.View;
 
 /**
  * Controller osztály.
- * Az alkalmazásban az üzleti logikát valósítja meg. Eseményfigyelőket rendel a gombokhoz, irányítja a View-t,
+ * Az alkalmazásban az üzleti logikát valósítja meg. Eseményfigyelőket rendel a gombokhoz, változtatja a View-t,
  * adatokat a Model-ből nyeri.
  * 
  * @author Pintér Dávid
@@ -73,7 +73,7 @@ public class Controller {
 	/**
 	 * A Controller konstruktora. Paraméterül kap egy {@link View}-t és egy {@link Model}-t.
 	 * 
-	 * @param theView A {@link View} osztály egy példánya
+	 * @param theView A View osztály egy példánya
 	 * @param theModel A {@link Model} osztály egy példánya
 	 */
 	public Controller(View theView, Model theModel) {

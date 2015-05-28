@@ -111,7 +111,7 @@ public class Player {
 	 * A lejátszó automatikusan a következő lejátszólista elemre lép, ha az
 	 * aktuális véget ér.
 	 * 
-	 * @param m a Model osztály egy példánya
+	 * @param m a {@link Model} osztály egy példánya
 	 * @param v a View osztály egy példánya
 	 */
 	public void autonext(Model m, View v) {

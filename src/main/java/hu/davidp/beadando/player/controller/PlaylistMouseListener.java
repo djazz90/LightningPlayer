@@ -64,8 +64,8 @@ public class PlaylistMouseListener extends MouseAdapter implements MouseListener
 
 	/**Az egérkattintás eseményfigyelőjének konstruktora.
 	 * @param view a View objektum amin dolgozik
-	 * @param model a Model objektum ahonnan az adatokat veszi
-	 * @param c a Controller objektum amivel dolgozik
+	 * @param model a {@link Model} objektum ahonnan az adatokat veszi
+	 * @param c a {@link Controller} objektum amivel dolgozik
 	 */
 	public PlaylistMouseListener(View view, Model model, Controller c) {
 		this.model = model;

@@ -50,7 +50,7 @@ public class ActionListenerForPrevButton extends Controller implements ActionLis
 	 * Szülőosztály konstruktorát meghívó konstruktor.
 	 * 
 	 * @param theView a View osztály egy példánya
-	 * @param theModel a Model osztály egy példánya
+	 * @param theModel a {@link Model} osztály egy példánya
 	 */
 	public ActionListenerForPrevButton(View theView, Model theModel) {
 		super(theView, theModel);
