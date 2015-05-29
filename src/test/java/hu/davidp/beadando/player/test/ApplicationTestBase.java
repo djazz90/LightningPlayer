@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -38,7 +39,7 @@ public class ApplicationTestBase {
 	private static ActionListenerForSavePlaylist savePlaylist;
 	private static File[] filesToPlay;
 	private static String OS;
-
+	
 	static {
 
 		model = new Model();
@@ -49,12 +50,13 @@ public class ApplicationTestBase {
 		savePlaylist = new ActionListenerForSavePlaylist(view, model);
 		filesToPlay = new File[4];
 		OS = System.getProperty("os.name");
+		
 	}
 
 	
 	@Test
-	public void playlistElementTest() {
-		try {
+	public void playlistElementTest() throws UnsupportedTagException, InvalidDataException, IOException {
+		
 
 			File id3v1only = FileUtils.getFile("src", "test", "resources", "id3v1test.mp3");
 			File id3v2only = FileUtils.getFile("src", "test", "resources", "id3v2test.mp3");
@@ -74,18 +76,15 @@ public class ApplicationTestBase {
 			assertEquals(ple4.getAlbum(), "");
 			assertFalse(ple4.getTitle().isEmpty());
 
-		} catch (UnsupportedTagException | InvalidDataException | IOException | NullPointerException e) {
-
-			fail();
-		}
+		
 
 	}
 
 	@Test
-	public void playerTest() {
+	public void playerTest() throws UnsupportedTagException, InvalidDataException, IOException {
 
 		PlaylistElement ple;
-		try {
+	
 			File id3v1only = FileUtils.getFile("src", "test", "resources", "id3v1test.mp3");
 			ple = new PlaylistElement(new Mp3File(id3v1only), new File(id3v1only.getAbsolutePath()));
 			Player.getInstance().setActualMedia(ple.asMedia());
@@ -93,27 +92,16 @@ public class ApplicationTestBase {
 			Player.getInstance().play();
 			Player.getInstance().pause();
 			Player.getInstance().stop();
-		} catch (UnsupportedTagException e) {
-
-			e.printStackTrace();
-			fail();
-		} catch (InvalidDataException e) {
-
-			e.printStackTrace();
-			fail();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-			fail();
-		}
+		
 
 	}
 
 	
 	@Rule
-	public TemporaryFolder folder= new TemporaryFolder();
+	public TemporaryFolder folder = new TemporaryFolder();
+	
 	@Test
-	public void playlistTest() throws JAXBException, IOException {
+	public void playlistTest() throws JAXBException, IOException, SAXException {
 		
 
 		filesToPlay[0] = FileUtils.getFile("src", "test", "resources", "id3v1test.mp3");
@@ -148,56 +136,14 @@ public class ApplicationTestBase {
 		File f = folder.newFile("saved.xml");
 		
 		savePlaylist.performAction(model, f);
-		
+		openPlaylist.performAction(model, f);
 		
 		
 		
 	}
-	/*
-	@Test
-	public void openPlaylistTester() {
-		if (OS.startsWith("Windows")) {
+	
+	
 
-			try {
-				Model m2 = new Model();
-				newPlaylist.performAction(m2);
-				File f = FileUtils.getFile("src", "test", "resources", "exampleWindowsPlaylist.xml");
-				openPlaylist.performAction(m2, f);
-			} catch (SAXException e) {
-
-				e.printStackTrace();
-				fail();
-			} catch (IOException e) {
-
-				e.printStackTrace();
-				
-			} catch (JAXBException e) {
-
-				e.printStackTrace();
-				fail();
-			}
-		} else {
-			try {
-				Model m2 = new Model();
-				newPlaylist.performAction(m2);
-				File f = FileUtils.getFile("src", "test", "resources", "exampleUnixPlaylist.xml");
-				openPlaylist.performAction(m2, f);
-			} catch (SAXException e) {
-
-				e.printStackTrace();
-				fail();
-			} catch (IOException e) {
-
-				e.printStackTrace();
-				
-			} catch (JAXBException e) {
-
-				e.printStackTrace();
-				fail();
-			}
-		}
-	}
-*/
 	@Test(expected = SAXException.class)
 	public void openPlaylistTesterForFail() throws SAXException, IOException, JAXBException {
 		if (OS.startsWith("Windows")) {
