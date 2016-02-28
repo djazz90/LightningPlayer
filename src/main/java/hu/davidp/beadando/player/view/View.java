@@ -34,7 +34,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 import javax.swing.JMenu;
-import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
@@ -44,20 +43,10 @@ import javax.swing.JButton;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-
-import java.awt.CardLayout;
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
 public class View {
 
