@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+
+<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="402.0" prefWidth="587.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.davidp.beadando.player.controller.FXMLController">
+   <children>
+      <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="104.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="New Playlist" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Open Mp3 file(s)" />
+                  <MenuItem mnemonicParsing="false" text="Open Playlist" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Save Playlist" />
+                  <MenuItem mnemonicParsing="false" text="Close Playlist" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" text="Exit LightningPlayer" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Slider nodeOrientation="LEFT_TO_RIGHT" prefHeight="14.0" prefWidth="473.0" />
+      <SplitPane dividerPositions="0.24102564102564103" prefHeight="356.0" prefWidth="587.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="354.0" prefWidth="118.0">
+               <children>
+                  <Button fx:id="prevButton" layoutX="14.0" layoutY="239.0" mnemonicParsing="false" text="Prev" />
+                  <Button layoutX="94.0" layoutY="239.0" mnemonicParsing="false" text="Next" />
+                  <Button layoutX="55.0" layoutY="239.0" mnemonicParsing="false" text="Play" />
+                  <Button layoutX="53.0" layoutY="271.0" mnemonicParsing="false" text="Stop" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="310.0" prefWidth="408.0">
+               <children>
+                  <TabPane layoutX="8.0" layoutY="2.0" prefHeight="330.0" prefWidth="425.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Playlist">
+                        <content>
+                              <ScrollPane>
+                                 <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                       <children>
+                                          <TableView prefHeight="311.0" prefWidth="425.0">
+                                            <columns>
+                                              <TableColumn prefWidth="75.0" text="Artist" />
+                                              <TableColumn prefWidth="75.0" text="Title" />
+                                                <TableColumn prefWidth="75.0" text="Album" />
+                                                <TableColumn prefWidth="75.0" text="Duration" />
+                                                <TableColumn prefWidth="75.0" text="Path" />
+                                            </columns>
+                                          </TableView>
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </ScrollPane>
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <SplitPane dividerPositions="0.5" prefHeight="22.0" prefWidth="586.0">
+         <items>
+            <HBox prefHeight="20.0" prefWidth="586.0">
+               <children>
+                  <Label text="Stopped" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <Label text="Bitrate" />
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <Label text="Volume" />
+                  <Slider accessibleText="Volume" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="15.0" minWidth="55.0" prefHeight="15.0" prefWidth="55.0" />
+               </children>
+            </HBox>
+         </items>
+      </SplitPane>
+   </children>
+</FlowPane>

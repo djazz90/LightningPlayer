@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Pintér Dávid
  *
  */
+@Deprecated
 public class LightningPlayerMain extends Application {
 	/**
 	 * Logger objektum naplózáshoz.
