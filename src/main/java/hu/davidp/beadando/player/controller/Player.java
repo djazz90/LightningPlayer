@@ -47,6 +47,7 @@ import javafx.scene.media.MediaPlayer;
  * @author Pintér Dávid
  *
  */
+@Deprecated
 public class Player {
 	/**
 	 * Logger objektum naplózáshoz.
