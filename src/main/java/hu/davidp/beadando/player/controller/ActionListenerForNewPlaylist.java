@@ -71,7 +71,7 @@ public class ActionListenerForNewPlaylist extends Controller implements
 	public void actionPerformed(ActionEvent e) {
 		this.performAction(super.theModel);
 		Controller.playlistTableModel = new PlaylistTableModel(
-				PlaylistElement.returnColumnNamesForJTable(), 0);
+				PlaylistElement.getColumnNamesForTable(), 0);
 		
 		Controller.playlistSelectionModel =new PlaylistTableSelectionModel();
 		super.theView.createTableWithSettings();

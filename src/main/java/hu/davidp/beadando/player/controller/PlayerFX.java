@@ -41,6 +41,7 @@ import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 
 /**
  * Player osztály. A program lejátszója, MP3 fájlok lejátszását végzi. Működését
@@ -90,6 +91,8 @@ public class PlayerFX {
 
 	private static Scene playerScene;
 	
+
+	private static Stage playerStage;
 	/**
 	 * Singleton konstruktor a lejátszó számára.
 	 */
@@ -123,80 +126,141 @@ public class PlayerFX {
 	 * @param v a View osztály egy példánya
 	 */
 	public void autonext(Model m, View v) {
+		playerScene.addEventFilter(Event.ANY, 
+				e -> {
 
-		EventQueue.invokeLater(new Runnable() {
+					try {
+						PlayerFX.this.mp.setOnEndOfMedia(new Runnable() {
 
-			
-			@Override
-			public void run() {
-
-				try {
-					PlayerFX.this.mp.setOnEndOfMedia(new Runnable() {
-
-						@Override
-						public void run() {
-
-							mp.stop();
-							if (actualElementinPlaylist > 0
-									&& actualElementinPlaylist < actualPlaylistSize - 1) {
-								v.getBtnNext().setEnabled(true);
-								v.getBtnPrev().setEnabled(true);
-							}
-							if (actualElementinPlaylist == 0)
-								v.getBtnPrev().setEnabled(false);
-							if (actualElementinPlaylist == actualPlaylistSize - 1)
-								v.getBtnNext().setEnabled(false);
-
-							if (actualElementinPlaylist != actualPlaylistSize - 1) {
-								actualElementinPlaylist++;
-								PlayerFX.this.mp = new MediaPlayer(m
-										.getPlaylist()
-										.get(actualElementinPlaylist).asMedia());
-								PlayerFX.this.playButtonSaysPlay = false;
-								mp.play();
-								v.getTablePlaylist().setRowSelectionInterval(
-										getActualElementinPlaylist(),
-										getActualElementinPlaylist());
-								logger.info("Auto next:");
-								logger.info("Actual playlist element:");
-								StringBuffer sb = new StringBuffer();
-								sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
-								.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
-								.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
-								logger.info(sb.toString());
-								PlayerFX.this.autonext(m, v);
-
-							} else {
+							@Override
+							public void run() {
 
 								mp.stop();
-								PlayerFX.this.playButtonSaysPlay = true;
-								v.getBtnPlay().setText(
-										PlayerFX.this.changePlayButtonText());
+								if (actualElementinPlaylist > 0
+										&& actualElementinPlaylist < actualPlaylistSize - 1) {
+									v.getBtnNext().setEnabled(true);
+									v.getBtnPrev().setEnabled(true);
+								}
+								if (actualElementinPlaylist == 0)
+									v.getBtnPrev().setEnabled(false);
+								if (actualElementinPlaylist == actualPlaylistSize - 1)
+									v.getBtnNext().setEnabled(false);
+
+								if (actualElementinPlaylist != actualPlaylistSize - 1) {
+									actualElementinPlaylist++;
+									PlayerFX.this.mp = new MediaPlayer(m
+											.getPlaylist()
+											.get(actualElementinPlaylist).asMedia());
+									PlayerFX.this.playButtonSaysPlay = false;
+									mp.play();
+									v.getTablePlaylist().setRowSelectionInterval(
+											getActualElementinPlaylist(),
+											getActualElementinPlaylist());
+									logger.info("Auto next:");
+									logger.info("Actual playlist element:");
+									StringBuffer sb = new StringBuffer();
+									sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
+									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
+									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+									logger.info(sb.toString());
+									PlayerFX.this.autonext(m, v);
+
+								} else {
+
+									mp.stop();
+									PlayerFX.this.playButtonSaysPlay = true;
+									v.getBtnPlay().setText(
+											PlayerFX.this.changePlayButtonText());
+								}
+
 							}
 
-						}
+						});
+					} catch (NullPointerException ex) {
 
-					});
-				} catch (NullPointerException e) {
-
+					}
+				
+					
+					e.consume();
 				}
-			}
-
-		});
-
+		);
+//		EventQueue.invokeLater(new Runnable() {
+//
+//			
+//			@Override
+//			public void run() {
+//
+//				try {
+//					PlayerFX.this.mp.setOnEndOfMedia(new Runnable() {
+//
+//						@Override
+//						public void run() {
+//
+//							mp.stop();
+//							if (actualElementinPlaylist > 0
+//									&& actualElementinPlaylist < actualPlaylistSize - 1) {
+//								v.getBtnNext().setEnabled(true);
+//								v.getBtnPrev().setEnabled(true);
+//							}
+//							if (actualElementinPlaylist == 0)
+//								v.getBtnPrev().setEnabled(false);
+//							if (actualElementinPlaylist == actualPlaylistSize - 1)
+//								v.getBtnNext().setEnabled(false);
+//
+//							if (actualElementinPlaylist != actualPlaylistSize - 1) {
+//								actualElementinPlaylist++;
+//								PlayerFX.this.mp = new MediaPlayer(m
+//										.getPlaylist()
+//										.get(actualElementinPlaylist).asMedia());
+//								PlayerFX.this.playButtonSaysPlay = false;
+//								mp.play();
+//								v.getTablePlaylist().setRowSelectionInterval(
+//										getActualElementinPlaylist(),
+//										getActualElementinPlaylist());
+//								logger.info("Auto next:");
+//								logger.info("Actual playlist element:");
+//								StringBuffer sb = new StringBuffer();
+//								sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
+//								.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
+//								.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+//								logger.info(sb.toString());
+//								PlayerFX.this.autonext(m, v);
+//
+//							} else {
+//
+//								mp.stop();
+//								PlayerFX.this.playButtonSaysPlay = true;
+//								v.getBtnPlay().setText(
+//										PlayerFX.this.changePlayButtonText());
+//							}
+//
+//						}
+//
+//					});
+//				} catch (NullPointerException e) {
+//
+//				}
+//			}
+//
+//		});
+		
 	}
 	
 	/**
 	 * Az aktuális lejátszólista elem lejátszása.
 	 */
 	public void play() {
-		playerScene.addEventFilter(Event.ANY, 
-			e -> {
-				playButtonSaysPlay = false;
-				mp.play();
-				e.consume();
-			}
-		);
+		
+		playButtonSaysPlay = false;
+		mp.play();
+		
+//		playerScene.addEventFilter(Event.ANY, 
+//			e -> {
+//				playButtonSaysPlay = false;
+//				mp.play();
+//				e.consume();
+//			}
+//		);
 		/*
 		EventQueue.invokeLater(new Runnable() {
 
@@ -415,8 +479,17 @@ public class PlayerFX {
 		return mp;
 	}
 	
-	public static void setScene(Scene s){
+	public static void setSceneAndStage(Scene s, Stage st){
 		playerScene = s;
+		playerStage = st;
 	}
 	
+	public static Scene getPlayerScene() {
+		return playerScene;
+	}
+
+	public static Stage getPlayerStage() {
+		return playerStage;
+	}
+
 }

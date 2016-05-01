@@ -317,9 +317,9 @@ public class PlaylistElement {
 	 * Oszlopnevek tárolása a megjelenített táblához.
 	 * @return az oszlopnevek
 	 */
-	public static String[] returnColumnNamesForJTable() {
+	public static String[] getColumnNamesForTable() {
 
-		return new String[] { "Artist", "Title", "Album", "File path" };
+		return new String[] { "Artist", "Title", "Album", "Source" };
 	}
 
 	/**

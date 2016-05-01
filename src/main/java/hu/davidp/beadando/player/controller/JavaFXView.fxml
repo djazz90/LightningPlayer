@@ -5,15 +5,11 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -24,9 +20,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" text="New Playlist" />
+                  <MenuItem fx:id="fileMenuNewPlist" mnemonicParsing="false" onAction="#fileMenuNewPlistAction" text="New Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Open Mp3 file(s)" />
+                  <MenuItem fx:id="fileMenuOpenMp3" mnemonicParsing="false" onAction="#fileMenuOpenMP3Action" text="Open Mp3 file(s)" />
                   <MenuItem mnemonicParsing="false" text="Open Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Save Playlist" />
@@ -47,7 +43,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="354.0" prefWidth="118.0">
                <children>
-                  <Button fx:id="prevButton" layoutX="14.0" layoutY="239.0" mnemonicParsing="false" text="Prev" />
+                  <Button fx:id="prevButton" layoutX="14.0" layoutY="239.0" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
                   <Button layoutX="94.0" layoutY="239.0" mnemonicParsing="false" text="Next" />
                   <Button layoutX="55.0" layoutY="239.0" mnemonicParsing="false" text="Play" />
                   <Button layoutX="53.0" layoutY="271.0" mnemonicParsing="false" text="Stop" />
@@ -55,31 +51,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="310.0" prefWidth="408.0">
                <children>
-                  <TabPane layoutX="8.0" layoutY="2.0" prefHeight="330.0" prefWidth="425.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                      <Tab text="Playlist">
-                        <content>
-                              <ScrollPane>
-                                 <content>
-                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-                                       <children>
-                                          <TableView prefHeight="311.0" prefWidth="425.0">
-                                            <columns>
-                                              <TableColumn prefWidth="75.0" text="Artist" />
-                                              <TableColumn prefWidth="75.0" text="Title" />
-                                                <TableColumn prefWidth="75.0" text="Album" />
-                                                <TableColumn prefWidth="75.0" text="Duration" />
-                                                <TableColumn prefWidth="75.0" text="Path" />
-                                            </columns>
-                                          </TableView>
-                                       </children>
-                                    </AnchorPane>
-                                 </content>
-                              </ScrollPane>
-                        </content>
-                      </Tab>
-                    </tabs>
-                  </TabPane>
+                  <TabPane fx:id="playListTabPane" layoutX="8.0" layoutY="2.0" prefHeight="330.0" prefWidth="425.0" tabClosingPolicy="UNAVAILABLE" />
                </children>
             </AnchorPane>
         </items>

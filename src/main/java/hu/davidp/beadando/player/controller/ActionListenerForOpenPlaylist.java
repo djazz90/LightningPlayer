@@ -114,7 +114,7 @@ public class ActionListenerForOpenPlaylist extends Controller implements
 				Controller.playlistsCounter++;
 				Player.getInstance().setPlaylistSize(super.theModel.getPlaylist());
 				Controller.playlistTableModel = new PlaylistTableModel(
-						PlaylistElement.returnColumnNamesForJTable(), 0);
+						PlaylistElement.getColumnNamesForTable(), 0);
 
 				Controller.playlistSelectionModel = new PlaylistTableSelectionModel();
 

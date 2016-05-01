@@ -66,7 +66,6 @@ class ActionListenerForPlayButton extends Controller implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		if (Player.getInstance().isPlayButtonSaysPlay()) {
 
 			Player.getInstance().play();
