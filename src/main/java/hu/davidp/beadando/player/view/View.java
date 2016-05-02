@@ -47,7 +47,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
-
+@Deprecated
 public class View {
 
 	private JFrame frmLightningplayer;

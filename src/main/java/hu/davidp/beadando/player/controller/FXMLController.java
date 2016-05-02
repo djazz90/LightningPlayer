@@ -8,8 +8,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -85,6 +99,14 @@ public class FXMLController implements Initializable {
 	@FXML
 	private MenuItem fileMenuOpenMp3;
 
+	@FXML
+	private MenuItem fileMenuSavePlist;
+	
+	
+	@FXML
+	private MenuItem fileMenuOpenPlist;
+	
+	
 	@FXML
 	private Button prevButton;
 	@FXML
@@ -216,6 +238,116 @@ public class FXMLController implements Initializable {
 		// super.theView.getBtnPrev().setEnabled(false);
 		// }
 	}
+	@FXML
+	public void fileMenuSavePlistAction(ActionEvent e){
+		
+			FileChooser fc = new FileChooser();
+			fc.setTitle("Save playlist files");
+			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
+			
+			
+			File savedFile = fc.showSaveDialog(PlayerFX.getPlayerStage());
+			if (savedFile!=null) {
+				try {
+					File file;
+					String[] splitter = savedFile.toString().split("\\.");
+					if (splitter[splitter.length - 1].equals("xml")) {
+						file = savedFile;
+					} else {
+						file = new File(savedFile.toString() + ".xml");
+					}
+
+					JAXBContext context = JAXBContext.newInstance(Model.class);
+					Marshaller m = context.createMarshaller();
+					m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+					m.marshal(model, file);
+					logger.info("XML file successfully saved");
+				} catch (JAXBException e1) {
+					logger.error("Can't process XML file");
+					e1.printStackTrace();
+				}
+			}
+
+
+	}
+	@FXML
+	public void fileMenuOpenPlistAction(ActionEvent e){
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Open playlist file");
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
+		
+		
+		File openedFile = fc.showOpenDialog(PlayerFX.getPlayerStage());
+
+		if (openedFile != null) {
+
+			try {
+				fileMenuNewPlistAction(e);
+				SchemaFactory schemaFactory = SchemaFactory
+						.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				URL url = getClass().getResource("/playlist.xsd");
+				Source xmlFile = new StreamSource(openedFile);
+				Schema schema = schemaFactory.newSchema(url);
+
+				Validator validator = schema.newValidator();
+
+				validator.validate(xmlFile);
+				JAXBContext context = JAXBContext.newInstance(Model.class);
+				Unmarshaller unmarshaller = context.createUnmarshaller();
+				//model.setPlaylist(new LinkedList<PlaylistElement>());
+				model = (Model) (unmarshaller.unmarshal(openedFile));
+				
+				
+				
+				for (PlaylistElement ple : model.getPlaylist()) {
+					ple.rebuildPlaylistElement();
+					allItemsInTable.add(ple);
+				}
+				
+				playListTable.setItems(allItemsInTable);
+				//Controller.playlistsCounter++;
+				PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
+				//Controller.playlistTableModel = new PlaylistTableModel(
+				//		PlaylistElement.getColumnNamesForTable(), 0);
+
+				//Controller.playlistSelectionModel = new PlaylistTableSelectionModel();
+
+//				super.theView.createTableWithSettings();
+//
+//				super.theView.getTablePlaylist().setModel(
+//						Controller.playlistTableModel);
+//				super.theView.addScrollpaneToTable();
+//				super.theView.getTablePlaylist().getColumnModel()
+//						.setSelectionModel(Controller.playlistSelectionModel);
+//				
+//				super.theView.getMntmNewPlaylist().setEnabled(
+//						playlistsCounter < super.theModel.maxPlaylistNum);
+//				super.theView.getMntmOpenPlaylist().setEnabled(
+//						playlistsCounter < super.theModel.maxPlaylistNum);
+//				super.theView.getMntmSavePlaylist().setEnabled(true);
+//				super.theView.getMntmOpenMp3File().setEnabled(true);
+//				super.theView.getMntmClosePlaylist().setEnabled(true);
+//				super.createPlaylistListeners();
+
+				playListTable.setItems(allItemsInTable);
+				
+				logger.info("XML file successfully opened");
+			} catch (SAXException ex) {
+				logger.error("The XML file is not valid");
+				logger.error("Message: "+ex.getMessage());
+			} catch (IOException ex) {
+				logger.error("File i/o error");
+				
+			} catch (JAXBException e1) {
+				logger.error("Can't process XML file");
+				logger.error("Message: "+e1.getMessage());
+			}
+			
+		}
+
+	}
+	
 	private void tableDoubleClick(){
 		playListTable.setRowFactory( tv -> {
 		    TableRow<PlaylistElement> row = new TableRow<>();

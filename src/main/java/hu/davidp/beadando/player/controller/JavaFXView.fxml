@@ -23,9 +23,9 @@
                   <MenuItem fx:id="fileMenuNewPlist" mnemonicParsing="false" onAction="#fileMenuNewPlistAction" text="New Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="fileMenuOpenMp3" mnemonicParsing="false" onAction="#fileMenuOpenMP3Action" text="Open Mp3 file(s)" />
-                  <MenuItem mnemonicParsing="false" text="Open Playlist" />
+                  <MenuItem fx:id="fileMenuOpenPlist" mnemonicParsing="false" onAction="#fileMenuOpenPlistAction" text="Open Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Save Playlist" />
+                  <MenuItem fx:id="fileMenuSavePlist" mnemonicParsing="false" onAction="#fileMenuSavePlistAction" text="Save Playlist" />
                   <MenuItem mnemonicParsing="false" text="Close Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" text="Exit LightningPlayer" />
