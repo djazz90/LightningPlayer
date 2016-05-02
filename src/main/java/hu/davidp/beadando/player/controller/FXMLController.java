@@ -14,11 +14,14 @@ import org.slf4j.LoggerFactory;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -45,7 +48,7 @@ public class FXMLController implements Initializable {
 	private static Logger logger = LoggerFactory.getLogger(FXMLController.class);
 
 	private static Model model;
-
+	
 	/*
 	 * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
 	 * megjelenést: nincs playlist, nem kattinthatók a gombok, csak azok a
@@ -67,6 +70,8 @@ public class FXMLController implements Initializable {
 	
 	
 	private TableView<PlaylistElement> playListTable;
+	
+
 	// menü
 	@FXML
 	private MenuBar menuBar;
@@ -87,6 +92,8 @@ public class FXMLController implements Initializable {
 
 	private ObservableList<PlaylistElement> allItemsInTable;
 	
+	private static File lastFolder;
+	
 	@FXML
 	public void prevButtonAction(ActionEvent e) {
 		System.out.println("prev pressed!");
@@ -104,10 +111,28 @@ public class FXMLController implements Initializable {
 		for (String string : PlaylistElement.getColumnNamesForTable()) {
 			TableColumn<PlaylistElement, String> cell = new TableColumn<PlaylistElement, String>(string);
 			cell.setCellValueFactory(new PropertyValueFactory<>(string));
+			cell.setSortable(false);
 			colNames.add(cell);
 		}
 		playListTable.getColumns().addAll(colNames);
 		playListTable.autosize();
+		playListTable.widthProperty().addListener(new ChangeListener<Number>()
+		{
+		    @Override
+		    public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth)
+		    {
+		        TableHeaderRow header = (TableHeaderRow) playListTable.lookup("TableHeaderRow");
+		        header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+		            @Override
+		            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+		                header.setReordering(false);
+		            }
+		        });
+		    }
+
+			
+		});
+		
 		playListTabPane.getTabs().get(0).setContent(playListTable);
 		allItemsInTable = FXCollections.observableArrayList();
 		logger.info("New playlist created");
@@ -120,9 +145,16 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void fileMenuOpenMP3Action(ActionEvent e) {
+		if (model.getPlaylist() == null) {
+			fileMenuNewPlistAction(e);
+		}
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Open MP3 files");
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Mp3 files(*.mp3)", "*.mp3"));
+		if (lastFolder != null){
+			fc.setInitialDirectory(lastFolder);
+		}
+		
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
 
 		if (openedFiles != null) {
@@ -140,15 +172,15 @@ public class FXMLController implements Initializable {
 
 			}
 			model.getPlaylist().addAll(addedNewPLEs);
-			model.getPlaylist().stream().forEach(ple -> {
-				System.out.println(ple);
-			});
+			PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
 			
 			
 			allItemsInTable.addAll(addedNewPLEs);
 			playListTable.setItems(allItemsInTable);
+			
+			lastFolder = openedFiles.get(0).getParentFile();
 		}
-
+		
 		// if (!(jfc.showOpenDialog(jfc)==JFileChooser.CANCEL_OPTION)){
 		// LinkedList<PlaylistElement> selectedFiles = new LinkedList<>();
 		//
@@ -193,7 +225,7 @@ public class FXMLController implements Initializable {
 		        	PlayerFX.getInstance().setActualElementinPlaylist(row.getIndex());
 					PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(row.getIndex()).asMedia());
 					PlayerFX.getInstance().play();
-					
+					PlayerFX.getInstance().autonext(model, this);
 					
 		            
 		        }
@@ -205,4 +237,9 @@ public class FXMLController implements Initializable {
 	public static void setModel(Model model) {
 		FXMLController.model = model;
 	}
+	
+	public TableView<PlaylistElement> getPlayListTable() {
+		return playListTable;
+	}
+
 }

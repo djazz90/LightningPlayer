@@ -45,7 +45,8 @@ import javafx.stage.Stage;
 
 /**
  * Player osztály. A program lejátszója, MP3 fájlok lejátszását végzi. Működését
- * a {@link MediaPlayer} objektum segítségével végzi. Lejátszólistát a {@link Model}-ből vesz.
+ * a {@link MediaPlayer} objektum segítségével végzi. Lejátszólistát a
+ * {@link Model}-ből vesz.
  * 
  * 
  * @author Pintér Dávid
@@ -55,7 +56,7 @@ public class PlayerFX {
 	/**
 	 * Logger objektum naplózáshoz.
 	 */
-	private static Logger logger= LoggerFactory.getLogger(PlayerFX.class);
+	private static Logger logger = LoggerFactory.getLogger(PlayerFX.class);
 	/**
 	 * {@link MediaPlayer} objektum.
 	 */
@@ -90,9 +91,9 @@ public class PlayerFX {
 	private static PlayerFX instance = null;
 
 	private static Scene playerScene;
-	
 
 	private static Stage playerStage;
+
 	/**
 	 * Singleton konstruktor a lejátszó számára.
 	 */
@@ -109,7 +110,7 @@ public class PlayerFX {
 	 * @return a lejátszólista objektum
 	 */
 	public static PlayerFX getInstance() {
-		if (playerScene == null){
+		if (playerScene == null) {
 			throw new RuntimeException("Nincs beállítva scene!");
 		}
 		if (instance == null) {
@@ -122,197 +123,196 @@ public class PlayerFX {
 	 * A lejátszó automatikusan a következő lejátszólista elemre lép, ha az
 	 * aktuális véget ér.
 	 * 
-	 * @param m a {@link Model} osztály egy példánya
-	 * @param v a View osztály egy példánya
+	 * @param m
+	 *            a {@link Model} osztály egy példánya
+	 * @param v
+	 *            a View osztály egy példánya
 	 */
-	public void autonext(Model m, View v) {
-		playerScene.addEventFilter(Event.ANY, 
-				e -> {
+	public void autonext(Model m, FXMLController fxc) {
 
-					try {
-						PlayerFX.this.mp.setOnEndOfMedia(new Runnable() {
+		try {
+			PlayerFX.this.mp.setOnEndOfMedia(
+					() -> {
 
-							@Override
-							public void run() {
+						mp.stop();
+						// if (actualElementinPlaylist > 0
+						// && actualElementinPlaylist < actualPlaylistSize - 1)
+						// {
+						// v.getBtnNext().setEnabled(true);
+						// v.getBtnPrev().setEnabled(true);
+						// }
+						// if (actualElementinPlaylist == 0)
+						// v.getBtnPrev().setEnabled(false);
+						// if (actualElementinPlaylist == actualPlaylistSize -
+						// 1)
+						// v.getBtnNext().setEnabled(false);
+						//
+						if (actualElementinPlaylist != actualPlaylistSize - 1) {
+							actualElementinPlaylist++;
+							PlayerFX.this.mp = new MediaPlayer(m
+									.getPlaylist()
+									.get(actualElementinPlaylist).asMedia());
+							PlayerFX.this.playButtonSaysPlay = false;
+							mp.play();
+							// v.getTablePlaylist().setRowSelectionInterval(
+							// getActualElementinPlaylist(),
+							// getActualElementinPlaylist());
+							fxc.getPlayListTable().getSelectionModel().select(actualElementinPlaylist);;
+							logger.info("Auto next:");
+							logger.info("Actual playlist element:");
+							StringBuffer sb = new StringBuffer();
+							sb.append(
+									m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()
+											+ " - ")
+									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist())
+											.getTitle() + " - ")
+									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist())
+											.getAlbum());
+							logger.info(sb.toString());
+							PlayerFX.this.autonext(m, fxc);
 
-								mp.stop();
-								if (actualElementinPlaylist > 0
-										&& actualElementinPlaylist < actualPlaylistSize - 1) {
-									v.getBtnNext().setEnabled(true);
-									v.getBtnPrev().setEnabled(true);
-								}
-								if (actualElementinPlaylist == 0)
-									v.getBtnPrev().setEnabled(false);
-								if (actualElementinPlaylist == actualPlaylistSize - 1)
-									v.getBtnNext().setEnabled(false);
+						} else {
 
-								if (actualElementinPlaylist != actualPlaylistSize - 1) {
-									actualElementinPlaylist++;
-									PlayerFX.this.mp = new MediaPlayer(m
-											.getPlaylist()
-											.get(actualElementinPlaylist).asMedia());
-									PlayerFX.this.playButtonSaysPlay = false;
-									mp.play();
-									v.getTablePlaylist().setRowSelectionInterval(
-											getActualElementinPlaylist(),
-											getActualElementinPlaylist());
-									logger.info("Auto next:");
-									logger.info("Actual playlist element:");
-									StringBuffer sb = new StringBuffer();
-									sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
-									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
-									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
-									logger.info(sb.toString());
-									PlayerFX.this.autonext(m, v);
+							mp.stop();
+							PlayerFX.this.playButtonSaysPlay = true;
+							// v.getBtnPlay().setText(
+							// PlayerFX.this.changePlayButtonText());
+						}
 
-								} else {
+					});
 
-									mp.stop();
-									PlayerFX.this.playButtonSaysPlay = true;
-									v.getBtnPlay().setText(
-											PlayerFX.this.changePlayButtonText());
-								}
+		} catch (NullPointerException ex) {
 
-							}
+		}
 
-						});
-					} catch (NullPointerException ex) {
+		// EventQueue.invokeLater(new Runnable() {
+		//
+		//
+		// @Override
+		// public void run() {
+		//
+		// try {
+		// PlayerFX.this.mp.setOnEndOfMedia(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		//
+		// mp.stop();
+		// if (actualElementinPlaylist > 0
+		// && actualElementinPlaylist < actualPlaylistSize - 1) {
+		// v.getBtnNext().setEnabled(true);
+		// v.getBtnPrev().setEnabled(true);
+		// }
+		// if (actualElementinPlaylist == 0)
+		// v.getBtnPrev().setEnabled(false);
+		// if (actualElementinPlaylist == actualPlaylistSize - 1)
+		// v.getBtnNext().setEnabled(false);
+		//
+		// if (actualElementinPlaylist != actualPlaylistSize - 1) {
+		// actualElementinPlaylist++;
+		// PlayerFX.this.mp = new MediaPlayer(m
+		// .getPlaylist()
+		// .get(actualElementinPlaylist).asMedia());
+		// PlayerFX.this.playButtonSaysPlay = false;
+		// mp.play();
+		// v.getTablePlaylist().setRowSelectionInterval(
+		// getActualElementinPlaylist(),
+		// getActualElementinPlaylist());
+		// logger.info("Auto next:");
+		// logger.info("Actual playlist element:");
+		// StringBuffer sb = new StringBuffer();
+		// sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+"
+		// - ")
+		// .append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+"
+		// - ")
+		// .append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		// logger.info(sb.toString());
+		// PlayerFX.this.autonext(m, v);
+		//
+		// } else {
+		//
+		// mp.stop();
+		// PlayerFX.this.playButtonSaysPlay = true;
+		// v.getBtnPlay().setText(
+		// PlayerFX.this.changePlayButtonText());
+		// }
+		//
+		// }
+		//
+		// });
+		// } catch (NullPointerException e) {
+		//
+		// }
+		// }
+		//
+		// });
 
-					}
-				
-					
-					e.consume();
-				}
-		);
-//		EventQueue.invokeLater(new Runnable() {
-//
-//			
-//			@Override
-//			public void run() {
-//
-//				try {
-//					PlayerFX.this.mp.setOnEndOfMedia(new Runnable() {
-//
-//						@Override
-//						public void run() {
-//
-//							mp.stop();
-//							if (actualElementinPlaylist > 0
-//									&& actualElementinPlaylist < actualPlaylistSize - 1) {
-//								v.getBtnNext().setEnabled(true);
-//								v.getBtnPrev().setEnabled(true);
-//							}
-//							if (actualElementinPlaylist == 0)
-//								v.getBtnPrev().setEnabled(false);
-//							if (actualElementinPlaylist == actualPlaylistSize - 1)
-//								v.getBtnNext().setEnabled(false);
-//
-//							if (actualElementinPlaylist != actualPlaylistSize - 1) {
-//								actualElementinPlaylist++;
-//								PlayerFX.this.mp = new MediaPlayer(m
-//										.getPlaylist()
-//										.get(actualElementinPlaylist).asMedia());
-//								PlayerFX.this.playButtonSaysPlay = false;
-//								mp.play();
-//								v.getTablePlaylist().setRowSelectionInterval(
-//										getActualElementinPlaylist(),
-//										getActualElementinPlaylist());
-//								logger.info("Auto next:");
-//								logger.info("Actual playlist element:");
-//								StringBuffer sb = new StringBuffer();
-//								sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
-//								.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
-//								.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
-//								logger.info(sb.toString());
-//								PlayerFX.this.autonext(m, v);
-//
-//							} else {
-//
-//								mp.stop();
-//								PlayerFX.this.playButtonSaysPlay = true;
-//								v.getBtnPlay().setText(
-//										PlayerFX.this.changePlayButtonText());
-//							}
-//
-//						}
-//
-//					});
-//				} catch (NullPointerException e) {
-//
-//				}
-//			}
-//
-//		});
-		
 	}
-	
+
 	/**
 	 * Az aktuális lejátszólista elem lejátszása.
 	 */
 	public void play() {
-		
+
 		playButtonSaysPlay = false;
 		mp.play();
-		
-//		playerScene.addEventFilter(Event.ANY, 
-//			e -> {
-//				playButtonSaysPlay = false;
-//				mp.play();
-//				e.consume();
-//			}
-//		);
+
+		// playerScene.addEventFilter(Event.ANY,
+		// e -> {
+		// playButtonSaysPlay = false;
+		// mp.play();
+		// e.consume();
+		// }
+		// );
 		/*
-		EventQueue.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				PlayerFX.this.PlayButtonSaysPlay = false;
-
-				mp.play();
-
-			}
-
-		});
-		*/
+		 * EventQueue.invokeLater(new Runnable() {
+		 * 
+		 * @Override public void run() { PlayerFX.this.PlayButtonSaysPlay =
+		 * false;
+		 * 
+		 * mp.play();
+		 * 
+		 * }
+		 * 
+		 * });
+		 */
 	}
 
 	/**
 	 * A lejátszás szüneteltetése.
 	 */
 	public void pause() {
-		playerScene.addEventFilter(Event.ANY, 
+		playerScene.addEventFilter(Event.ANY,
 				e -> {
 					PlayerFX.this.playButtonSaysPlay = true;
 					mp.pause();
 					e.consume();
-				}
-		);
-		
-//		EventQueue.invokeLater(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				PlayerFX.this.PlayButtonSaysPlay = true;
-//				mp.pause();
-//				
-//
-//			}
-//
-//		});
+				});
+
+		// EventQueue.invokeLater(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// PlayerFX.this.PlayButtonSaysPlay = true;
+		// mp.pause();
+		//
+		//
+		// }
+		//
+		// });
 	}
-	
+
 	/**
 	 * A lejátszás megállítása.
 	 */
 	public void stop() {
-		playerScene.addEventFilter(Event.ANY, 
+		playerScene.addEventFilter(Event.ANY,
 				e -> {
 					playButtonSaysPlay = true;
 					mp.pause();
 					e.consume();
-				}
-		);
-		
+				});
+
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
@@ -327,7 +327,8 @@ public class PlayerFX {
 	/**
 	 * A következő lejátszólista elemre lép.
 	 * 
-	 * @param m a {@link Model} osztály egy példánya
+	 * @param m
+	 *            a {@link Model} osztály egy példánya
 	 */
 	public void next(Model m) {
 
@@ -351,7 +352,8 @@ public class PlayerFX {
 	/**
 	 * Az előző lejátszólista elemre lép.
 	 * 
-	 * @param m a {@link Model} osztály egy példánya
+	 * @param m
+	 *            a {@link Model} osztály egy példánya
 	 */
 	public void prev(Model m) {
 		mp.stop();
@@ -371,7 +373,7 @@ public class PlayerFX {
 			}
 		});
 	}
-	
+
 	/**
 	 * Visszaadja az aktuálisan játszott {@link Media}-t.
 	 * 
@@ -380,11 +382,12 @@ public class PlayerFX {
 	public Media getActualMedia() {
 		return actualMedia;
 	}
-	
+
 	/**
-	 * Beállítja az aktuális {@link Media}-t. 
+	 * Beállítja az aktuális {@link Media}-t.
 	 * 
-	 * @param actualMedia a beállítani kívánt {@link Media}.
+	 * @param actualMedia
+	 *            a beállítani kívánt {@link Media}.
 	 */
 	public void setActualMedia(Media actualMedia) {
 		this.actualMedia = actualMedia;
@@ -416,7 +419,7 @@ public class PlayerFX {
 	public boolean isPlayButtonSaysPlay() {
 		return playButtonSaysPlay;
 	}
-	
+
 	/**
 	 * Visszaadja az aktuális lejetszólista méretét.
 	 * 
@@ -434,20 +437,22 @@ public class PlayerFX {
 	public boolean hasMedia() {
 		return hasMedia;
 	}
-	
+
 	/**
 	 * Beállitja a {@link #hasMedia} értékét.
 	 * 
-	 * @param hasMedia a {@link #hasMedia} új értéke
+	 * @param hasMedia
+	 *            a {@link #hasMedia} új értéke
 	 */
 	public void setHasMedia(boolean hasMedia) {
 		this.hasMedia = hasMedia;
 	}
 
 	/**
-	 * Beállítja az aktuális lejátszólista méretét a kívánt méretre. 
+	 * Beállítja az aktuális lejátszólista méretét a kívánt méretre.
 	 * 
-	 * @param playlist a kívánt méret
+	 * @param playlist
+	 *            a kívánt méret
 	 */
 	public void setPlaylistSize(List<PlaylistElement> playlist) {
 		actualPlaylistSize = playlist.size();
@@ -465,25 +470,27 @@ public class PlayerFX {
 	/**
 	 * Beállítja az aktuálisan játszott lejátszólista elem sorszámát.
 	 * 
-	 * @param actualElementinPlaylist a lejátszólista elem sorszáma
+	 * @param actualElementinPlaylist
+	 *            a lejátszólista elem sorszáma
 	 */
 	public void setActualElementinPlaylist(int actualElementinPlaylist) {
 		this.actualElementinPlaylist = actualElementinPlaylist;
 	}
 
-	/**Visszaadja a {@link MediaPlayer}-t.
+	/**
+	 * Visszaadja a {@link MediaPlayer}-t.
 	 * 
 	 * @return a lejátszó
 	 */
 	public MediaPlayer getMp() {
 		return mp;
 	}
-	
-	public static void setSceneAndStage(Scene s, Stage st){
+
+	public static void setSceneAndStage(Scene s, Stage st) {
 		playerScene = s;
 		playerStage = st;
 	}
-	
+
 	public static Scene getPlayerScene() {
 		return playerScene;
 	}
