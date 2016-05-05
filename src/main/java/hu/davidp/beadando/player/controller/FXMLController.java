@@ -78,8 +78,23 @@ public class FXMLController implements Initializable {
 	}
 	
 	private void setAvailability(){
-		boolean prevButtonEnabled = model.getPlaylist() != null;
+		boolean fileMenuNewPlistEnabled = model.getPlaylist() == null;
+		fileMenuNewPlist.setDisable(!fileMenuNewPlistEnabled);
+		
+		boolean fileMenuSavePlistEnabled = (model.getPlaylist() != null) && (!model.getPlaylist().isEmpty());
+		fileMenuSavePlist.setDisable(!fileMenuSavePlistEnabled);
+		
+		boolean fileMenuClosePlistEnabled = model.getPlaylist() != null;
+		fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
+		
+		boolean prevButtonEnabled = (model.getPlaylist() != null) 
+				&& (model.getPlaylist().size()>1) && (PlayerFX.getInstance().getActualElementinPlaylist()>0);
 		prevButton.setDisable(!prevButtonEnabled);
+		
+		boolean nextButtonEnabled = (model.getPlaylist() != null) 
+				&& (model.getPlaylist().size()>1) 
+				&& (PlayerFX.getInstance().getActualElementinPlaylist()<PlayerFX.getInstance().getActualPlaylistSize()-1);
+		nextButton.setDisable(!nextButtonEnabled);
 	}
 	
 	
@@ -102,13 +117,24 @@ public class FXMLController implements Initializable {
 	@FXML
 	private MenuItem fileMenuSavePlist;
 	
-	
 	@FXML
 	private MenuItem fileMenuOpenPlist;
 	
+	@FXML
+	private MenuItem fileMenuClosePlist;
+	
+	@FXML
+	private MenuItem fileMenuExit;
 	
 	@FXML
 	private Button prevButton;
+	@FXML
+	private Button playButton;
+	@FXML
+	private Button nextButton;
+	@FXML
+	private Button stopButton;
+	
 	@FXML
 	private TabPane playListTabPane;
 
@@ -119,6 +145,18 @@ public class FXMLController implements Initializable {
 	@FXML
 	public void prevButtonAction(ActionEvent e) {
 		System.out.println("prev pressed!");
+	}
+	@FXML
+	public void playButtonAction(ActionEvent e) {
+		System.out.println("play pressed!");
+	}
+	@FXML
+	public void nextButtonAction(ActionEvent e) {
+		System.out.println("next pressed!");
+	}
+	@FXML
+	public void stopButtonAction(ActionEvent e) {
+		System.out.println("stop pressed!");
 	}
 
 	@FXML
@@ -202,7 +240,7 @@ public class FXMLController implements Initializable {
 			
 			lastFolder = openedFiles.get(0).getParentFile();
 		}
-		
+		setAvailability();
 		// if (!(jfc.showOpenDialog(jfc)==JFileChooser.CANCEL_OPTION)){
 		// LinkedList<PlaylistElement> selectedFiles = new LinkedList<>();
 		//
@@ -308,6 +346,7 @@ public class FXMLController implements Initializable {
 				playListTable.setItems(allItemsInTable);
 				//Controller.playlistsCounter++;
 				PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
+				setAvailability();
 				//Controller.playlistTableModel = new PlaylistTableModel(
 				//		PlaylistElement.getColumnNamesForTable(), 0);
 
@@ -348,6 +387,22 @@ public class FXMLController implements Initializable {
 
 	}
 	
+	@FXML
+	public void fileMenuClosePlistAction(ActionEvent e){
+		if (PlayerFX.getInstance().getMp()!=null) {
+			PlayerFX.getInstance().stop();
+		}
+		
+		model.setPlaylist(null);
+		playListTabPane.getTabs().remove(0);
+		setAvailability();
+	}
+	
+	@FXML
+	public void fileMenuExitAction(ActionEvent e){
+		PlayerFX.getPlayerStage().close();
+	}
+	
 	private void tableDoubleClick(){
 		playListTable.setRowFactory( tv -> {
 		    TableRow<PlaylistElement> row = new TableRow<>();
@@ -358,7 +413,7 @@ public class FXMLController implements Initializable {
 					PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(row.getIndex()).asMedia());
 					PlayerFX.getInstance().play();
 					PlayerFX.getInstance().autonext(model, this);
-					
+					setAvailability();
 		            
 		        }
 		    });

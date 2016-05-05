@@ -26,9 +26,9 @@
                   <MenuItem fx:id="fileMenuOpenPlist" mnemonicParsing="false" onAction="#fileMenuOpenPlistAction" text="Open Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="fileMenuSavePlist" mnemonicParsing="false" onAction="#fileMenuSavePlistAction" text="Save Playlist" />
-                  <MenuItem mnemonicParsing="false" text="Close Playlist" />
+                  <MenuItem fx:id="fileMenuClosePlist" mnemonicParsing="false" onAction="#fileMenuClosePlistAction" text="Close Playlist" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" text="Exit LightningPlayer" />
+              <MenuItem fx:id="fileMenuExit" mnemonicParsing="false" onAction="#fileMenuExitAction" text="Exit LightningPlayer" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -44,9 +44,9 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="354.0" prefWidth="118.0">
                <children>
                   <Button fx:id="prevButton" layoutX="14.0" layoutY="239.0" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
-                  <Button layoutX="94.0" layoutY="239.0" mnemonicParsing="false" text="Next" />
-                  <Button layoutX="55.0" layoutY="239.0" mnemonicParsing="false" text="Play" />
-                  <Button layoutX="53.0" layoutY="271.0" mnemonicParsing="false" text="Stop" />
+                  <Button fx:id="nextButton" layoutX="94.0" layoutY="239.0" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
+                  <Button fx:id="playButton" layoutX="55.0" layoutY="239.0" mnemonicParsing="false" onAction="#playButtonAction" text="Play" />
+                  <Button fx:id="stopButton" layoutX="53.0" layoutY="271.0" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="310.0" prefWidth="408.0">

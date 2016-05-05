@@ -306,22 +306,13 @@ public class PlayerFX {
 	 * A lejátszás megállítása.
 	 */
 	public void stop() {
-		playerScene.addEventFilter(Event.ANY,
-				e -> {
+		
 					playButtonSaysPlay = true;
-					mp.pause();
-					e.consume();
-				});
+				
+		
+					mp.stop();
 
-		EventQueue.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				PlayerFX.this.playButtonSaysPlay = true;
-				mp.stop();
-
-			}
-		});
+		
 	}
 
 	/**
