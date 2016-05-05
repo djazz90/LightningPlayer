@@ -62,7 +62,7 @@ public class FXMLController implements Initializable {
 	private static Logger logger = LoggerFactory.getLogger(FXMLController.class);
 
 	private static Model model;
-	
+
 	/*
 	 * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
 	 * megjelenést: nincs playlist, nem kattinthatók a gombok, csak azok a
@@ -74,32 +74,31 @@ public class FXMLController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		setAvailability();
-		
+
 	}
-	
-	private void setAvailability(){
+
+	private void setAvailability() {
 		boolean fileMenuNewPlistEnabled = model.getPlaylist() == null;
 		fileMenuNewPlist.setDisable(!fileMenuNewPlistEnabled);
-		
+
 		boolean fileMenuSavePlistEnabled = (model.getPlaylist() != null) && (!model.getPlaylist().isEmpty());
 		fileMenuSavePlist.setDisable(!fileMenuSavePlistEnabled);
-		
+
 		boolean fileMenuClosePlistEnabled = model.getPlaylist() != null;
 		fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
-		
-		boolean prevButtonEnabled = (model.getPlaylist() != null) 
-				&& (model.getPlaylist().size()>1) && (PlayerFX.getInstance().getActualElementinPlaylist()>0);
+
+		boolean prevButtonEnabled = (model.getPlaylist() != null)
+				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementinPlaylist() > 0);
 		prevButton.setDisable(!prevButtonEnabled);
-		
-		boolean nextButtonEnabled = (model.getPlaylist() != null) 
-				&& (model.getPlaylist().size()>1) 
-				&& (PlayerFX.getInstance().getActualElementinPlaylist()<PlayerFX.getInstance().getActualPlaylistSize()-1);
+
+		boolean nextButtonEnabled = (model.getPlaylist() != null)
+				&& (model.getPlaylist().size() > 1)
+				&& (PlayerFX.getInstance().getActualElementinPlaylist() < PlayerFX.getInstance().getActualPlaylistSize()
+						- 1);
 		nextButton.setDisable(!nextButtonEnabled);
 	}
-	
-	
+
 	private TableView<PlaylistElement> playListTable;
-	
 
 	// menü
 	@FXML
@@ -116,16 +115,16 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private MenuItem fileMenuSavePlist;
-	
+
 	@FXML
 	private MenuItem fileMenuOpenPlist;
-	
+
 	@FXML
 	private MenuItem fileMenuClosePlist;
-	
+
 	@FXML
 	private MenuItem fileMenuExit;
-	
+
 	@FXML
 	private Button prevButton;
 	@FXML
@@ -134,29 +133,74 @@ public class FXMLController implements Initializable {
 	private Button nextButton;
 	@FXML
 	private Button stopButton;
-	
+
 	@FXML
 	private TabPane playListTabPane;
 
 	private ObservableList<PlaylistElement> allItemsInTable;
-	
+
 	private static File lastFolder;
-	
+
 	@FXML
 	public void prevButtonAction(ActionEvent e) {
-		System.out.println("prev pressed!");
+		PlayerFX.getInstance().prev(model);
+		getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementinPlaylist());
+		PlayerFX.getInstance().autonext(model, this);
+		logger.info("Prev button clicked.");
+		logger.info("Actual playlist element:");
+		StringBuffer sb = new StringBuffer();
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		logger.info(sb.toString());
+		setAvailability();
 	}
+
 	@FXML
 	public void playButtonAction(ActionEvent e) {
-		System.out.println("play pressed!");
+		if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
+
+			PlayerFX.getInstance().play();
+			playButton.setText("Pause");
+			PlayerFX.getInstance().autonext(model, this);
+
+		} else {
+
+			PlayerFX.getInstance().pause();
+			playButton.setText("Play");
+
+		}
+		logger.info("Play/Pause button clicked");
+		logger.info("Actual playlist element:");
+		StringBuffer sb = new StringBuffer();
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
+		.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
+		.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		logger.info(sb.toString());
+		setAvailability();
 	}
+
 	@FXML
 	public void nextButtonAction(ActionEvent e) {
-		System.out.println("next pressed!");
+		PlayerFX.getInstance().next(model);
+		getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementinPlaylist());
+		PlayerFX.getInstance().autonext(model, this);
+		logger.info("Next button clicked.");
+		logger.info("Actual playlist element:");
+		StringBuffer sb = new StringBuffer();
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		logger.info(sb.toString());
+		setAvailability();
 	}
+
 	@FXML
 	public void stopButtonAction(ActionEvent e) {
-		System.out.println("stop pressed!");
+
+		PlayerFX.getInstance().stop();
+		logger.info("Stop button clicked");
+		setAvailability();
 	}
 
 	@FXML
@@ -165,7 +209,7 @@ public class FXMLController implements Initializable {
 		Tab tab = new Tab();
 		tab.setText("playlist");
 		playListTabPane.getTabs().add(tab);
-		
+
 		playListTable = new TableView<PlaylistElement>();
 		List<TableColumn<PlaylistElement, String>> colNames = new ArrayList<>();
 		for (String string : PlaylistElement.getColumnNamesForTable()) {
@@ -176,31 +220,28 @@ public class FXMLController implements Initializable {
 		}
 		playListTable.getColumns().addAll(colNames);
 		playListTable.autosize();
-		playListTable.widthProperty().addListener(new ChangeListener<Number>()
-		{
-		    @Override
-		    public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth)
-		    {
-		        TableHeaderRow header = (TableHeaderRow) playListTable.lookup("TableHeaderRow");
-		        header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
-		            @Override
-		            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-		                header.setReordering(false);
-		            }
-		        });
-		    }
+		playListTable.widthProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
+				TableHeaderRow header = (TableHeaderRow) playListTable.lookup("TableHeaderRow");
+				header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+							Boolean newValue) {
+						header.setReordering(false);
+					}
+				});
+			}
 
-			
 		});
-		
+
 		playListTabPane.getTabs().get(0).setContent(playListTable);
 		allItemsInTable = FXCollections.observableArrayList();
 		logger.info("New playlist created");
 		tableDoubleClick();
 		setAvailability();
-		
-		
-		//playlistsCounter++;
+
+		// playlistsCounter++;
 	}
 
 	@FXML
@@ -211,10 +252,10 @@ public class FXMLController implements Initializable {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Open MP3 files");
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Mp3 files(*.mp3)", "*.mp3"));
-		if (lastFolder != null){
+		if (lastFolder != null) {
 			fc.setInitialDirectory(lastFolder);
 		}
-		
+
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
 
 		if (openedFiles != null) {
@@ -233,11 +274,10 @@ public class FXMLController implements Initializable {
 			}
 			model.getPlaylist().addAll(addedNewPLEs);
 			PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
-			
-			
+
 			allItemsInTable.addAll(addedNewPLEs);
 			playListTable.setItems(allItemsInTable);
-			
+
 			lastFolder = openedFiles.get(0).getParentFile();
 		}
 		setAvailability();
@@ -276,51 +316,51 @@ public class FXMLController implements Initializable {
 		// super.theView.getBtnPrev().setEnabled(false);
 		// }
 	}
+
 	@FXML
-	public void fileMenuSavePlistAction(ActionEvent e){
-		
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Save playlist files");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
-			
-			
-			File savedFile = fc.showSaveDialog(PlayerFX.getPlayerStage());
-			if (savedFile!=null) {
-				try {
-					File file;
-					String[] splitter = savedFile.toString().split("\\.");
-					if (splitter[splitter.length - 1].equals("xml")) {
-						file = savedFile;
-					} else {
-						file = new File(savedFile.toString() + ".xml");
-					}
+	public void fileMenuSavePlistAction(ActionEvent e) {
 
-					JAXBContext context = JAXBContext.newInstance(Model.class);
-					Marshaller m = context.createMarshaller();
-					m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Save playlist files");
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
 
-					m.marshal(model, file);
-					logger.info("XML file successfully saved");
-				} catch (JAXBException e1) {
-					logger.error("Can't process XML file");
-					e1.printStackTrace();
+		File savedFile = fc.showSaveDialog(PlayerFX.getPlayerStage());
+		if (savedFile != null) {
+			try {
+				File file;
+				String[] splitter = savedFile.toString().split("\\.");
+				if (splitter[splitter.length - 1].equals("xml")) {
+					file = savedFile;
+				} else {
+					file = new File(savedFile.toString() + ".xml");
 				}
-			}
 
+				JAXBContext context = JAXBContext.newInstance(Model.class);
+				Marshaller m = context.createMarshaller();
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+				m.marshal(model, file);
+				logger.info("XML file successfully saved");
+			} catch (JAXBException e1) {
+				logger.error("Can't process XML file");
+				e1.printStackTrace();
+			}
+		}
 
 	}
+
 	@FXML
-	public void fileMenuOpenPlistAction(ActionEvent e){
+	public void fileMenuOpenPlistAction(ActionEvent e) {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Open playlist file");
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
-		
-		
+
 		File openedFile = fc.showOpenDialog(PlayerFX.getPlayerStage());
 
 		if (openedFile != null) {
 
 			try {
+				fileMenuClosePlistAction(e);
 				fileMenuNewPlistAction(e);
 				SchemaFactory schemaFactory = SchemaFactory
 						.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -333,98 +373,100 @@ public class FXMLController implements Initializable {
 				validator.validate(xmlFile);
 				JAXBContext context = JAXBContext.newInstance(Model.class);
 				Unmarshaller unmarshaller = context.createUnmarshaller();
-				//model.setPlaylist(new LinkedList<PlaylistElement>());
+				// model.setPlaylist(new LinkedList<PlaylistElement>());
 				model = (Model) (unmarshaller.unmarshal(openedFile));
-				
-				
-				
+
 				for (PlaylistElement ple : model.getPlaylist()) {
 					ple.rebuildPlaylistElement();
 					allItemsInTable.add(ple);
 				}
-				
+
 				playListTable.setItems(allItemsInTable);
-				//Controller.playlistsCounter++;
+				// Controller.playlistsCounter++;
 				PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
 				setAvailability();
-				//Controller.playlistTableModel = new PlaylistTableModel(
-				//		PlaylistElement.getColumnNamesForTable(), 0);
+				// Controller.playlistTableModel = new PlaylistTableModel(
+				// PlaylistElement.getColumnNamesForTable(), 0);
 
-				//Controller.playlistSelectionModel = new PlaylistTableSelectionModel();
+				// Controller.playlistSelectionModel = new
+				// PlaylistTableSelectionModel();
 
-//				super.theView.createTableWithSettings();
-//
-//				super.theView.getTablePlaylist().setModel(
-//						Controller.playlistTableModel);
-//				super.theView.addScrollpaneToTable();
-//				super.theView.getTablePlaylist().getColumnModel()
-//						.setSelectionModel(Controller.playlistSelectionModel);
-//				
-//				super.theView.getMntmNewPlaylist().setEnabled(
-//						playlistsCounter < super.theModel.maxPlaylistNum);
-//				super.theView.getMntmOpenPlaylist().setEnabled(
-//						playlistsCounter < super.theModel.maxPlaylistNum);
-//				super.theView.getMntmSavePlaylist().setEnabled(true);
-//				super.theView.getMntmOpenMp3File().setEnabled(true);
-//				super.theView.getMntmClosePlaylist().setEnabled(true);
-//				super.createPlaylistListeners();
+				// super.theView.createTableWithSettings();
+				//
+				// super.theView.getTablePlaylist().setModel(
+				// Controller.playlistTableModel);
+				// super.theView.addScrollpaneToTable();
+				// super.theView.getTablePlaylist().getColumnModel()
+				// .setSelectionModel(Controller.playlistSelectionModel);
+				//
+				// super.theView.getMntmNewPlaylist().setEnabled(
+				// playlistsCounter < super.theModel.maxPlaylistNum);
+				// super.theView.getMntmOpenPlaylist().setEnabled(
+				// playlistsCounter < super.theModel.maxPlaylistNum);
+				// super.theView.getMntmSavePlaylist().setEnabled(true);
+				// super.theView.getMntmOpenMp3File().setEnabled(true);
+				// super.theView.getMntmClosePlaylist().setEnabled(true);
+				// super.createPlaylistListeners();
 
 				playListTable.setItems(allItemsInTable);
-				
+
 				logger.info("XML file successfully opened");
 			} catch (SAXException ex) {
 				logger.error("The XML file is not valid");
-				logger.error("Message: "+ex.getMessage());
+				logger.error("Message: " + ex.getMessage());
 			} catch (IOException ex) {
 				logger.error("File i/o error");
-				
+
 			} catch (JAXBException e1) {
 				logger.error("Can't process XML file");
-				logger.error("Message: "+e1.getMessage());
+				logger.error("Message: " + e1.getMessage());
 			}
-			
+
 		}
 
 	}
-	
+
 	@FXML
-	public void fileMenuClosePlistAction(ActionEvent e){
-		if (PlayerFX.getInstance().getMp()!=null) {
+	public void fileMenuClosePlistAction(ActionEvent e) {
+		if (PlayerFX.getInstance().getMp() != null) {
 			PlayerFX.getInstance().stop();
 		}
-		
+
 		model.setPlaylist(null);
-		playListTabPane.getTabs().remove(0);
+		if (!playListTabPane.getTabs().isEmpty()) {
+			playListTabPane.getTabs().remove(0);
+		}
+		
 		setAvailability();
 	}
-	
+
 	@FXML
-	public void fileMenuExitAction(ActionEvent e){
+	public void fileMenuExitAction(ActionEvent e) {
 		PlayerFX.getPlayerStage().close();
 	}
-	
-	private void tableDoubleClick(){
-		playListTable.setRowFactory( tv -> {
-		    TableRow<PlaylistElement> row = new TableRow<>();
-		    row.setOnMouseClicked(event -> {
-		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-		        	PlaylistElement rowData = row.getItem();
-		        	PlayerFX.getInstance().setActualElementinPlaylist(row.getIndex());
+
+	private void tableDoubleClick() {
+		playListTable.setRowFactory(tv -> {
+			TableRow<PlaylistElement> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && (!row.isEmpty())) {
+					PlaylistElement rowData = row.getItem();
+					PlayerFX.getInstance().setActualElementinPlaylist(row.getIndex());
 					PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(row.getIndex()).asMedia());
 					PlayerFX.getInstance().play();
 					PlayerFX.getInstance().autonext(model, this);
 					setAvailability();
-		            
-		        }
-		    });
-		    return row ;
+
+				}
+			});
+			return row;
 		});
 	}
-	
+
 	public static void setModel(Model model) {
 		FXMLController.model = model;
 	}
-	
+
 	public TableView<PlaylistElement> getPlayListTable() {
 		return playListTable;
 	}

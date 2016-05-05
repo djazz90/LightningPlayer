@@ -157,7 +157,8 @@ public class PlayerFX {
 							// v.getTablePlaylist().setRowSelectionInterval(
 							// getActualElementinPlaylist(),
 							// getActualElementinPlaylist());
-							fxc.getPlayListTable().getSelectionModel().select(actualElementinPlaylist);;
+							fxc.getPlayListTable().getSelectionModel().select(actualElementinPlaylist);
+							
 							logger.info("Auto next:");
 							logger.info("Actual playlist element:");
 							StringBuffer sb = new StringBuffer();
@@ -182,7 +183,7 @@ public class PlayerFX {
 					});
 
 		} catch (NullPointerException ex) {
-
+			
 		}
 
 		// EventQueue.invokeLater(new Runnable() {
@@ -282,37 +283,21 @@ public class PlayerFX {
 	 * A lejátszás szüneteltetése.
 	 */
 	public void pause() {
-		playerScene.addEventFilter(Event.ANY,
-				e -> {
-					PlayerFX.this.playButtonSaysPlay = true;
-					mp.pause();
-					e.consume();
-				});
 
-		// EventQueue.invokeLater(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// PlayerFX.this.PlayButtonSaysPlay = true;
-		// mp.pause();
-		//
-		//
-		// }
-		//
-		// });
+		PlayerFX.this.playButtonSaysPlay = true;
+		mp.pause();
+
 	}
 
 	/**
 	 * A lejátszás megállítása.
 	 */
 	public void stop() {
-		
-					playButtonSaysPlay = true;
-				
-		
-					mp.stop();
 
-		
+		playButtonSaysPlay = true;
+
+		mp.stop();
+
 	}
 
 	/**
@@ -328,16 +313,8 @@ public class PlayerFX {
 		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementinPlaylist)
 				.asMedia());
 
-		EventQueue.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-
-				PlayerFX.this.playButtonSaysPlay = false;
-				mp.play();
-
-			}
-		});
+		playButtonSaysPlay = false;
+		mp.play();
 	}
 
 	/**
@@ -352,17 +329,10 @@ public class PlayerFX {
 		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementinPlaylist)
 				.asMedia());
 
-		EventQueue.invokeLater(new Runnable() {
+		playButtonSaysPlay = false;
+		mp.play();
+		mp.getOnEndOfMedia();
 
-			@Override
-			public void run() {
-
-				PlayerFX.this.playButtonSaysPlay = false;
-				mp.play();
-				mp.getOnEndOfMedia();
-
-			}
-		});
 	}
 
 	/**

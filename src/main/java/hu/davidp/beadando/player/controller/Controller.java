@@ -40,6 +40,7 @@ import hu.davidp.beadando.player.view.View;
  * @author Pintér Dávid
  *
  */
+@Deprecated
 public class Controller {
 	/**
 	 * Logger objektum naplózáshoz.
