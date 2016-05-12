@@ -87,7 +87,7 @@ public class LightningPlayerMainJavaFX extends Application {
 		// theController.SetButtonsAvailability();
 
 		// theView.showWidow();
-		Parent root = FXMLLoader.load(getClass().getResource("/hu/davidp/beadando/player/controller/JavaFXView.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/hu/davidp/beadando/player/view/JavaFXView.fxml"));
 
 		Scene scene = new Scene(root);
 		

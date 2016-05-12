@@ -1,10 +1,15 @@
 package hu.davidp.beadando.player.test;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
+import hu.davidp.beadando.player.controller.PlayerFX;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
@@ -58,7 +63,7 @@ public class JavaFxJUnit4Application extends Application
 
     
     @Override
-    public void start(final Stage stage)
+    public void start(final Stage stage) throws IOException
     {
         started.set(Boolean.TRUE);
     }

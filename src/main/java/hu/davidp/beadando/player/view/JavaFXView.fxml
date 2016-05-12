@@ -43,9 +43,9 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="354.0" prefWidth="118.0">
                <children>
-                  <Button fx:id="prevButton" layoutX="14.0" layoutY="239.0" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
-                  <Button fx:id="nextButton" layoutX="94.0" layoutY="239.0" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
-                  <Button fx:id="playButton" layoutX="55.0" layoutY="239.0" mnemonicParsing="false" onAction="#playButtonAction" text="Play" />
+                  <Button fx:id="prevButton" layoutX="27.0" layoutY="239.0" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
+                  <Button fx:id="nextButton" layoutX="81.0" layoutY="239.0" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
+                  <Button fx:id="playButton" layoutX="46.0" layoutY="207.0" mnemonicParsing="false" onAction="#playButtonAction" prefHeight="25.0" prefWidth="55.0" text="Play" />
                   <Button fx:id="stopButton" layoutX="53.0" layoutY="271.0" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" />
                </children>
             </AnchorPane>

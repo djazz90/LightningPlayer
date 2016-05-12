@@ -110,9 +110,9 @@ public class PlayerFX {
 	 * @return a lejátszólista objektum
 	 */
 	public static PlayerFX getInstance() {
-		if (playerScene == null) {
-			throw new RuntimeException("Nincs beállítva scene!");
-		}
+//		if (playerScene == null) {
+//			throw new RuntimeException("Nincs beállítva scene!");
+//		}
 		if (instance == null) {
 			instance = new PlayerFX();
 		}
@@ -131,7 +131,7 @@ public class PlayerFX {
 	public void autonext(Model m, FXMLController fxc) {
 
 		try {
-			PlayerFX.this.mp.setOnEndOfMedia(
+			mp.setOnEndOfMedia(
 					() -> {
 
 						mp.stop();
@@ -149,10 +149,10 @@ public class PlayerFX {
 						//
 						if (actualElementinPlaylist != actualPlaylistSize - 1) {
 							actualElementinPlaylist++;
-							PlayerFX.this.mp = new MediaPlayer(m
+							mp = new MediaPlayer(m
 									.getPlaylist()
 									.get(actualElementinPlaylist).asMedia());
-							PlayerFX.this.playButtonSaysPlay = false;
+							playButtonSaysPlay = false;
 							mp.play();
 							// v.getTablePlaylist().setRowSelectionInterval(
 							// getActualElementinPlaylist(),
@@ -170,12 +170,12 @@ public class PlayerFX {
 									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist())
 											.getAlbum());
 							logger.info(sb.toString());
-							PlayerFX.this.autonext(m, fxc);
+							autonext(m, fxc);
 
 						} else {
 
 							mp.stop();
-							PlayerFX.this.playButtonSaysPlay = true;
+							playButtonSaysPlay = true;
 							// v.getBtnPlay().setText(
 							// PlayerFX.this.changePlayButtonText());
 						}
@@ -183,7 +183,7 @@ public class PlayerFX {
 					});
 
 		} catch (NullPointerException ex) {
-			
+			ex.printStackTrace();
 		}
 
 		// EventQueue.invokeLater(new Runnable() {
@@ -416,7 +416,12 @@ public class PlayerFX {
 	 *            a kívánt méret
 	 */
 	public void setPlaylistSize(List<PlaylistElement> playlist) {
-		actualPlaylistSize = playlist.size();
+		if (playlist != null) {
+			actualPlaylistSize = playlist.size();
+		} else {
+			actualPlaylistSize = 0;
+		}
+		
 	}
 
 	/**
