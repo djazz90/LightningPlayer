@@ -69,7 +69,7 @@ public class PlayerFX {
 	/**
 	 * Igaz, ha a Viewban a Play gomb felirata Play.
 	 */
-	private boolean playButtonSaysPlay;
+	private boolean playButtonTextIsPlay;
 
 	/**
 	 * Igaz, ha a lejátszóban van {@link Media}.
@@ -99,7 +99,7 @@ public class PlayerFX {
 	 */
 	private PlayerFX() {
 
-		this.playButtonSaysPlay = true;
+		this.playButtonTextIsPlay = true;
 		this.hasMedia = false;
 
 	}
@@ -152,7 +152,7 @@ public class PlayerFX {
 							mp = new MediaPlayer(m
 									.getPlaylist()
 									.get(actualElementinPlaylist).asMedia());
-							playButtonSaysPlay = false;
+							playButtonTextIsPlay = false;
 							mp.play();
 							// v.getTablePlaylist().setRowSelectionInterval(
 							// getActualElementinPlaylist(),
@@ -175,7 +175,7 @@ public class PlayerFX {
 						} else {
 
 							mp.stop();
-							playButtonSaysPlay = true;
+							playButtonTextIsPlay = true;
 							// v.getBtnPlay().setText(
 							// PlayerFX.this.changePlayButtonText());
 						}
@@ -255,7 +255,7 @@ public class PlayerFX {
 	 */
 	public void play() {
 
-		playButtonSaysPlay = false;
+		playButtonTextIsPlay = false;
 		mp.play();
 
 		// playerScene.addEventFilter(Event.ANY,
@@ -284,7 +284,7 @@ public class PlayerFX {
 	 */
 	public void pause() {
 
-		PlayerFX.this.playButtonSaysPlay = true;
+		PlayerFX.this.playButtonTextIsPlay = true;
 		mp.pause();
 
 	}
@@ -294,7 +294,7 @@ public class PlayerFX {
 	 */
 	public void stop() {
 
-		playButtonSaysPlay = true;
+		playButtonTextIsPlay = true;
 
 		mp.stop();
 
@@ -313,7 +313,7 @@ public class PlayerFX {
 		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementinPlaylist)
 				.asMedia());
 
-		playButtonSaysPlay = false;
+		playButtonTextIsPlay = false;
 		mp.play();
 	}
 
@@ -329,7 +329,7 @@ public class PlayerFX {
 		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementinPlaylist)
 				.asMedia());
 
-		playButtonSaysPlay = false;
+		playButtonTextIsPlay = false;
 		mp.play();
 		mp.getOnEndOfMedia();
 
@@ -356,7 +356,7 @@ public class PlayerFX {
 			mp.stop();
 		}
 		this.mp = new MediaPlayer(actualMedia);
-		this.playButtonSaysPlay = false;
+		this.playButtonTextIsPlay = false;
 		this.hasMedia = true;
 	}
 
@@ -366,19 +366,19 @@ public class PlayerFX {
 	 * @return a szöveg amire át kell állítani a gomb szövegét
 	 */
 	public String changePlayButtonText() {
-		if (playButtonSaysPlay) {
+		if (playButtonTextIsPlay) {
 			return "Play";
 		}
 		return "Pause";
 	}
 
 	/**
-	 * Visszaadja a {@link #playButtonSaysPlay} értékét.
+	 * Visszaadja a {@link #playButtonTextIsPlay} értékét.
 	 * 
 	 * @return igazzal tér vissza, ha a Play gomb szövege Play
 	 */
 	public boolean isPlayButtonSaysPlay() {
-		return playButtonSaysPlay;
+		return playButtonTextIsPlay;
 	}
 
 	/**

@@ -1,17 +1,11 @@
 package hu.davidp.beadando.player.test;
 
 import static org.junit.Assert.*;
-import hu.davidp.beadando.player.controller.ActionListenerForNewPlaylist;
-import hu.davidp.beadando.player.controller.ActionListenerForOpenMp3;
-import hu.davidp.beadando.player.controller.ActionListenerForOpenPlaylist;
-import hu.davidp.beadando.player.controller.ActionListenerForSavePlaylist;
-import hu.davidp.beadando.player.controller.FXMLController;
+
 import hu.davidp.beadando.player.controller.PlayListMethods;
 import hu.davidp.beadando.player.controller.PlayerFX;
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
-import hu.davidp.beadando.player.view.View;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -41,7 +35,7 @@ public class ApplicationTestBase {
 	private static List<File> filesToPlay;
 	private static String OS;
 	private static PlayListMethods plm;
-
+	
 	static {
 
 		model = new Model();
@@ -52,6 +46,7 @@ public class ApplicationTestBase {
 		filesToPlay = new LinkedList<>();
 		OS = System.getProperty("os.name");
 		plm = new PlayListMethods(model);
+		
 
 	}
 
@@ -146,6 +141,7 @@ public class ApplicationTestBase {
 
 			PlayListMethods plm2 = new PlayListMethods(model);
 			Model m2 = plm2.openPlayList(f);
+			m2.getPlaylist();
 
 		} else {
 
@@ -153,6 +149,7 @@ public class ApplicationTestBase {
 			File f = FileUtils.getFile("src", "test", "resources", "examplemalformedUnixPlaylist.xml");
 			PlayListMethods plm2 = new PlayListMethods(model);
 			Model m2 = plm2.openPlayList(f);
+			m2.getPlaylist();
 		}
 	}
 
