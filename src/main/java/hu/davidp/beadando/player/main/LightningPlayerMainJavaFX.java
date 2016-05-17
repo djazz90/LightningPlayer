@@ -26,9 +26,7 @@ package hu.davidp.beadando.player.main;
  * #L%
  */
 
-import hu.davidp.beadando.player.controller.Controller;
 import hu.davidp.beadando.player.controller.FXMLController;
-import hu.davidp.beadando.player.controller.Player;
 import hu.davidp.beadando.player.controller.PlayerFX;
 import hu.davidp.beadando.player.model.Model;
 import javafx.application.Application;
@@ -77,23 +75,17 @@ public class LightningPlayerMainJavaFX extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		logger.info("LightningPlayer started");
-		// View theView = new View();
 
 		Model theModel = new Model();
 		FXMLController.setModel(theModel);
-		// Controller theController = new Controller(theView, theModel);
 
-		// theController.CreateActionListeners();
-		// theController.SetButtonsAvailability();
-
-		// theView.showWidow();
 		Parent root = FXMLLoader.load(getClass().getResource("/hu/davidp/beadando/player/view/JavaFXView.fxml"));
 
 		Scene scene = new Scene(root);
-		
+
 		PlayerFX.setSceneAndStage(scene, primaryStage);
 		PlayerFX.getInstance();
-		
+
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		logger.info("Application window created");

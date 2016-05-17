@@ -44,21 +44,18 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Model {
-	
+
 	/**
 	 * A lejátszólista.
 	 */
 	@XmlElement(name = "playlistelement")
 	private List<PlaylistElement> playlist = null;
 
-	
 	/**
 	 * A lejátszólisták maximális száma a programban.
 	 */
 	@XmlTransient
 	public final int maxPlaylistNum = 1;
-
-	
 
 	/**
 	 * Visszaadja a lejátszólistát.
@@ -68,11 +65,12 @@ public class Model {
 	public List<PlaylistElement> getPlaylist() {
 		return playlist;
 	}
-	
+
 	/**
 	 * Beállítja a lejátszólistát.
 	 * 
-	 * @param playlist a beállított érték
+	 * @param playlist
+	 *            a beállított érték
 	 */
 	public void setPlaylist(List<PlaylistElement> playlist) {
 		this.playlist = playlist;

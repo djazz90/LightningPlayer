@@ -9,43 +9,32 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
+public class JavaFxJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 
-public class JavaFxJUnit4ClassRunner extends BlockJUnit4ClassRunner
-{
-    
-    public JavaFxJUnit4ClassRunner(final Class<?> clazz) throws InitializationError
-    {
-        super(clazz);
-        
-        JavaFxJUnit4Application.startJavaFx();
-    }
+	public JavaFxJUnit4ClassRunner(final Class<?> clazz) throws InitializationError {
+		super(clazz);
 
-    
-    @Override
-    protected void runChild(final FrameworkMethod method, final RunNotifier notifier)
-    {
-        
-        final CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-               
-                JavaFxJUnit4ClassRunner.super.runChild(method, notifier);
-                
-               
-                latch.countDown();
-            }
-        });
-        try
-        {
-            latch.await();
-        }
-        catch (InterruptedException e)
-        {
-            
-            e.printStackTrace();
-        }
-    }
+		JavaFxJUnit4Application.startJavaFx();
+	}
+
+	@Override
+	protected void runChild(final FrameworkMethod method, final RunNotifier notifier) {
+
+		final CountDownLatch latch = new CountDownLatch(1);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+
+				JavaFxJUnit4ClassRunner.super.runChild(method, notifier);
+
+				latch.countDown();
+			}
+		});
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+	}
 }

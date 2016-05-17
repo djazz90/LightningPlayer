@@ -8,32 +8,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -52,8 +35,9 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 
+//sajnos kell még a TableHeaderRowhoz (mikor letiltom, hogy felcserélhetők legyenek)
+@SuppressWarnings("restriction")
 public class FXMLController implements Initializable {
 
 	/**
@@ -63,52 +47,6 @@ public class FXMLController implements Initializable {
 
 	private static Model model;
 	private static PlayListMethods plm;
-	/*
-	 * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
-	 * megjelenést: nincs playlist, nem kattinthatók a gombok, csak azok a
-	 * menüitemek, melyek kezdetben eddig is használhatók voltak.
-	 * 
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
-	 * java.util.ResourceBundle)
-	 */
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		setAvailability();
-	}
-
-	private void setAvailability() {
-		boolean fileMenuNewPlistEnabled = model.getPlaylist() == null;
-		fileMenuNewPlist.setDisable(!fileMenuNewPlistEnabled);
-
-		boolean fileMenuSavePlistEnabled = (model.getPlaylist() != null) && (!model.getPlaylist().isEmpty());
-		fileMenuSavePlist.setDisable(!fileMenuSavePlistEnabled);
-
-		boolean fileMenuClosePlistEnabled = model.getPlaylist() != null;
-		fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
-
-		boolean prevButtonEnabled = (model.getPlaylist() != null)
-				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementinPlaylist() > 0);
-		prevButton.setDisable(!prevButtonEnabled);
-
-		boolean nextButtonEnabled = (model.getPlaylist() != null)
-				&& (model.getPlaylist().size() > 1)
-				&& (PlayerFX.getInstance().getActualElementinPlaylist() < PlayerFX.getInstance().getActualPlaylistSize()
-						- 1);
-		nextButton.setDisable(!nextButtonEnabled);
-		
-		boolean playButtonEnabled = (model.getPlaylist() != null) && (PlayerFX.getInstance().getActualPlaylistSize()!=0);
-		playButton.setDisable(!playButtonEnabled);
-		
-		boolean stopButtonEnabled = (model.getPlaylist() != null) && (PlayerFX.getInstance().getActualPlaylistSize()!=0);
-		stopButton.setDisable(!stopButtonEnabled);
-		
-		if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
-			playButton.setText("Play");			
-		} else {
-			playButton.setText("Pause");
-
-		}
-	}
 
 	private TableView<PlaylistElement> playListTable;
 
@@ -153,6 +91,73 @@ public class FXMLController implements Initializable {
 
 	private static File lastFolder;
 
+	/*
+	 * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
+	 * megjelenést: nincs playlist, nem kattinthatók a gombok, csak azok a
+	 * menüitemek, melyek kezdetben eddig is használhatók voltak.
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
+	 */
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		setAvailability();
+	}
+
+	public void setAvailability() {
+		boolean fileMenuNewPlistEnabled = model.getPlaylist() == null;
+		fileMenuNewPlist.setDisable(!fileMenuNewPlistEnabled);
+
+		boolean fileMenuSavePlistEnabled = (model.getPlaylist() != null) && (!model.getPlaylist().isEmpty());
+		fileMenuSavePlist.setDisable(!fileMenuSavePlistEnabled);
+
+		boolean fileMenuClosePlistEnabled = model.getPlaylist() != null;
+		fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
+
+		boolean prevButtonEnabled = (model.getPlaylist() != null)
+				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementinPlaylist() > 0);
+		prevButton.setDisable(!prevButtonEnabled);
+
+		boolean nextButtonEnabled = (model.getPlaylist() != null)
+				&& (model.getPlaylist().size() > 1)
+				&& (PlayerFX.getInstance().getActualElementinPlaylist() < PlayerFX.getInstance().getActualPlaylistSize()
+						- 1);
+		nextButton.setDisable(!nextButtonEnabled);
+
+		boolean playButtonEnabled = (model.getPlaylist() != null)
+				&& (PlayerFX.getInstance().getActualPlaylistSize() != 0);
+		playButton.setDisable(!playButtonEnabled);
+
+		boolean stopButtonEnabled = (model.getPlaylist() != null)
+				&& (PlayerFX.getInstance().getActualPlaylistSize() != 0);
+		stopButton.setDisable(!stopButtonEnabled);
+
+		if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
+			playButton.setText("Play");
+		} else {
+			playButton.setText("Pause");
+
+		}
+	}
+
+	private void tableDoubleClick() {
+		playListTable.setRowFactory(tv -> {
+			TableRow<PlaylistElement> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && (!row.isEmpty())) {
+					// PlaylistElement rowData = row.getItem();
+					PlayerFX.getInstance().setActualElementinPlaylist(row.getIndex());
+					PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(row.getIndex()).asMedia());
+					PlayerFX.getInstance().play();
+					PlayerFX.getInstance().autonext(model, this);
+					setAvailability();
+
+				}
+			});
+			return row;
+		});
+	}
+
 	@FXML
 	public void prevButtonAction(ActionEvent e) {
 		PlayerFX.getInstance().prev(model);
@@ -183,9 +188,9 @@ public class FXMLController implements Initializable {
 		logger.info("Play/Pause button clicked");
 		logger.info("Actual playlist element:");
 		StringBuffer sb = new StringBuffer();
-		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()+" - ")
-		.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle()+" - ")
-		.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
 		logger.info(sb.toString());
 		setAvailability();
 	}
@@ -225,20 +230,21 @@ public class FXMLController implements Initializable {
 		for (String string : PlaylistElement.getColumnNamesForTable()) {
 			TableColumn<PlaylistElement, String> cell = new TableColumn<PlaylistElement, String>(string);
 			cell.setCellValueFactory(new PropertyValueFactory<>(string));
-			//itt állítom le az oszlop érték szerinti rendezését
+			// itt állítom le az oszlop érték szerinti rendezését
 			cell.setSortable(false);
 			colNames.add(cell);
 		}
 		playListTable.getColumns().addAll(colNames);
 		playListTable.autosize();
-		//megoldja, hogy ne leessen a táblázatban az oszlopokat felcserélni
-		//hozzáad egy listenert, ami figyeli hogy változtatták -e a táblázatot
+		// megoldja, hogy ne leessen a táblázatban az oszlopokat felcserélni
+		// hozzáad egy listenert, ami figyeli hogy változtatták -e a táblázatot
 		playListTable.widthProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
-				//megkeresi a fejlécet
+				// megkeresi a fejlécet
 				TableHeaderRow header = (TableHeaderRow) playListTable.lookup("TableHeaderRow");
-				//ha meglett a fejléc annak az újrarendezhetőségét akadályozza meg
+				// ha meglett a fejléc annak az újrarendezhetőségét akadályozza
+				// meg
 				header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
@@ -256,7 +262,6 @@ public class FXMLController implements Initializable {
 		tableDoubleClick();
 		setAvailability();
 
-		// playlistsCounter++;
 	}
 
 	@FXML
@@ -264,6 +269,7 @@ public class FXMLController implements Initializable {
 		if (model.getPlaylist() == null) {
 			fileMenuNewPlistAction(e);
 		}
+
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Open MP3 files");
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Mp3 files(*.mp3)", "*.mp3"));
@@ -274,47 +280,14 @@ public class FXMLController implements Initializable {
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
 
 		if (openedFiles != null) {
-			
+
 			allItemsInTable.addAll(plm.openMp3(openedFiles));
 			playListTable.setItems(allItemsInTable);
 
 			lastFolder = openedFiles.get(0).getParentFile();
 		}
+
 		setAvailability();
-		// if (!(jfc.showOpenDialog(jfc)==JFileChooser.CANCEL_OPTION)){
-		// LinkedList<PlaylistElement> selectedFiles = new LinkedList<>();
-		//
-		// for (File file : jfc.getSelectedFiles()) {
-		// try {
-		// selectedFiles.add(new PlaylistElement(new Mp3File(file), file));
-		//
-		// } catch (UnsupportedTagException | InvalidDataException
-		// | IOException e1) {
-		// logger.error("File i/o error");
-		// logger.error("at "+ file.getAbsolutePath());
-		// e1.printStackTrace();
-		// }
-		// }
-		// logger.info("MP3 files opened");
-		// for (PlaylistElement ple : selectedFiles) {
-		//
-		// Controller.playlistTableModel.addRow(ple);
-		// }
-		// super.theModel.getPlaylist().addAll(selectedFiles);
-		// Player.getInstance().setPlaylistSize(super.theModel.getPlaylist());
-		//
-		//
-		// this.theView.getMntmSavePlaylist().setEnabled(super.theModel.getPlaylist().size()>0);;
-		//
-		//
-		// }
-		// if(Player.getInstance().getActualElementinPlaylist() ==
-		// super.theModel.getPlaylist().size()-1){
-		// super.theView.getBtnNext().setEnabled(false);
-		// }
-		// if(Player.getInstance().getActualElementinPlaylist() == 0){
-		// super.theView.getBtnPrev().setEnabled(false);
-		// }
 	}
 
 	@FXML
@@ -353,7 +326,7 @@ public class FXMLController implements Initializable {
 				playListTable.setItems(allItemsInTable);
 				PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
 				setAvailability();
-				
+
 				playListTable.setItems(allItemsInTable);
 
 				logger.info("XML file successfully opened");
@@ -383,31 +356,13 @@ public class FXMLController implements Initializable {
 		if (!playListTabPane.getTabs().isEmpty()) {
 			playListTabPane.getTabs().remove(0);
 		}
-		
+
 		setAvailability();
 	}
 
 	@FXML
 	public void fileMenuExitAction(ActionEvent e) {
 		PlayerFX.getPlayerStage().close();
-	}
-
-	private void tableDoubleClick() {
-		playListTable.setRowFactory(tv -> {
-			TableRow<PlaylistElement> row = new TableRow<>();
-			row.setOnMouseClicked(event -> {
-				if (event.getClickCount() == 2 && (!row.isEmpty())) {
-					PlaylistElement rowData = row.getItem();
-					PlayerFX.getInstance().setActualElementinPlaylist(row.getIndex());
-					PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(row.getIndex()).asMedia());
-					PlayerFX.getInstance().play();
-					PlayerFX.getInstance().autonext(model, this);
-					setAvailability();
-
-				}
-			});
-			return row;
-		});
 	}
 
 	public static void setModel(Model model) {

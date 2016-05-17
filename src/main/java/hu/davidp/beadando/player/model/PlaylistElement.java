@@ -26,8 +26,6 @@ package hu.davidp.beadando.player.model;
  * #L%
  */
 
-import hu.davidp.beadando.player.controller.Player;
-
 import java.io.File;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -41,9 +39,10 @@ import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
-/**Lejátszólista elem osztály.
- * Ez tartalmazza az összes olyan fontos adatot ami a lejátszólistában megjelenik. Tartalmazza egy MP3 fájl számos
- * metaadatát, illetve a {@link Player} számára feldolgozható adatokat szolgáltat.
+/**
+ * Lejátszólista elem osztály. Ez tartalmazza az összes olyan fontos adatot ami
+ * a lejátszólistában megjelenik. Tartalmazza egy MP3 fájl számos metaadatát,
+ * illetve a {@link Player} számára feldolgozható adatokat szolgáltat.
  * 
  * @author Pintér Dávid
  *
@@ -51,7 +50,7 @@ import com.mpatric.mp3agic.Mp3File;
 @XmlRootElement(name = "playlistelement")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlaylistElement {
-	
+
 	// TODO: album artwork
 	/**
 	 * A feldolgozáshoz szükséges {@link Mp3File}.
@@ -63,17 +62,17 @@ public class PlaylistElement {
 	 */
 	@XmlTransient
 	private Media media;
-	
+
 	/**
 	 * A betöltött fájl elérési útja.
 	 */
 	private String source;
-	
+
 	/**
 	 * Az zeneszám hossza.
 	 */
 	private long length;
-	
+
 	/**
 	 * Az MP3 fájl bitrátája.
 	 */
@@ -89,63 +88,64 @@ public class PlaylistElement {
 	 */
 	@XmlTransient
 	private ID3v2 ID3v2tag;
-	
+
 	/**
 	 * A zeneszám előadója.
 	 */
 	private String artist;
-	
+
 	/**
 	 * A zeneszám címe.
 	 */
 	private String title;
-	
+
 	/**
 	 * Az album, amelyben a zeneszám megtalálható.
 	 */
 	private String album;
-	
+
 	/**
 	 * A zeneszám kiadásának éve.
 	 */
 	private String year;
-	
+
 	/**
 	 * A zeneszám kiadásának éve egészben.
 	 */
 	private Integer yearinInteger;
-	
+
 	/**
 	 * A zeneszám sorszáma.
 	 */
 	private String trackno;
-	
+
 	/**
 	 * A zeneszám sorszáma egészben.
 	 */
 	private Integer tracknoinInteger;
-	
+
 	/**
 	 * A zeneszám műfaja.
 	 */
 	private String genre;
 
-	
 	/**
 	 * Üres konstruktor JAXB-hez.
 	 */
 	public PlaylistElement() {
 		super();
 	}
-	
+
 	/**
-	 * Lejátszólista konstruktor.
-	 * Beállítja az összes mezőt annak függvényében, hogy a beolvasott MP3 fájl milyen taggel vagy tagekkel rendelkezik.
-	 * Ha több taggel is rendelkezik az MP3 fájl, akkor a kapott metaadatok közül azt választja ki, amelyiknek hosszabb a
-	 * mérete.
+	 * Lejátszólista konstruktor. Beállítja az összes mezőt annak függvényében,
+	 * hogy a beolvasott MP3 fájl milyen taggel vagy tagekkel rendelkezik. Ha
+	 * több taggel is rendelkezik az MP3 fájl, akkor a kapott metaadatok közül
+	 * azt választja ki, amelyiknek hosszabb a mérete.
 	 * 
-	 * @param mp3File a megnyitni kívánt {@link Mp3File}
-	 * @param file a megnyitni kívánt file
+	 * @param mp3File
+	 *            a megnyitni kívánt {@link Mp3File}
+	 * @param file
+	 *            a megnyitni kívánt file
 	 */
 	public PlaylistElement(Mp3File mp3File, File file) {
 
@@ -239,7 +239,7 @@ public class PlaylistElement {
 			this.artist = ifnullToEmpty(this.artist);
 			this.album = ifnullToEmpty(this.album);
 			this.year = ifnullToEmpty(this.year);
-			this.trackno=ifnullToEmpty(this.trackno);
+			this.trackno = ifnullToEmpty(this.trackno);
 			this.genre = ifnullToEmpty(this.genre);
 		}
 		if (this.title.isEmpty()) {
@@ -248,9 +248,9 @@ public class PlaylistElement {
 			this.artist = ifnullToEmpty(this.artist);
 			this.album = ifnullToEmpty(this.album);
 			this.year = ifnullToEmpty(this.year);
-			this.trackno=ifnullToEmpty(this.trackno);
+			this.trackno = ifnullToEmpty(this.trackno);
 			this.genre = ifnullToEmpty(this.genre);
-			
+
 		}
 
 	}
@@ -258,7 +258,8 @@ public class PlaylistElement {
 	/**
 	 * A kapott fájl URI-t alakítja át platformfüggetlen URI-ra.
 	 * 
-	 * @param s az átalakítandó URI String reprezentációja
+	 * @param s
+	 *            az átalakítandó URI String reprezentációja
 	 * @return az átalakított URI String reprezentációja
 	 */
 	private static String toUnixURI(String s) {
@@ -268,11 +269,13 @@ public class PlaylistElement {
 	}
 
 	/**
-	 * A kapott Stringek közül a hosszabbat adja vissza.
-	 * Meghívja a {@link #ifnullToEmpty(String)} metódust.
+	 * A kapott Stringek közül a hosszabbat adja vissza. Meghívja a
+	 * {@link #ifnullToEmpty(String)} metódust.
 	 * 
-	 * @param first első String
-	 * @param second második String
+	 * @param first
+	 *            első String
+	 * @param second
+	 *            második String
 	 * @return a hosszabbat adja vissza
 	 */
 	private static String getLongerTag(String first, String second) {
@@ -285,10 +288,11 @@ public class PlaylistElement {
 	}
 
 	/**
-	 * Ha az input String értéke null, akkor üres stringet ad vissza.
-	 * Egyébként visszaadja az eredetit.
+	 * Ha az input String értéke null, akkor üres stringet ad vissza. Egyébként
+	 * visszaadja az eredetit.
 	 * 
-	 * @param input bemeneti String
+	 * @param input
+	 *            bemeneti String
 	 * @return input vagy üres String
 	 */
 	private static String ifnullToEmpty(String input) {
@@ -297,24 +301,27 @@ public class PlaylistElement {
 		}
 		return input;
 	}
+
 	/**
-	 * Az aktuális lejátszólista elemet újjáépíti úgy, hogy annak
-	 * fontosabb mezői egy null értéket se tartalmazzanak, illetve
-	 * beállítja a {@link Media}-t, hogy a Player számára feldolgozható legyen.
+	 * Az aktuális lejátszólista elemet újjáépíti úgy, hogy annak fontosabb
+	 * mezői egy null értéket se tartalmazzanak, illetve beállítja a
+	 * {@link Media}-t, hogy a Player számára feldolgozható legyen.
 	 * 
 	 * Lejátszólista beolvasása során használt metódus.
 	 */
-	public void rebuildPlaylistElement(){
+	public void rebuildPlaylistElement() {
 		this.artist = ifnullToEmpty(this.artist);
 		this.album = ifnullToEmpty(this.album);
 		this.year = ifnullToEmpty(this.year);
-		this.trackno=ifnullToEmpty(this.trackno);
+		this.trackno = ifnullToEmpty(this.trackno);
 		this.genre = ifnullToEmpty(this.genre);
 		this.media = new Media(toUnixURI(new File(this.source).toURI().toString()));
-		
+
 	}
+
 	/**
 	 * Oszlopnevek tárolása a megjelenített táblához.
+	 * 
 	 * @return az oszlopnevek
 	 */
 	public static String[] getColumnNamesForTable() {
@@ -324,14 +331,16 @@ public class PlaylistElement {
 
 	/**
 	 * Visszaadja az aktuális lejátszólista elem médiáját.
+	 * 
 	 * @return a {@link Media}
 	 */
 	public Media asMedia() {
 		return this.media;
 	}
 
-	/** 
+	/**
 	 * hashCode metódus.
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -355,8 +364,9 @@ public class PlaylistElement {
 		return result;
 	}
 
-	/** 
+	/**
 	 * equals metódus.
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -422,6 +432,7 @@ public class PlaylistElement {
 
 	/**
 	 * toString metódus.
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -436,6 +447,7 @@ public class PlaylistElement {
 
 	/**
 	 * Visszaadja a fájl elérési útvonalát.
+	 * 
 	 * @return a fájl elérési útvonala.
 	 */
 	public String getSource() {
@@ -444,6 +456,7 @@ public class PlaylistElement {
 
 	/**
 	 * Visszaadja a zeneszám előadóját.
+	 * 
 	 * @return az előadó
 	 */
 	public String getArtist() {
@@ -452,6 +465,7 @@ public class PlaylistElement {
 
 	/**
 	 * Visszaadja a zeneszám címét.
+	 * 
 	 * @return a cím
 	 */
 	public String getTitle() {
@@ -460,6 +474,7 @@ public class PlaylistElement {
 
 	/**
 	 * Visszaadja a zeneszám albumcímét.
+	 * 
 	 * @return az album
 	 */
 	public String getAlbum() {
@@ -468,12 +483,11 @@ public class PlaylistElement {
 
 	/**
 	 * Visszaadja a zeneszám műfaját.
+	 * 
 	 * @return a műfaj
 	 */
 	public String getGenre() {
 		return genre;
 	}
-
-	
 
 }

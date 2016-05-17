@@ -27,26 +27,16 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 @RunWith(JavaFxJUnit4ClassRunner.class)
 public class ApplicationTestBase {
 	private static Model model;
-
-	// private static ActionListenerForNewPlaylist newPlaylist;
-	// private static ActionListenerForOpenMp3 openMp3;
-	// private static ActionListenerForOpenPlaylist openPlaylist;
-	// private static ActionListenerForSavePlaylist savePlaylist;
 	private static List<File> filesToPlay;
 	private static String OS;
 	private static PlayListMethods plm;
-	
+
 	static {
 
 		model = new Model();
-		// newPlaylist = new ActionListenerForNewPlaylist(view, model);
-		// openMp3 = new ActionListenerForOpenMp3(view, model);
-		// openPlaylist = new ActionListenerForOpenPlaylist(view, model);
-		// savePlaylist = new ActionListenerForSavePlaylist(view, model);
 		filesToPlay = new LinkedList<>();
 		OS = System.getProperty("os.name");
 		plm = new PlayListMethods(model);
-		
 
 	}
 

@@ -1,4 +1,5 @@
 package hu.davidp.beadando.player.controller;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,21 +29,19 @@ import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
 
 public class PlayListMethods {
-	
+
 	/**
 	 * Logger objektum naplózáshoz.
 	 */
 	private static Logger logger = LoggerFactory.getLogger(PlayListMethods.class);
-	
+
 	private Model model;
-	
-	
+
 	public PlayListMethods(Model model) {
 		this.model = model;
 	}
 
-
-	public LinkedList<PlaylistElement> openMp3(List<File> openedFiles){
+	public LinkedList<PlaylistElement> openMp3(List<File> openedFiles) {
 		LinkedList<PlaylistElement> addedNewPLEs = new LinkedList<>();
 		for (File file : openedFiles) {
 			try {
@@ -60,8 +59,8 @@ public class PlayListMethods {
 		PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
 		return addedNewPLEs;
 	}
-	
-	public void savePlaylist(File savedFile){
+
+	public void savePlaylist(File savedFile) {
 		try {
 			File file;
 			String[] splitter = savedFile.toString().split("\\.");
@@ -82,8 +81,8 @@ public class PlayListMethods {
 			e1.printStackTrace();
 		}
 	}
-	
-	public Model openPlayList(File openedFile) throws SAXException, IOException, JAXBException{
+
+	public Model openPlayList(File openedFile) throws SAXException, IOException, JAXBException {
 		SchemaFactory schemaFactory = SchemaFactory
 				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		URL url = getClass().getResource("/playlist.xsd");
@@ -95,7 +94,6 @@ public class PlayListMethods {
 		validator.validate(xmlFile);
 		JAXBContext context = JAXBContext.newInstance(Model.class);
 		Unmarshaller unmarshaller = context.createUnmarshaller();
-		// model.setPlaylist(new LinkedList<PlaylistElement>());
 		return (Model) (unmarshaller.unmarshal(openedFile));
 
 	}
