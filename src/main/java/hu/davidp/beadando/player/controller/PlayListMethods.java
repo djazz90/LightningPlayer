@@ -35,13 +35,9 @@ public class PlayListMethods {
 	 */
 	private static Logger logger = LoggerFactory.getLogger(PlayListMethods.class);
 
-	private Model model;
 
-	public PlayListMethods(Model model) {
-		this.model = model;
-	}
 
-	public LinkedList<PlaylistElement> openMp3(List<File> openedFiles) {
+	public LinkedList<PlaylistElement> openMp3(List<File> openedFiles, Model model) {
 		LinkedList<PlaylistElement> addedNewPLEs = new LinkedList<>();
 		for (File file : openedFiles) {
 			try {
@@ -60,7 +56,7 @@ public class PlayListMethods {
 		return addedNewPLEs;
 	}
 
-	public void savePlaylist(File savedFile) {
+	public void savePlaylist(File savedFile, Model model) {
 		try {
 			File file;
 			String[] splitter = savedFile.toString().split("\\.");

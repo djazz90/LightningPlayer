@@ -36,7 +36,7 @@ public class ApplicationTestBase {
 		model = new Model();
 		filesToPlay = new LinkedList<>();
 		OS = System.getProperty("os.name");
-		plm = new PlayListMethods(model);
+		plm = new PlayListMethods();
 
 	}
 
@@ -91,7 +91,7 @@ public class ApplicationTestBase {
 
 		model.setPlaylist(new LinkedList<>());
 		assertNotNull(model.getPlaylist());
-		plm.openMp3(filesToPlay);
+		plm.openMp3(filesToPlay, model);
 		assertEquals(4, model.getPlaylist().size());
 		assertEquals(4, PlayerFX.getInstance().getActualPlaylistSize());
 
@@ -114,7 +114,7 @@ public class ApplicationTestBase {
 
 		File f = folder.newFile("saved.xml");
 
-		plm.savePlaylist(f);
+		plm.savePlaylist(f, model);
 
 		model = plm.openPlayList(f);
 		assertNotNull(model.getPlaylist());
@@ -129,7 +129,7 @@ public class ApplicationTestBase {
 			model.setPlaylist(new LinkedList<>());
 			File f = FileUtils.getFile("src", "test", "resources", "examplemalformedWindowsPlaylist.xml");
 
-			PlayListMethods plm2 = new PlayListMethods(model);
+			PlayListMethods plm2 = new PlayListMethods();
 			Model m2 = plm2.openPlayList(f);
 			m2.getPlaylist();
 
@@ -137,7 +137,7 @@ public class ApplicationTestBase {
 
 			model.setPlaylist(new LinkedList<>());
 			File f = FileUtils.getFile("src", "test", "resources", "examplemalformedUnixPlaylist.xml");
-			PlayListMethods plm2 = new PlayListMethods(model);
+			PlayListMethods plm2 = new PlayListMethods();
 			Model m2 = plm2.openPlayList(f);
 			m2.getPlaylist();
 		}

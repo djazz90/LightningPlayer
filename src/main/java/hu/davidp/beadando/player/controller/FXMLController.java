@@ -281,12 +281,13 @@ public class FXMLController implements Initializable {
 
 		if (openedFiles != null) {
 
-			allItemsInTable.addAll(plm.openMp3(openedFiles));
+			allItemsInTable.addAll(plm.openMp3(openedFiles, model));
 			playListTable.setItems(allItemsInTable);
 
 			lastFolder = openedFiles.get(0).getParentFile();
 		}
-
+		logger.info("size of ObservableList: "+allItemsInTable.size());
+		logger.info("sizeof playlist: "+model.getPlaylist().size());
 		setAvailability();
 	}
 
@@ -299,8 +300,10 @@ public class FXMLController implements Initializable {
 
 		File savedFile = fc.showSaveDialog(PlayerFX.getPlayerStage());
 		if (savedFile != null) {
-			plm.savePlaylist(savedFile);
+			plm.savePlaylist(savedFile, model);
 		}
+		logger.info("size of ObservableList: "+allItemsInTable.size());
+		logger.info("sizeof playlist: "+model.getPlaylist().size());
 
 	}
 
@@ -342,6 +345,8 @@ public class FXMLController implements Initializable {
 			}
 
 		}
+		logger.info("size of ObservableList: "+allItemsInTable.size());
+		logger.info("sizeof playlist: "+model.getPlaylist().size());
 
 	}
 
@@ -367,7 +372,7 @@ public class FXMLController implements Initializable {
 
 	public static void setModel(Model model) {
 		FXMLController.model = model;
-		plm = new PlayListMethods(FXMLController.model);
+		plm = new PlayListMethods();
 	}
 
 	public TableView<PlaylistElement> getPlayListTable() {
