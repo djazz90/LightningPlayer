@@ -235,7 +235,11 @@ public class PlaylistElement {
 			this.genre = ifnullToEmpty(ID3v2tag.getGenreDescription());
 
 		} else if (!(mp3File.hasId3v1Tag() || mp3File.hasId3v2Tag())) {
-			this.title = file.getAbsolutePath();
+			String[] path = file.getAbsolutePath().split("/");
+			if (path.length == 1) {
+				path = file.getAbsolutePath().split("\\\\");
+			}
+			this.title = path[path.length-1];
 			this.artist = ifnullToEmpty(this.artist);
 			this.album = ifnullToEmpty(this.album);
 			this.year = ifnullToEmpty(this.year);
@@ -243,8 +247,12 @@ public class PlaylistElement {
 			this.genre = ifnullToEmpty(this.genre);
 		}
 		if (this.title.isEmpty()) {
-
-			this.title = file.getAbsolutePath();
+			String[] path = file.getAbsolutePath().split("/");
+			if (path.length == 1) {
+				path = file.getAbsolutePath().split("\\\\");
+			}
+			this.title = path[path.length-1];
+			//this.title = file.getAbsolutePath();
 			this.artist = ifnullToEmpty(this.artist);
 			this.album = ifnullToEmpty(this.album);
 			this.year = ifnullToEmpty(this.year);

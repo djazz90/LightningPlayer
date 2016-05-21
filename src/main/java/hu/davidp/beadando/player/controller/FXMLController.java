@@ -33,6 +33,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 
@@ -235,7 +236,7 @@ public class FXMLController implements Initializable {
 			colNames.add(cell);
 		}
 		playListTable.getColumns().addAll(colNames);
-		playListTable.autosize();
+		
 		// megoldja, hogy ne leessen a táblázatban az oszlopokat felcserélni
 		// hozzáad egy listenert, ami figyeli hogy változtatták -e a táblázatot
 		playListTable.widthProperty().addListener(new ChangeListener<Number>() {
@@ -278,7 +279,6 @@ public class FXMLController implements Initializable {
 		}
 
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
-
 		if (openedFiles != null) {
 
 			allItemsInTable.addAll(plm.openMp3(openedFiles, model));
@@ -329,8 +329,6 @@ public class FXMLController implements Initializable {
 				playListTable.setItems(allItemsInTable);
 				PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
 				setAvailability();
-
-				playListTable.setItems(allItemsInTable);
 
 				logger.info("XML file successfully opened");
 			} catch (SAXException ex) {
