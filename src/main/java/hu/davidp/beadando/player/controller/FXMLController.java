@@ -116,21 +116,22 @@ public class FXMLController implements Initializable {
 		fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
 
 		boolean prevButtonEnabled = (model.getPlaylist() != null)
-				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementinPlaylist() > 0);
-		prevButton.setDisable(!prevButtonEnabled);
+				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementinPlaylist() > 0)
+				 && (PlayerFX.getInstance().hasMedia());
+		prevButton.setDisable(!prevButtonEnabled) ;
 
 		boolean nextButtonEnabled = (model.getPlaylist() != null)
 				&& (model.getPlaylist().size() > 1)
 				&& (PlayerFX.getInstance().getActualElementinPlaylist() < PlayerFX.getInstance().getActualPlaylistSize()
-						- 1);
+						- 1)  && (PlayerFX.getInstance().hasMedia());
 		nextButton.setDisable(!nextButtonEnabled);
 
 		boolean playButtonEnabled = (model.getPlaylist() != null)
-				&& (PlayerFX.getInstance().getActualPlaylistSize() != 0);
+				&& (PlayerFX.getInstance().getActualPlaylistSize() != 0) && (PlayerFX.getInstance().hasMedia());
 		playButton.setDisable(!playButtonEnabled);
 
 		boolean stopButtonEnabled = (model.getPlaylist() != null)
-				&& (PlayerFX.getInstance().getActualPlaylistSize() != 0);
+				&& (PlayerFX.getInstance().getActualPlaylistSize() != 0) && (PlayerFX.getInstance().hasMedia());
 		stopButton.setDisable(!stopButtonEnabled);
 
 		if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
