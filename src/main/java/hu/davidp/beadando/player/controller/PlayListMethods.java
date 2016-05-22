@@ -65,11 +65,16 @@ public class PlayListMethods {
 			} else {
 				file = new File(savedFile.toString() + ".xml");
 			}
-
+			//a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
+			//a newInstance metódusnak pedig átadom a model osztályt
+			//a context figyeli a bind-okat(kötődéseket - magukat az annotációkat)
+			//a Model osztályban(és a PlaylistElement osztályban)
 			JAXBContext context = JAXBContext.newInstance(Model.class);
+			//marshaller az xml szerializációhoz
 			Marshaller m = context.createMarshaller();
+			//JAXB_FORMATTED_OUTPUT felelős hogy a sorok indentálva legyenek
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
+			//maga a mentés
 			m.marshal(model, file);
 			logger.info("XML file successfully saved");
 		} catch (JAXBException e1) {
@@ -79,16 +84,24 @@ public class PlayListMethods {
 	}
 
 	public Model openPlayList(File openedFile) throws SAXException, IOException, JAXBException {
+		//beállítja a kívánt sémát
+		//W3C_XML_SCHEMA_NS_URI mutatja az alapértelmezett xml sémát
 		SchemaFactory schemaFactory = SchemaFactory
 				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		URL url = getClass().getResource("/playlist.xsd");
 		Source xmlFile = new StreamSource(openedFile);
+		//valiodációhoz szükséges séma példányosítása
 		Schema schema = schemaFactory.newSchema(url);
-
+		//majd validátor
 		Validator validator = schema.newValidator();
-
+		//majd maga a validálás
 		validator.validate(xmlFile);
+		//a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
+		//a newInstance metódusnak pedig átadom a model osztályt
+		//a context figyeli a bind-okat(kötődéseket - magukat az annotációkat)
+		//a Model osztályban(és a PlaylistElement osztályban)
 		JAXBContext context = JAXBContext.newInstance(Model.class);
+		//az unmarshaller végzi a betöltést az xml fájlból
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		return (Model) (unmarshaller.unmarshal(openedFile));
 
