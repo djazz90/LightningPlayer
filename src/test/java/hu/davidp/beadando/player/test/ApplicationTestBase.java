@@ -100,14 +100,12 @@ public class ApplicationTestBase {
 		PlayerFX.getInstance().play();
 		for (int i = 0; i < 3; i++) {
 			assertEquals(i, PlayerFX.getInstance().getActualElementinPlaylist());
-			PlayerFX.getInstance().getMp().setMute(true);
 			PlayerFX.getInstance().next(model);
 		}
 		PlayerFX.getInstance().stop();
 
 		for (int i = 3; i > 0; i--) {
 			assertEquals(i, PlayerFX.getInstance().getActualElementinPlaylist());
-			PlayerFX.getInstance().getMp().setMute(true);
 			PlayerFX.getInstance().prev(model);
 		}
 		PlayerFX.getInstance().stop();
