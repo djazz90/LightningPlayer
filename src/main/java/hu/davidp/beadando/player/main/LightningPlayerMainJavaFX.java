@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A program fő belépési pontja.
  * 
- * Ez az osztály példányosítja a {@link Model}, a View és a {@link Controller}
+ * Ez az osztály példányosítja a {@link Model}, a View és a {@link FXMLController}
  * osztályat.
  * 
  * @author Pintér Dávid
