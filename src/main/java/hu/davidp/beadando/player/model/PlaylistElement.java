@@ -26,23 +26,21 @@ package hu.davidp.beadando.player.model;
  * #L%
  */
 
-import java.io.File;
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.Mp3File;
+import javafx.scene.media.Media;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import javafx.scene.media.Media;
-
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.Mp3File;
+import java.io.File;
 
 /**
  * Lejátszólista elem osztály. Ez tartalmazza az összes olyan fontos adatot ami
  * a lejátszólistában megjelenik. Tartalmazza egy MP3 fájl számos metaadatát,
- * illetve a {@link Player} számára feldolgozható adatokat szolgáltat.
+ * illetve a {@link hu.davidp.beadando.player.controller.PlayerFX} számára feldolgozható adatokat szolgáltat.
  * 
  * @author Pintér Dávid
  *
@@ -58,7 +56,7 @@ public class PlaylistElement {
 	@XmlTransient
 	private Mp3File mp3File;
 	/**
-	 * A {@link Player} objektum által lejátszható formátum.
+	 * A {@link hu.davidp.beadando.player.controller.PlayerFX} objektum által lejátszható formátum.
 	 */
 	@XmlTransient
 	private Media media;

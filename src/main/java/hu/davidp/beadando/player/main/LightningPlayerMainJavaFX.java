@@ -40,56 +40,53 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A program fő belépési pontja.
- * 
- * Ez az osztály példányosítja a {@link Model}, a View és a {@link FXMLController}
+ * <p>
+ * Ez az osztály példányosítja a {@link Model}, a View és a
  * osztályat.
- * 
- * @author Pintér Dávid
  *
+ * @author Pintér Dávid
  */
 public class LightningPlayerMainJavaFX extends Application {
-	/**
-	 * Logger objektum naplózáshoz.
-	 */
-	private static Logger logger = LoggerFactory.getLogger(LightningPlayerMainJavaFX.class);
+    /**
+     * Logger objektum naplózáshoz.
+     */
+    private static Logger logger = LoggerFactory.getLogger(LightningPlayerMainJavaFX.class);
 
-	/**
-	 * A program fő belépési pontja.
-	 * 
-	 * @param args
-	 *            paraméterek
-	 * @throws Exception
-	 *             ha valami nem várt dolog történik az alkalmazás futtatása
-	 *             során
-	 */
-	public static void main(String[] args) throws Exception {
+    /**
+     * A program fő belépési pontja.
+     *
+     * @param args paraméterek
+     * @throws Exception ha valami nem várt dolog történik az alkalmazás futtatása
+     *                   során
+     */
+    public static void main(String[] args) throws Exception {
 
-		launch(args);
-	}
+        launch(args);
+    }
 
-	/*
-	 * A JavaFX alkalmazások elengedhetetlen metódusa.
-	 * 
-	 * @see javafx.application.Application#start(javafx.stage.Stage)
-	 */
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		logger.info("LightningPlayer started");
+    /*
+     * A JavaFX alkalmazások elengedhetetlen metódusa.
+     *
+     * @see javafx.application.Application#start(javafx.stage.Stage)
+     */
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        logger.info("LightningPlayer started");
 
-		Model theModel = new Model();
-		FXMLController.setModel(theModel);
+        Model theModel = new Model();
+        FXMLController.setModel(theModel);
 
-		Parent root = FXMLLoader.load(getClass().getResource("/hu/davidp/beadando/player/view/JavaFXView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/JavaFXView.fxml"));
 
-		Scene scene = new Scene(root);
+        Scene scene = new Scene(root);
 
-		PlayerFX.setSceneAndStage(scene, primaryStage);
-		PlayerFX.getInstance();
+        PlayerFX.setSceneAndStage(scene, primaryStage);
+        PlayerFX.getInstance();
 
-		primaryStage.setScene(scene);
-		primaryStage.show();
-		logger.info("Application window created");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        logger.info("Application window created");
 
-	}
+    }
 
 }

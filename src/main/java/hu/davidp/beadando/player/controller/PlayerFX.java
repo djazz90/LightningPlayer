@@ -28,15 +28,14 @@ package hu.davidp.beadando.player.controller;
 
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Player osztály. A program lejátszója, MP3 fájlok lejátszását végzi. Működését
@@ -120,8 +119,6 @@ public class PlayerFX {
 	 * 
 	 * @param m
 	 *            a {@link Model} osztály egy példánya
-	 * @param v
-	 *            a View osztály egy példánya
 	 */
 	public void autonext(Model m, FXMLController fxc) {
 		fxc.setAvailability();
