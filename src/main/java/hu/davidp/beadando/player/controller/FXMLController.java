@@ -1,20 +1,6 @@
 package hu.davidp.beadando.player.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.beans.value.ChangeListener;
@@ -24,18 +10,21 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.ResizeFeatures;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 //sajnos kell még a TableHeaderRowhoz (mikor letiltom, hogy felcserélhetők legyenek)
 @SuppressWarnings("restriction")
@@ -116,13 +105,13 @@ public class FXMLController implements Initializable {
 		fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
 
 		boolean prevButtonEnabled = (model.getPlaylist() != null)
-				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementinPlaylist() > 0)
+				&& (model.getPlaylist().size() > 1) && (PlayerFX.getInstance().getActualElementInPlaylist() > 0)
 				 && (PlayerFX.getInstance().hasMedia());
 		prevButton.setDisable(!prevButtonEnabled) ;
 
 		boolean nextButtonEnabled = (model.getPlaylist() != null)
 				&& (model.getPlaylist().size() > 1)
-				&& (PlayerFX.getInstance().getActualElementinPlaylist() < PlayerFX.getInstance().getActualPlaylistSize()
+				&& (PlayerFX.getInstance().getActualElementInPlaylist() < PlayerFX.getInstance().getActualPlaylistSize()
 						- 1)  && (PlayerFX.getInstance().hasMedia());
 		nextButton.setDisable(!nextButtonEnabled);
 
@@ -148,7 +137,7 @@ public class FXMLController implements Initializable {
 			row.setOnMouseClicked(event -> {
 				if (event.getClickCount() == 2 && (!row.isEmpty())) {
 					// PlaylistElement rowData = row.getItem();
-					PlayerFX.getInstance().setActualElementinPlaylist(row.getIndex());
+					PlayerFX.getInstance().setActualElementInPlaylist(row.getIndex());
 					PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(row.getIndex()).asMedia());
 					PlayerFX.getInstance().play();
 					PlayerFX.getInstance().autonext(model, this);
@@ -163,14 +152,14 @@ public class FXMLController implements Initializable {
 	@FXML
 	public void prevButtonAction(ActionEvent e) {
 		PlayerFX.getInstance().prev(model);
-		getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementinPlaylist());
+		getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementInPlaylist());
 		PlayerFX.getInstance().autonext(model, this);
 		logger.info("Prev button clicked.");
 		logger.info("Actual playlist element:");
 		StringBuffer sb = new StringBuffer();
-		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist() + " - ")
-				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle() + " - ")
-				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
 		logger.info(sb.toString());
 		setAvailability();
 	}
@@ -190,9 +179,9 @@ public class FXMLController implements Initializable {
 		logger.info("Play/Pause button clicked");
 		logger.info("Actual playlist element:");
 		StringBuffer sb = new StringBuffer();
-		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist() + " - ")
-				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle() + " - ")
-				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
 		logger.info(sb.toString());
 		setAvailability();
 	}
@@ -200,14 +189,14 @@ public class FXMLController implements Initializable {
 	@FXML
 	public void nextButtonAction(ActionEvent e) {
 		PlayerFX.getInstance().next(model);
-		getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementinPlaylist());
+		getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementInPlaylist());
 		PlayerFX.getInstance().autonext(model, this);
 		logger.info("Next button clicked.");
 		logger.info("Actual playlist element:");
 		StringBuffer sb = new StringBuffer();
-		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist() + " - ")
-				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getTitle() + " - ")
-				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getAlbum());
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle() + " - ")
+				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
 		logger.info(sb.toString());
 		setAvailability();
 	}

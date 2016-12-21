@@ -77,7 +77,7 @@ public class PlayerFX {
 	/**
 	 * Az aktuálisan játszott lejátszólista elem sorszáma.
 	 */
-	private int actualElementinPlaylist;
+	private int actualElementInPlaylist;
 
 	/**
 	 * A lejátszó példánya.
@@ -118,7 +118,7 @@ public class PlayerFX {
 	 * aktuális véget ér.
 	 * 
 	 * @param m
-	 *            a {@link Model} osztály egy példánya
+	 *          a {@link Model} osztály egy példánya
 	 */
 	public void autonext(Model m, FXMLController fxc) {
 		fxc.setAvailability();
@@ -128,25 +128,25 @@ public class PlayerFX {
 
 						mp.stop();
 
-						if (actualElementinPlaylist != actualPlaylistSize - 1) {
-							actualElementinPlaylist++;
+						if (actualElementInPlaylist != actualPlaylistSize - 1) {
+							actualElementInPlaylist++;
 							mp = new MediaPlayer(m
 									.getPlaylist()
-									.get(actualElementinPlaylist).asMedia());
+									.get(actualElementInPlaylist).asMedia());
 							playButtonTextIsPlay = false;
 							mp.play();
 
-							fxc.getPlayListTable().getSelectionModel().select(actualElementinPlaylist);
+							fxc.getPlayListTable().getSelectionModel().select(actualElementInPlaylist);
 
 							logger.info("Auto next:");
 							logger.info("Actual playlist element:");
 							StringBuffer sb = new StringBuffer();
 							sb.append(
-									m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist()).getArtist()
+									m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist()
 											+ " - ")
-									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist())
+									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
 											.getTitle() + " - ")
-									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementinPlaylist())
+									.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
 											.getAlbum());
 							logger.info(sb.toString());
 							autonext(m, fxc);
@@ -206,8 +206,8 @@ public class PlayerFX {
 	public void next(Model m) {
 
 		mp.stop();
-		actualElementinPlaylist++;
-		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementinPlaylist)
+		actualElementInPlaylist++;
+		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementInPlaylist)
 				.asMedia());
 
 		playButtonTextIsPlay = false;
@@ -222,8 +222,8 @@ public class PlayerFX {
 	 */
 	public void prev(Model m) {
 		mp.stop();
-		actualElementinPlaylist--;
-		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementinPlaylist)
+		actualElementInPlaylist--;
+		this.mp = new MediaPlayer(m.getPlaylist().get(actualElementInPlaylist)
 				.asMedia());
 
 		playButtonTextIsPlay = false;
@@ -326,18 +326,18 @@ public class PlayerFX {
 	 * 
 	 * @return a lejátszólista elem sorszáma
 	 */
-	public int getActualElementinPlaylist() {
-		return actualElementinPlaylist;
+	public int getActualElementInPlaylist() {
+		return actualElementInPlaylist;
 	}
 
 	/**
 	 * Beállítja az aktuálisan játszott lejátszólista elem sorszámát.
 	 * 
-	 * @param actualElementinPlaylist
+	 * @param actualElementInPlaylist
 	 *            a lejátszólista elem sorszáma
 	 */
-	public void setActualElementinPlaylist(int actualElementinPlaylist) {
-		this.actualElementinPlaylist = actualElementinPlaylist;
+	public void setActualElementInPlaylist(int actualElementInPlaylist) {
+		this.actualElementInPlaylist = actualElementInPlaylist;
 	}
 
 	/**
