@@ -185,7 +185,7 @@ public class FXMLController implements Initializable {
 		logger.info("Play/Pause button clicked");
 		logger.info("Actual playlist element:");
 		StringBuffer sb = new StringBuffer();
-		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist() + " - ")
+		sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist()).append(" - ")
 				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle() + " - ")
 				.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
 		logger.info(sb.toString());

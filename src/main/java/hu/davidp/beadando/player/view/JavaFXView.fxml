@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -12,7 +14,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -52,14 +53,21 @@
               </menus>
             </MenuBar>
             <Slider nodeOrientation="LEFT_TO_RIGHT" prefHeight="14.0" prefWidth="473.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-            <FlowPane GridPane.rowIndex="2" GridPane.rowSpan="2147483647">
+            <HBox GridPane.rowIndex="2" GridPane.rowSpan="2147483647">
                <children>
-                  <Button fx:id="playButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#playButtonAction" text="Play" />
-                  <Button fx:id="prevButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
-                  <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
-                  <Button fx:id="stopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" />
+                  <ButtonBar buttonMinWidth="20.0">
+                     <buttons>
+                        <Button fx:id="playButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#playButtonAction" prefHeight="25.0" text="Play" ButtonBar.buttonData="LEFT" />
+                        <Button fx:id="prevButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" ButtonBar.buttonData="LEFT" />
+                        <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" ButtonBar.buttonData="LEFT" />
+                        <Button fx:id="stopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" ButtonBar.buttonData="LEFT" />
+                     </buttons>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </ButtonBar>
                </children>
-            </FlowPane>
+            </HBox>
          </children>
       </GridPane>
    </top>
