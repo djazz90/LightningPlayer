@@ -10,25 +10,25 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.davidp.beadando.player.controller.FXMLController">
    <top>
-      <GridPane BorderPane.alignment="CENTER">
+      <GridPane>
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Slider nodeOrientation="LEFT_TO_RIGHT" prefHeight="14.0" prefWidth="473.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
             <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="104.0" GridPane.hgrow="ALWAYS">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
@@ -51,6 +51,15 @@
                 </Menu>
               </menus>
             </MenuBar>
+            <Slider nodeOrientation="LEFT_TO_RIGHT" prefHeight="14.0" prefWidth="473.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+            <FlowPane GridPane.rowIndex="2" GridPane.rowSpan="2147483647">
+               <children>
+                  <Button fx:id="playButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#playButtonAction" text="Play" />
+                  <Button fx:id="prevButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
+                  <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
+                  <Button fx:id="stopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" />
+               </children>
+            </FlowPane>
          </children>
       </GridPane>
    </top>
@@ -74,28 +83,16 @@
       </SplitPane>
    </bottom>
    <center>
-      <SplitPane dividerPositions="0.24102564102564103" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="356.0" prefWidth="587.0" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="354.0" prefWidth="118.0">
-               <children>
-                  <Button fx:id="prevButton" layoutX="27.0" layoutY="239.0" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
-                  <Button fx:id="nextButton" layoutX="81.0" layoutY="239.0" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
-                  <Button fx:id="playButton" layoutX="46.0" layoutY="207.0" mnemonicParsing="false" onAction="#playButtonAction" prefHeight="25.0" prefWidth="55.0" text="Play" />
-                  <Button fx:id="stopButton" layoutX="53.0" layoutY="271.0" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" />
-               </children>
-            </AnchorPane>
-            <GridPane>
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <TabPane fx:id="playListTabPane" prefHeight="330.0" prefWidth="425.0" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
-               </children>
-            </GridPane>
-        </items>
-      </SplitPane>
+      <GridPane BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <TabPane fx:id="playListTabPane" prefHeight="330.0" prefWidth="425.0" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+         </children>
+      </GridPane>
    </center>
 </BorderPane>

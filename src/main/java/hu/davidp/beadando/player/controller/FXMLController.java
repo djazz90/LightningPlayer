@@ -3,8 +3,6 @@ package hu.davidp.beadando.player.controller;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +11,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFont;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 //sajnos kell még a TableHeaderRowhoz (mikor letiltom, hogy felcserélhetők legyenek)
-@SuppressWarnings("restriction")
 public class FXMLController implements Initializable {
 
 	/**
@@ -37,8 +37,10 @@ public class FXMLController implements Initializable {
 
 	private static Model model;
 	private static PlayListMethods plm;
+    private static final GlyphFont FONT_AWESOME_GLYPH_FONT = GlyphFontRegistry.font("FontAwesome");
 
-	private TableView<PlaylistElement> playListTable;
+
+    private TableView<PlaylistElement> playListTable;
 
 	// menü
 	@FXML
@@ -85,12 +87,15 @@ public class FXMLController implements Initializable {
 	 * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
 	 * megjelenést: nincs playlist, nem kattinthatók a gombok, csak azok a
 	 * menüitemek, melyek kezdetben eddig is használhatók voltak.
-	 * 
+	 *
 	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
 	 * java.util.ResourceBundle)
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+        nextButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_FORWARD));
+        prevButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_BACKWARD));
+        stopButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STOP));
 		setAvailability();
 	}
 
@@ -124,9 +129,10 @@ public class FXMLController implements Initializable {
 		stopButton.setDisable(!stopButtonEnabled);
 
 		if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
-			playButton.setText("Play");
+            playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PLAY));
+            logger.debug("playbutton font:" + playButton.getFont());
 		} else {
-			playButton.setText("Pause");
+            playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
 
 		}
 	}
@@ -226,26 +232,16 @@ public class FXMLController implements Initializable {
 			colNames.add(cell);
 		}
 		playListTable.getColumns().addAll(colNames);
-		
-		// megoldja, hogy ne leessen a táblázatban az oszlopokat felcserélni
-		// hozzáad egy listenert, ami figyeli hogy változtatták -e a táblázatot
-		playListTable.widthProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
-				// megkeresi a fejlécet
-				TableHeaderRow header = (TableHeaderRow) playListTable.lookup("TableHeaderRow");
-				// ha meglett a fejléc annak az újrarendezhetőségét akadályozza
-				// meg
-				header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
-					@Override
-					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-							Boolean newValue) {
-						header.setReordering(false);
-					}
-				});
-			}
 
-		});
+		// megoldja, hogy ne lehessen a táblázatban az oszlopokat felcserélni
+		// hozzáad egy listenert, ami figyeli hogy változtatták -e a táblázatot
+		playListTable.widthProperty().addListener((source, oldWidth, newWidth) -> {
+            // megkeresi a fejlécet
+            TableHeaderRow header = (TableHeaderRow) playListTable.lookup("TableHeaderRow");
+            // ha meglett a fejléc annak az újrarendezhetőségét akadályozza
+            // meg
+            header.reorderingProperty().addListener((observable, oldValue, newValue) -> header.setReordering(false));
+        });
 
 		playListTabPane.getTabs().get(0).setContent(playListTable);
 		allItemsInTable = FXCollections.observableArrayList();
