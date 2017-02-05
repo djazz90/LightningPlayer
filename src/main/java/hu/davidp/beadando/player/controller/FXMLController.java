@@ -76,6 +76,9 @@ public class FXMLController implements Initializable {
 	@FXML
 	private Button stopButton;
 
+    @FXML
+    private Slider seekerSlider;
+
 	@FXML
 	private TabPane playListTabPane;
 
@@ -96,6 +99,9 @@ public class FXMLController implements Initializable {
         nextButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_FORWARD));
         prevButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_BACKWARD));
         stopButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STOP));
+
+        seekerSlider.setMin(0.0);
+
 		setAvailability();
 	}
 
