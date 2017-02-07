@@ -26,13 +26,8 @@ package hu.davidp.beadando.player.model;
  * #L%
  */
 
+import javax.xml.bind.annotation.*;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * A lejátszólista adatszerkezetet reprezentáló osztály.
@@ -41,14 +36,15 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 @XmlRootElement(name = "playlist")
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Model {
-
+    @XmlAttribute(name = "version")
+    private static final String VERSION = "1";
 	/**
 	 * A lejátszólista.
 	 */
-	@XmlElement(name = "playlistelement")
+    @XmlElementWrapper(name = "trackList")
+	@XmlElement(name = "track")
 	private List<PlaylistElement> playlist = null;
 
 	/**

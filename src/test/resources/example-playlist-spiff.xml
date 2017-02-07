@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playlist xmlns="http://xspf.org/ns/0/" version="1">
+    <trackList>
+        <track>
+            <location>G:\Music\amcsi\Angyalborben.mp3</location>
+            <duration>172042</duration>
+            <creator>Angyalborben 01</creator>
+            <title>Angyalborben</title>
+            <album></album>
+            <trackNum></trackNum>
+        </track>
+        <track>
+            <location>G:\Music\amcsi\Marika Suzuki  - Suzuki's Heroes.mp3</location>
+            <duration>120059</duration>
+            <creator>Marika Suzuki </creator>
+            <title>Suzuki's Heroes</title>
+            <album>Bionic Commando Rearmed The Soundrack</album>
+            <trackNum>13/15</trackNum>
+        </track>
+        <track>
+            <location>G:\Music\amcsi\Simon Viklund - Bionic Commando Main Theme Rearmed.mp3</location>
+            <duration>212219</duration>
+            <creator>Simon Viklund</creator>
+            <title>Bionic Commando Main Theme Rearmed</title>
+            <album>Bionic Commando Rearmed The Soundrack</album>
+            <trackNum>1/15</trackNum>
+        </track>
+        <track>
+            <location>G:\Music\amcsi\Simon Viklund - Killt's Hidden Treasures.mp3</location>
+            <duration>150178</duration>
+            <creator>Simon Viklund</creator>
+            <title>Killt's Hidden Treasures</title>
+            <album>Bionic Commando Rearmed The Soundrack</album>
+            <trackNum>10/15</trackNum>
+        </track>
+        <track>
+            <location>G:\Music\amcsi\Simon Viklund - Power Plant.mp3</location>
+            <duration>218749</duration>
+            <creator>Simon Viklund</creator>
+            <title>Power Plant</title>
+            <album>Bionic Commando Rearmed The Soundrack</album>
+            <trackNum>3/15</trackNum>
+        </track>
+        <track>
+            <location>G:\Music\amcsi\Third World - Reggae Ambassador.mp3</location>
+            <duration>209502</duration>
+            <creator>Third World</creator>
+            <title>Reggae Ambassador</title>
+            <album>Serious Business</album>
+            <trackNum>3</trackNum>
+        </track>
+        <track>
+            <location>G:\Music\amcsi\Zagar Ft. Underground Divas - Wings of Love.mp3</location>
+            <duration>255321</duration>
+            <creator>Zagar Ft. Underground Divas</creator>
+            <title>Wings of Love</title>
+            <album></album>
+            <trackNum></trackNum>
+        </track>
+    </trackList>
+</playlist>
