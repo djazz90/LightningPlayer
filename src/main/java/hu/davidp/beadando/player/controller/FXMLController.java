@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -223,12 +222,12 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void fileMenuNewPlistAction(ActionEvent e) {
-		model.setPlaylist(new LinkedList<PlaylistElement>());
+		model.setPlaylist(FXCollections.emptyObservableList());
 		Tab tab = new Tab();
 		tab.setText("playlist");
 		playListTabPane.getTabs().add(tab);
 
-		playListTable = new TableView<PlaylistElement>();
+		playListTable = new TableView<>();
 		List<TableColumn<PlaylistElement, String>> colNames = new ArrayList<>();
 		for (String string : PlaylistElement.getColumnNamesForTable()) {
 			TableColumn<PlaylistElement, String> cell = new TableColumn<PlaylistElement, String>(string);
@@ -250,7 +249,7 @@ public class FXMLController implements Initializable {
         });
 
 		playListTabPane.getTabs().get(0).setContent(playListTable);
-		allItemsInTable = FXCollections.observableArrayList();
+		allItemsInTable = model.getPlaylist();
 		logger.info("New playlist created");
 		tableDoubleClick();
 		setAvailability();
@@ -273,8 +272,7 @@ public class FXMLController implements Initializable {
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
 		if (openedFiles != null) {
 
-			allItemsInTable.addAll(plm.openMp3(openedFiles, model));
-			playListTable.setItems(allItemsInTable);
+			playListTable.setItems(plm.openMp3(openedFiles, model));
 
 			lastFolder = openedFiles.get(0).getParentFile();
 		}

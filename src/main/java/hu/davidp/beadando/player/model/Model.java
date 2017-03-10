@@ -26,8 +26,9 @@ package hu.davidp.beadando.player.model;
  * #L%
  */
 
+import javafx.collections.ObservableList;
+
 import javax.xml.bind.annotation.*;
-import java.util.List;
 
 /**
  * A lejátszólista adatszerkezetet reprezentáló osztály.
@@ -45,7 +46,7 @@ public class Model {
 	 */
     @XmlElementWrapper(name = "trackList")
 	@XmlElement(name = "track")
-	private List<PlaylistElement> playlist = null;
+	private ObservableList<PlaylistElement> playlist = null;
 
 	/**
 	 * A lejátszólisták maximális száma a programban.
@@ -58,7 +59,7 @@ public class Model {
 	 * 
 	 * @return a lejátszólista
 	 */
-	public List<PlaylistElement> getPlaylist() {
+	public ObservableList<PlaylistElement> getPlaylist() {
 		return playlist;
 	}
 
@@ -68,7 +69,7 @@ public class Model {
 	 * @param playlist
 	 *            a beállított érték
 	 */
-	public void setPlaylist(List<PlaylistElement> playlist) {
+	public void setPlaylist(ObservableList<PlaylistElement> playlist) {
 		this.playlist = playlist;
 	}
 

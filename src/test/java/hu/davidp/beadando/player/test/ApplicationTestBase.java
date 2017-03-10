@@ -1,18 +1,13 @@
 package hu.davidp.beadando.player.test;
 
-import static org.junit.Assert.*;
-
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import hu.davidp.beadando.player.controller.PlayListMethods;
 import hu.davidp.beadando.player.controller.PlayerFX;
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-
+import javafx.collections.FXCollections;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,9 +15,13 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.xml.sax.SAXException;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(JavaFxJUnit4ClassRunner.class)
 public class ApplicationTestBase {
@@ -89,7 +88,7 @@ public class ApplicationTestBase {
 		filesToPlay.add(FileUtils.getFile("src", "test", "resources", "id3v1+v2test.mp3"));
 		filesToPlay.add(FileUtils.getFile("src", "test", "resources", "notagtest.mp3"));
 
-		model.setPlaylist(new LinkedList<>());
+		model.setPlaylist(FXCollections.observableArrayList());
 		assertNotNull(model.getPlaylist());
 		plm.openMp3(filesToPlay, model);
 		assertEquals(4, model.getPlaylist().size());
@@ -124,7 +123,7 @@ public class ApplicationTestBase {
 	public void openPlaylistTesterForFail() throws SAXException, IOException, JAXBException {
 		if (OS.startsWith("Windows")) {
 
-			model.setPlaylist(new LinkedList<>());
+			model.setPlaylist(FXCollections.emptyObservableList());
 			File f = FileUtils.getFile("src", "test", "resources", "examplemalformedWindowsPlaylist.xml");
 
 			PlayListMethods plm2 = new PlayListMethods();
@@ -133,7 +132,7 @@ public class ApplicationTestBase {
 
 		} else {
 
-			model.setPlaylist(new LinkedList<>());
+			model.setPlaylist(FXCollections.emptyObservableList());
 			File f = FileUtils.getFile("src", "test", "resources", "examplemalformedUnixPlaylist.xml");
 			PlayListMethods plm2 = new PlayListMethods();
 			Model m2 = plm2.openPlayList(f);

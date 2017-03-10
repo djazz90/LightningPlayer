@@ -5,6 +5,8 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -22,7 +24,6 @@ import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PlayListMethods {
@@ -34,8 +35,8 @@ public class PlayListMethods {
 
 
 
-	public LinkedList<PlaylistElement> openMp3(List<File> openedFiles, Model model) {
-		LinkedList<PlaylistElement> addedNewPLEs = new LinkedList<>();
+	public ObservableList<PlaylistElement> openMp3(List<File> openedFiles, Model model) {
+		ObservableList<PlaylistElement> addedNewPLEs = FXCollections.observableArrayList();
 		for (File file : openedFiles) {
 			try {
 				addedNewPLEs.add(new PlaylistElement(new Mp3File(file), file));
