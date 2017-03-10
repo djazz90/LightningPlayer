@@ -101,7 +101,12 @@ public class PlayListMethods {
 		JAXBContext context = JAXBContext.newInstance(Model.class);
 		//az unmarshaller végzi a betöltést az xml fájlból
 		Unmarshaller unmarshaller = context.createUnmarshaller();
-		return (Model) (unmarshaller.unmarshal(openedFile));
+
+		Model preparedModel = (Model) (unmarshaller.unmarshal(openedFile));
+
+		preparedModel.getPlaylist().forEach(e -> e.rebuildPlaylistElement());
+
+		return preparedModel;
 
 	}
 }

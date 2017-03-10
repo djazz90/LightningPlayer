@@ -4,7 +4,6 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -81,7 +80,6 @@ public class FXMLController implements Initializable {
 	@FXML
 	private TabPane playListTabPane;
 
-	private ObservableList<PlaylistElement> allItemsInTable;
 
 	private static File lastFolder;
 
@@ -105,7 +103,7 @@ public class FXMLController implements Initializable {
 	}
 
 	public void setAvailability() {
-		boolean fileMenuNewPlistEnabled = model.getPlaylist() == null;
+		boolean fileMenuNewPlistEnabled =  (playListTabPane.getTabs().size()) < (model.MAX_PLAYLIST_NUM);
 		fileMenuNewPlist.setDisable(!fileMenuNewPlistEnabled);
 
 		boolean fileMenuSavePlistEnabled = (model.getPlaylist() != null) && (!model.getPlaylist().isEmpty());
@@ -222,7 +220,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void fileMenuNewPlistAction(ActionEvent e) {
-		model.setPlaylist(FXCollections.emptyObservableList());
+		model.setPlaylist(FXCollections.observableArrayList());
 		Tab tab = new Tab();
 		tab.setText("playlist");
 		playListTabPane.getTabs().add(tab);
@@ -249,7 +247,6 @@ public class FXMLController implements Initializable {
         });
 
 		playListTabPane.getTabs().get(0).setContent(playListTable);
-		allItemsInTable = model.getPlaylist();
 		logger.info("New playlist created");
 		tableDoubleClick();
 		setAvailability();
@@ -258,7 +255,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void fileMenuOpenMP3Action(ActionEvent e) {
-		if (model.getPlaylist() == null) {
+		if (model.getPlaylist() == null || model.getPlaylist().isEmpty()) {
 			fileMenuNewPlistAction(e);
 		}
 
@@ -272,11 +269,12 @@ public class FXMLController implements Initializable {
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
 		if (openedFiles != null) {
 
-			playListTable.setItems(plm.openMp3(openedFiles, model));
+			model.setPlaylist(plm.openMp3(openedFiles, model));
+
+			playListTable.setItems(model.getPlaylist());
 
 			lastFolder = openedFiles.get(0).getParentFile();
 		}
-		logger.info("size of ObservableList: "+allItemsInTable.size());
 		logger.info("sizeof playlist: "+model.getPlaylist().size());
 		setAvailability();
 	}
@@ -292,7 +290,6 @@ public class FXMLController implements Initializable {
 		if (savedFile != null) {
 			plm.savePlaylist(savedFile, model);
 		}
-		logger.info("size of ObservableList: "+allItemsInTable.size());
 		logger.info("sizeof playlist: "+model.getPlaylist().size());
 
 	}
@@ -311,12 +308,8 @@ public class FXMLController implements Initializable {
 				fileMenuClosePlistAction(e);
 				fileMenuNewPlistAction(e);
 				model = plm.openPlayList(openedFile);
-				for (PlaylistElement ple : model.getPlaylist()) {
-					ple.rebuildPlaylistElement();
-					allItemsInTable.add(ple);
-				}
 
-				playListTable.setItems(allItemsInTable);
+				playListTable.setItems(model.getPlaylist());
 				PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
 				setAvailability();
 
@@ -333,7 +326,6 @@ public class FXMLController implements Initializable {
 			}
 
 		}
-		logger.info("size of ObservableList: "+allItemsInTable.size());
 		logger.info("sizeof playlist: "+model.getPlaylist().size());
 
 	}
@@ -343,8 +335,7 @@ public class FXMLController implements Initializable {
 		if (PlayerFX.getInstance().getMp() != null) {
 			PlayerFX.getInstance().stop();
 		}
-		allItemsInTable = null;
-		PlayerFX.getInstance().setPlaylistSize(allItemsInTable);
+
 		model.setPlaylist(null);
 		if (!playListTabPane.getTabs().isEmpty()) {
 			playListTabPane.getTabs().remove(0);

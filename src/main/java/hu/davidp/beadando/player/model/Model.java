@@ -26,6 +26,7 @@ package hu.davidp.beadando.player.model;
  * #L%
  */
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.xml.bind.annotation.*;
@@ -46,13 +47,13 @@ public class Model {
 	 */
     @XmlElementWrapper(name = "trackList")
 	@XmlElement(name = "track")
-	private ObservableList<PlaylistElement> playlist = null;
+	private ObservableList<PlaylistElement> playlist = FXCollections.observableArrayList();
 
 	/**
 	 * A lejátszólisták maximális száma a programban.
 	 */
 	@XmlTransient
-	public final int maxPlaylistNum = 1;
+	public static final int MAX_PLAYLIST_NUM = 1;
 
 	/**
 	 * Visszaadja a lejátszólistát.
