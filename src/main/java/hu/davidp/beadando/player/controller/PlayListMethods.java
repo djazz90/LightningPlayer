@@ -85,7 +85,7 @@ public class PlayListMethods {
 		//W3C_XML_SCHEMA_NS_URI mutatja az alapértelmezett xml sémát
 		SchemaFactory schemaFactory = SchemaFactory
 				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		URL url = getClass().getResource("/playlist.xsd");
+		URL url = getClass().getResource("/spiff-xsd-schema.xsd");
 		Source xmlFile = new StreamSource(openedFile);
 		//valiodációhoz szükséges séma példányosítása
 		Schema schema = schemaFactory.newSchema(url);
