@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Pintér Dávid
  */
-public class PlayerFX {
+public final class PlayerFX {
     /**
      * Logger objektum naplózáshoz.
      */
@@ -105,10 +105,13 @@ public class PlayerFX {
         // if (playerScene == null) {
         // throw new RuntimeException("Nincs beállítva scene!");
         // }
-        if (instance == null) {
-            instance = new PlayerFX();
+        synchronized (PlayerFX.class) {
+            if (instance == null) {
+                instance = new PlayerFX();
+            }
+            return instance;
         }
-        return instance;
+
     }
 
     /**
@@ -117,7 +120,7 @@ public class PlayerFX {
      *
      * @param m a {@link Model} osztály egy példánya
      */
-    public void autonext(Model m, FXMLController fxc) {
+    public void autonext(final Model m, final FXMLController fxc) {
         fxc.setAvailability();
         try {
             mp.setOnEndOfMedia(
@@ -138,11 +141,9 @@ public class PlayerFX {
                         logger.info("Auto next:");
                         logger.info("Actual playlist element:");
                         StringBuffer sb = new StringBuffer();
-                        sb.append(
-                            m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist()
-                                + " - ")
-                            .append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
-                                .getTitle() + " - ")
+                        sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist())
+                            .append(" - ").append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
+                            .getTitle()).append(" - ")
                             .append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
                                 .getAlbum());
                         logger.info(sb.toString());
@@ -199,7 +200,7 @@ public class PlayerFX {
      *
      * @param m a {@link Model} osztály egy példánya
      */
-    public void next(Model m) {
+    public void next(final Model m) {
 
         mp.stop();
         actualElementInPlaylist++;
@@ -215,7 +216,7 @@ public class PlayerFX {
      *
      * @param m a {@link Model} osztály egy példánya
      */
-    public void prev(Model m) {
+    public void prev(final Model m) {
         mp.stop();
         actualElementInPlaylist--;
         this.mp = new MediaPlayer(m.getPlaylist().get(actualElementInPlaylist)
@@ -241,7 +242,7 @@ public class PlayerFX {
      *
      * @param actualMedia a beállítani kívánt {@link Media}.
      */
-    public void setActualMedia(Media actualMedia) {
+    public void setActualMedia(final Media actualMedia) {
         this.actualMedia = actualMedia;
         if (this.hasMedia) {
             mp.stop();
@@ -295,7 +296,7 @@ public class PlayerFX {
      *
      * @param hasMedia a {@link #hasMedia} új értéke
      */
-    public void setHasMedia(boolean hasMedia) {
+    public void setHasMedia(final boolean hasMedia) {
         this.hasMedia = hasMedia;
     }
 
@@ -304,7 +305,7 @@ public class PlayerFX {
      *
      * @param playlist a kívánt méret
      */
-    public void setPlaylistSize(List<PlaylistElement> playlist) {
+    public void setPlaylistSize(final List<PlaylistElement> playlist) {
         if (playlist != null) {
             actualPlaylistSize = playlist.size();
         } else {
@@ -327,7 +328,7 @@ public class PlayerFX {
      *
      * @param actualElementInPlaylist a lejátszólista elem sorszáma
      */
-    public void setActualElementInPlaylist(int actualElementInPlaylist) {
+    public void setActualElementInPlaylist(final int actualElementInPlaylist) {
         this.actualElementInPlaylist = actualElementInPlaylist;
     }
 
@@ -340,7 +341,7 @@ public class PlayerFX {
         return mp;
     }
 
-    public static void setSceneAndStage(Scene s, Stage st) {
+    public static void setSceneAndStage(final Scene s, final Stage st) {
         playerScene = s;
         playerStage = st;
     }

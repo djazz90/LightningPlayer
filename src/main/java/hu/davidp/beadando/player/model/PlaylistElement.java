@@ -26,13 +26,27 @@ package hu.davidp.beadando.player.model;
  * #L%
  */
 
-import com.mpatric.mp3agic.*;
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import javafx.collections.MapChangeListener;
 import javafx.scene.media.Media;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Lejátszólista elem osztály. Ez tartalmazza az összes olyan fontos adatot ami
@@ -43,99 +57,97 @@ import java.io.IOException;
  */
 @XmlRootElement(name = "track")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PlaylistElement {
+@NoArgsConstructor
+@Data
+public class PlaylistElement implements Serializable {
+
+    private static final long serialVersionUID = 8751386371345087303L;
 
     // TODO: album artwork
     /**
-     * A feldolgozáshoz szükséges {@link Mp3File}.
-     */
-    @XmlTransient
-    private Mp3File mp3File;
-    /**
      * A {@link hu.davidp.beadando.player.controller.PlayerFX} objektum által lejátszható formátum.
      */
+    @Setter(AccessLevel.NONE)
     @XmlTransient
     private Media media;
 
     /**
      * A betöltött fájl elérési útja.
      */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Setter(AccessLevel.NONE)
     private String location;
 
     /**
      * Az zeneszám hossza.
      */
+    @SuppressWarnings("PMD")
+    @Setter(AccessLevel.NONE)
     private long duration;
 
     /**
      * Az MP3 fájl bitrátája.
      */
+    @SuppressWarnings("PMD")
     @XmlTransient
+    @Setter(AccessLevel.NONE)
     private int bitrate;
 
     /**
      * Az MP3 fájl ID3v1 tag-je.
      */
     @XmlTransient
-    private ID3v1 ID3v1tag;
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private ID3v1 id3v1Tag;
     /**
      * Az MP3 fájl ID3v2 tag-je.
      */
     @XmlTransient
-    private ID3v2 ID3v2tag;
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    private ID3v2 id3v2Tag;
 
     /**
      * A zeneszám előadója.
      */
+    @Setter(AccessLevel.NONE)
     @XmlElement(name = "creator")
     private String artist;
 
     /**
      * A zeneszám címe.
      */
+    @Setter(AccessLevel.NONE)
     private String title;
 
     /**
      * Az album, amelyben a zeneszám megtalálható.
      */
+    @Setter(AccessLevel.NONE)
     private String album;
 
     /**
      * A zeneszám kiadásának éve.
      */
     @XmlTransient
+    @Setter(AccessLevel.NONE)
     private String year;
-
-    /**
-     * A zeneszám kiadásának éve egészben.
-     */
-    @XmlTransient
-    private Integer yearinInteger;
 
     /**
      * A zeneszám sorszáma.
      */
     @XmlTransient
+    @Setter(AccessLevel.NONE)
     private String trackNum;
-
-    /**
-     * A zeneszám sorszáma egészben.
-     */
-    @XmlTransient
-    private Integer tracknoinInteger;
 
     /**
      * A zeneszám műfaja.
      */
     @XmlTransient
+    @Setter(AccessLevel.NONE)
     private String genre;
-
-    /**
-     * Üres konstruktor JAXB-hez.
-     */
-    public PlaylistElement() {
-        super();
-    }
+    private static final int URI_OFFSET_START = 5;
 
     /**
      * Lejátszólista konstruktor. Beállítja az összes mezőt annak függvényében,
@@ -146,91 +158,52 @@ public class PlaylistElement {
      * @param mp3File a megnyitni kívánt {@link Mp3File}
      * @param file    a megnyitni kívánt file
      */
-    public PlaylistElement(Mp3File mp3File, File file) {
+    public PlaylistElement(final Mp3File mp3File, final File file) {
 
-        this.mp3File = mp3File;
         this.media = new Media(toUnixURI(file.toURI().toString()));
         this.location = mp3File.getFilename();
         this.duration = mp3File.getLengthInMilliseconds();
         this.bitrate = mp3File.getBitrate();
-        this.tracknoinInteger = -1;
-        this.yearinInteger = -1;
+
 
         if (mp3File.hasId3v1Tag()) {
-            ID3v1tag = mp3File.getId3v1Tag();
-        } else
-            ID3v1tag = null;
+            id3v1Tag = mp3File.getId3v1Tag();
+        } else {
+            id3v1Tag = null;
+        }
 
         if (mp3File.hasId3v2Tag()) {
-            ID3v2tag = mp3File.getId3v2Tag();
-        } else
-            ID3v2tag = null;
+            id3v2Tag = mp3File.getId3v2Tag();
+        } else {
+            id3v2Tag = null;
+        }
 
-        if (ID3v2tag != null) {
-            this.artist = ifnullToEmpty(ID3v2tag.getArtist());
-            this.title = ifnullToEmpty(ID3v2tag.getTitle());
-            this.album = ifnullToEmpty(ID3v2tag.getAlbum());
-            this.year = ifnullToEmpty(ID3v2tag.getYear());
-            this.trackNum = ifnullToEmpty(ID3v2tag.getTrack());
-            try {
-                this.yearinInteger = Integer.parseInt(this.year);
-                try {
-                    this.tracknoinInteger = Integer.parseInt(this.trackNum);
-                } catch (NumberFormatException | NullPointerException ex) {
-                    // LOG: cant resolve year or track in integer
+        if (id3v2Tag != null) {
+            this.artist = ifnullToEmpty(id3v2Tag.getArtist());
+            this.title = ifnullToEmpty(id3v2Tag.getTitle());
+            this.album = ifnullToEmpty(id3v2Tag.getAlbum());
+            this.year = ifnullToEmpty(id3v2Tag.getYear());
+            this.trackNum = ifnullToEmpty(id3v2Tag.getTrack());
+            this.genre = ifnullToEmpty(id3v2Tag.getGenreDescription());
 
-                }
-
-            } catch (NumberFormatException | NullPointerException ex) {
-                // LOG: cant resolve year or track in integer
-
-            }
-            this.genre = ifnullToEmpty(ID3v2tag.getGenreDescription());
-
-        } else if (ID3v1tag != null) {
-            this.artist = ifnullToEmpty(ID3v1tag.getArtist());
-            this.title = ifnullToEmpty(ID3v1tag.getTitle());
-            this.album = ifnullToEmpty(ID3v1tag.getAlbum());
-            this.year = ifnullToEmpty(ID3v1tag.getYear());
-            this.trackNum = ifnullToEmpty(ID3v1tag.getTrack());
-            try {
-                this.yearinInteger = Integer.parseInt(this.year);
-                try {
-                    this.tracknoinInteger = Integer.parseInt(this.trackNum);
-                } catch (NumberFormatException | NullPointerException ex) {
-                    // LOG: cant resolve year or track in integer
-
-                }
-
-            } catch (NumberFormatException | NullPointerException ex) {
-                // LOG: cant resolve year or track in integer
-
-            }
-            this.genre = ifnullToEmpty(ID3v1tag.getGenreDescription());
+        } else if (id3v1Tag != null) {
+            this.artist = ifnullToEmpty(id3v1Tag.getArtist());
+            this.title = ifnullToEmpty(id3v1Tag.getTitle());
+            this.album = ifnullToEmpty(id3v1Tag.getAlbum());
+            this.year = ifnullToEmpty(id3v1Tag.getYear());
+            this.trackNum = ifnullToEmpty(id3v1Tag.getTrack());
+            this.genre = ifnullToEmpty(id3v1Tag.getGenreDescription());
         }
 
         if (mp3File.hasId3v1Tag() && mp3File.hasId3v2Tag()) {
-            this.artist = getLongerTag(ID3v1tag.getArtist(),
-                ID3v2tag.getArtist());
-            this.title = getLongerTag(ID3v1tag.getTitle(), ID3v2tag.getTitle());
-            this.album = getLongerTag(ID3v1tag.getAlbum(), ID3v2tag.getAlbum());
-            this.year = getLongerTag(ID3v1tag.getYear(), ID3v2tag.getYear());
-            this.trackNum = getLongerTag(ID3v1tag.getTrack(),
-                ID3v2tag.getTrack());
-            try {
-                this.yearinInteger = Integer.parseInt(this.year);
-                try {
-                    this.tracknoinInteger = Integer.parseInt(this.trackNum);
-                } catch (NumberFormatException | NullPointerException ex) {
-                    // LOG: cant resolve year or track in integer
-
-                }
-
-            } catch (NumberFormatException | NullPointerException ex) {
-                // LOG: cant resolve year or track in integer
-
-            }
-            this.genre = ifnullToEmpty(ID3v2tag.getGenreDescription());
+            this.artist = getLongerTag(id3v1Tag.getArtist(),
+                id3v2Tag.getArtist());
+            this.title = getLongerTag(id3v1Tag.getTitle(), id3v2Tag.getTitle());
+            this.album = getLongerTag(id3v1Tag.getAlbum(), id3v2Tag.getAlbum());
+            this.year = getLongerTag(id3v1Tag.getYear(), id3v2Tag.getYear());
+            this.trackNum = getLongerTag(id3v1Tag.getTrack(),
+                id3v2Tag.getTrack());
+            this.genre = ifnullToEmpty(id3v2Tag.getGenreDescription());
 
         } else if (!(mp3File.hasId3v1Tag() || mp3File.hasId3v2Tag())) {
             String[] path = file.getAbsolutePath().split("/");
@@ -267,9 +240,10 @@ public class PlaylistElement {
      * @param s az átalakítandó URI String reprezentációja
      * @return az átalakított URI String reprezentációja
      */
-    private static String toUnixURI(String s) {
+    private static String toUnixURI(final String s) {
         StringBuffer sb = new StringBuffer(s);
-        sb.insert(5, "//");
+
+        sb.insert(URI_OFFSET_START, "//");
         return sb.toString();
     }
 
@@ -281,12 +255,13 @@ public class PlaylistElement {
      * @param second második String
      * @return a hosszabbat adja vissza
      */
-    private static String getLongerTag(String first, String second) {
-        first = ifnullToEmpty(first);
-        second = ifnullToEmpty(second);
-        if (first.length() > second.length())
-            return first;
-        return second;
+    private static String getLongerTag(final String first, final String second) {
+        String firstConverted = ifnullToEmpty(first);
+        String secondConverted = ifnullToEmpty(second);
+        if (firstConverted.length() > secondConverted.length()) {
+            return firstConverted;
+        }
+        return secondConverted;
 
     }
 
@@ -297,7 +272,7 @@ public class PlaylistElement {
      * @param input bemeneti String
      * @return input vagy üres String
      */
-    private static String ifnullToEmpty(String input) {
+    private static String ifnullToEmpty(final String input) {
         if (input == null) {
             return "";
         }
@@ -324,6 +299,8 @@ public class PlaylistElement {
                         break;
                     case "genre":
                         this.genre = ifnullToEmpty(change.getValueAdded().toString());
+                        break;
+                    default:
                         break;
                 }
             }
@@ -359,157 +336,4 @@ public class PlaylistElement {
     public Media asMedia() {
         return this.media;
     }
-
-    /**
-     * hashCode metódus.
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((album == null) ? 0 : album.hashCode());
-        result = prime * result + ((artist == null) ? 0 : artist.hashCode());
-        result = prime * result + bitrate;
-        result = prime * result + ((genre == null) ? 0 : genre.hashCode());
-        result = prime * result + (int) (duration ^ (duration >>> 32));
-        result = prime * result + ((location == null) ? 0 : location.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((trackNum == null) ? 0 : trackNum.hashCode());
-        result = prime
-            * result
-            + ((tracknoinInteger == null) ? 0 : tracknoinInteger.hashCode());
-        result = prime * result + ((year == null) ? 0 : year.hashCode());
-        result = prime * result
-            + ((yearinInteger == null) ? 0 : yearinInteger.hashCode());
-        return result;
-    }
-
-    /**
-     * equals metódus.
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        PlaylistElement other = (PlaylistElement) obj;
-        if (album == null) {
-            if (other.album != null)
-                return false;
-        } else if (!album.equals(other.album))
-            return false;
-        if (artist == null) {
-            if (other.artist != null)
-                return false;
-        } else if (!artist.equals(other.artist))
-            return false;
-        if (bitrate != other.bitrate)
-            return false;
-        if (genre == null) {
-            if (other.genre != null)
-                return false;
-        } else if (!genre.equals(other.genre))
-            return false;
-        if (duration != other.duration)
-            return false;
-        if (location == null) {
-            if (other.location != null)
-                return false;
-        } else if (!location.equals(other.location))
-            return false;
-        if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        if (trackNum == null) {
-            if (other.trackNum != null)
-                return false;
-        } else if (!trackNum.equals(other.trackNum))
-            return false;
-        if (tracknoinInteger == null) {
-            if (other.tracknoinInteger != null)
-                return false;
-        } else if (!tracknoinInteger.equals(other.tracknoinInteger))
-            return false;
-        if (year == null) {
-            if (other.year != null)
-                return false;
-        } else if (!year.equals(other.year))
-            return false;
-        if (yearinInteger == null) {
-            if (other.yearinInteger != null)
-                return false;
-        } else if (!yearinInteger.equals(other.yearinInteger))
-            return false;
-        return true;
-    }
-
-    /**
-     * toString metódus.
-     *
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "PlaylistElement [location=" + location + ", duration=" + duration
-            + ", bitrate=" + bitrate + ", artist=" + artist + ", title="
-            + title + ", album=" + album + ", year=" + year
-            + ", yearinInteger=" + yearinInteger + ", trackNum=" + trackNum
-            + ", tracknoinInteger=" + tracknoinInteger + ", genre=" + genre
-            + "]";
-    }
-
-    /**
-     * Visszaadja a fájl elérési útvonalát.
-     *
-     * @return a fájl elérési útvonala.
-     */
-    public String getLocation() {
-        return location;
-    }
-
-    /**
-     * Visszaadja a zeneszám előadóját.
-     *
-     * @return az előadó
-     */
-    public String getArtist() {
-        return artist;
-    }
-
-    /**
-     * Visszaadja a zeneszám címét.
-     *
-     * @return a cím
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Visszaadja a zeneszám albumcímét.
-     *
-     * @return az album
-     */
-    public String getAlbum() {
-        return album;
-    }
-
-    /**
-     * Visszaadja a zeneszám műfaját.
-     *
-     * @return a műfaj
-     */
-    public String getGenre() {
-        return genre;
-    }
-
 }

@@ -26,6 +26,12 @@
             <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity"
                 value="inherit" />
         </module>
+		<module name="JavadocVariable">
+            <property name="severity" value="ignore" />
+            <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity"
+                value="inherit" />
+        </module>
+		
         <module name="ConstantName" />
         <module name="LocalFinalVariableName" />
         <module name="LocalVariableName" />

@@ -8,6 +8,3 @@ package hu.davidp.beadando.player.model;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
-
-
-

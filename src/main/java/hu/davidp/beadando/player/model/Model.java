@@ -29,49 +29,53 @@ package hu.davidp.beadando.player.model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * A lejátszólista adatszerkezetet reprezentáló osztály.
- * 
- * @author Pintér Dávid
  *
+ * @author Pintér Dávid
  */
 @XmlRootElement(name = "playlist")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Model {
     @XmlAttribute(name = "version")
     private static final String VERSION = "1";
-	/**
-	 * A lejátszólista.
-	 */
+    /**
+     * A lejátszólista.
+     */
     @XmlElementWrapper(name = "trackList")
-	@XmlElement(name = "track")
-	private ObservableList<PlaylistElement> playlist = FXCollections.observableArrayList();
+    @XmlElement(name = "track")
+    private ObservableList<PlaylistElement> playlist = FXCollections.observableArrayList();
 
-	/**
-	 * A lejátszólisták maximális száma a programban.
-	 */
-	@XmlTransient
-	public static final int MAX_PLAYLIST_NUM = 1;
+    /**
+     * A lejátszólisták maximális száma a programban.
+     */
+    @XmlTransient
+    public static final int MAX_PLAYLIST_NUM = 1;
 
-	/**
-	 * Visszaadja a lejátszólistát.
-	 * 
-	 * @return a lejátszólista
-	 */
-	public ObservableList<PlaylistElement> getPlaylist() {
-		return playlist;
-	}
+    /**
+     * Visszaadja a lejátszólistát.
+     *
+     * @return a lejátszólista
+     */
+    public ObservableList<PlaylistElement> getPlaylist() {
+        return playlist;
+    }
 
-	/**
-	 * Beállítja a lejátszólistát.
-	 * 
-	 * @param playlist
-	 *            a beállított érték
-	 */
-	public void setPlaylist(ObservableList<PlaylistElement> playlist) {
-		this.playlist = playlist;
-	}
+    /**
+     * Beállítja a lejátszólistát.
+     *
+     * @param playlist a beállított érték
+     */
+    public void setPlaylist(final ObservableList<PlaylistElement> playlist) {
+        this.playlist = playlist;
+    }
 
 }

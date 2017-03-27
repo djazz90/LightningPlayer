@@ -59,7 +59,7 @@ public class LightningPlayerMainJavaFX extends Application {
      * @throws Exception ha valami nem várt dolog történik az alkalmazás futtatása
      *                   során
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String... args) throws Exception {
 
         launch(args);
     }
@@ -70,7 +70,7 @@ public class LightningPlayerMainJavaFX extends Application {
      * @see javafx.application.Application#start(javafx.stage.Stage)
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(final Stage primaryStage) throws Exception {
         logger.info("LightningPlayer started");
 
         Model theModel = new Model();

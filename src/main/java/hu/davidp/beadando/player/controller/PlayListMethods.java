@@ -28,84 +28,83 @@ import java.util.List;
 
 public class PlayListMethods {
 
-	/**
-	 * Logger objektum naplózáshoz.
-	 */
-	private static Logger logger = LoggerFactory.getLogger(PlayListMethods.class);
+    /**
+     * Logger objektum naplózáshoz.
+     */
+    private static Logger logger = LoggerFactory.getLogger(PlayListMethods.class);
 
 
+    public void openMp3(final List<File> openedFiles, final Model model) {
+        ObservableList<PlaylistElement> addedNewPLEs = FXCollections.observableArrayList();
+        for (File file : openedFiles) {
+            try {
+                addedNewPLEs.add(new PlaylistElement(new Mp3File(file), file));
 
-	public void openMp3(List<File> openedFiles, Model model) {
-		ObservableList<PlaylistElement> addedNewPLEs = FXCollections.observableArrayList();
-		for (File file : openedFiles) {
-			try {
-				addedNewPLEs.add(new PlaylistElement(new Mp3File(file), file));
+            } catch (UnsupportedTagException | InvalidDataException
+                | IOException e1) {
+                logger.error("File i/o error");
+                logger.error("at " + file.getAbsolutePath());
+                e1.printStackTrace();
+            }
 
-			} catch (UnsupportedTagException | InvalidDataException
-					| IOException e1) {
-				logger.error("File i/o error");
-				logger.error("at " + file.getAbsolutePath());
-				e1.printStackTrace();
-			}
+        }
+        model.getPlaylist().addAll(addedNewPLEs);
+        PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
+    }
 
-		}
-		model.getPlaylist().addAll(addedNewPLEs);
-		PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
-	}
+    public void savePlaylist(final File savedFile, final Model model) {
+        try {
+            File file;
+            String[] splitter = savedFile.toString().split("\\.");
+            if (splitter[splitter.length - 1].equals("xml")) {
+                file = savedFile;
+            } else {
+                file = new File(savedFile.toString() + ".xml");
+            }
+            //a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
+            //a newInstance metódusnak pedig átadom a model osztályt
+            //a context figyeli a bind-okat(kötődéseket - magukat az annotációkat)
+            //a Model osztályban(és a PlaylistElement osztályban)
+            JAXBContext context = JAXBContext.newInstance(Model.class);
+            //marshaller az xml szerializációhoz
+            Marshaller m = context.createMarshaller();
+            //JAXB_FORMATTED_OUTPUT felelős hogy a sorok indentálva legyenek
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            //maga a mentés
+            m.marshal(model, file);
+            logger.info("XML file successfully saved");
+        } catch (JAXBException e1) {
+            logger.error("Can't process XML file");
+            e1.printStackTrace();
+        }
+    }
 
-	public void savePlaylist(File savedFile, Model model) {
-		try {
-			File file;
-			String[] splitter = savedFile.toString().split("\\.");
-			if (splitter[splitter.length - 1].equals("xml")) {
-				file = savedFile;
-			} else {
-				file = new File(savedFile.toString() + ".xml");
-			}
-			//a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
-			//a newInstance metódusnak pedig átadom a model osztályt
-			//a context figyeli a bind-okat(kötődéseket - magukat az annotációkat)
-			//a Model osztályban(és a PlaylistElement osztályban)
-			JAXBContext context = JAXBContext.newInstance(Model.class);
-			//marshaller az xml szerializációhoz
-			Marshaller m = context.createMarshaller();
-			//JAXB_FORMATTED_OUTPUT felelős hogy a sorok indentálva legyenek
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			//maga a mentés
-			m.marshal(model, file);
-			logger.info("XML file successfully saved");
-		} catch (JAXBException e1) {
-			logger.error("Can't process XML file");
-			e1.printStackTrace();
-		}
-	}
+    public Model openPlayList(final File openedFile) throws SAXException, IOException, JAXBException {
+        //beállítja a kívánt sémát
+        //W3C_XML_SCHEMA_NS_URI mutatja az alapértelmezett xml sémát
+        SchemaFactory schemaFactory = SchemaFactory
+            .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        URL url = getClass().getResource("/spiff-xsd-schema.xsd");
+        Source xmlFile = new StreamSource(openedFile);
+        //valiodációhoz szükséges séma példányosítása
+        Schema schema = schemaFactory.newSchema(url);
+        //majd validátor
+        Validator validator = schema.newValidator();
+        //majd maga a validálás
+        validator.validate(xmlFile);
+        //a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
+        //a newInstance metódusnak pedig átadom a model osztályt
+        //a context figyeli a bind-okat(kötődéseket - magukat az annotációkat)
+        //a Model osztályban(és a PlaylistElement osztályban)
+        JAXBContext context = JAXBContext.newInstance(Model.class);
+        //az unmarshaller végzi a betöltést az xml fájlból
+        Unmarshaller unmarshaller = context.createUnmarshaller();
 
-	public Model openPlayList(File openedFile) throws SAXException, IOException, JAXBException {
-		//beállítja a kívánt sémát
-		//W3C_XML_SCHEMA_NS_URI mutatja az alapértelmezett xml sémát
-		SchemaFactory schemaFactory = SchemaFactory
-				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		URL url = getClass().getResource("/spiff-xsd-schema.xsd");
-		Source xmlFile = new StreamSource(openedFile);
-		//valiodációhoz szükséges séma példányosítása
-		Schema schema = schemaFactory.newSchema(url);
-		//majd validátor
-		Validator validator = schema.newValidator();
-		//majd maga a validálás
-		validator.validate(xmlFile);
-		//a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
-		//a newInstance metódusnak pedig átadom a model osztályt
-		//a context figyeli a bind-okat(kötődéseket - magukat az annotációkat)
-		//a Model osztályban(és a PlaylistElement osztályban)
-		JAXBContext context = JAXBContext.newInstance(Model.class);
-		//az unmarshaller végzi a betöltést az xml fájlból
-		Unmarshaller unmarshaller = context.createUnmarshaller();
+        Model preparedModel = (Model) (unmarshaller.unmarshal(openedFile));
 
-		Model preparedModel = (Model) (unmarshaller.unmarshal(openedFile));
+        preparedModel.getPlaylist().forEach(e -> e.rebuildPlaylistElement());
 
-		preparedModel.getPlaylist().forEach(e -> e.rebuildPlaylistElement());
+        return preparedModel;
 
-		return preparedModel;
-
-	}
+    }
 }
