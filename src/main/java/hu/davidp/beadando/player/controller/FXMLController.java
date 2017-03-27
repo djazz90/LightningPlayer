@@ -85,6 +85,9 @@ public class FXMLController implements Initializable {
     private Slider seekerSlider;
 
     @FXML
+    private Slider volumeSlider;
+
+    @FXML
     private TabPane playListTabPane;
 
     private static Duration duration;
@@ -123,6 +126,8 @@ public class FXMLController implements Initializable {
             }
 
         });
+
+
 
     }
 
@@ -188,7 +193,7 @@ public class FXMLController implements Initializable {
                 if (!seekerSlider.isDisabled()
                     && duration.greaterThan(Duration.ZERO)
                     && !seekerSlider.isValueChanging()) {
-                    seekerSlider.setValue((currentTime.toSeconds() / duration.toSeconds())
+                    seekerSlider.setValue((currentTime.toMillis() / duration.toMillis())
                         * MAX_SEEKER_SLIDER_VALUE);
 
                 }

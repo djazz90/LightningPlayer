@@ -1,6 +1,13 @@
 Simple mp3 player that supports xspf playlists(currently in .xml format)
 
--- 
+Technology stack
+ - JavaFX
+ - JAXB
+ - Lombok
+
+[Trello](https://trello.com/b/BuztadAe)
+
+--- 
 # Credits:   #
 XSPF schema is converted from relaxng to xsd  
 

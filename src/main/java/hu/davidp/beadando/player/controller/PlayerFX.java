@@ -127,16 +127,8 @@ public final class PlayerFX {
             mp.setOnEndOfMedia(
                 () -> {
 
-                    mp.stop();
-
                     if (actualElementInPlaylist != actualPlaylistSize - 1) {
-                        actualElementInPlaylist++;
-                        mp = new MediaPlayer(m
-                            .getPlaylist()
-                            .get(actualElementInPlaylist).asMedia());
-                        playButtonTextIsPlay = false;
-                        mp.play();
-
+                        next(m);
                         fxc.getPlayListTable().getSelectionModel().select(actualElementInPlaylist);
 
                         logger.info("Auto next:");
@@ -201,12 +193,13 @@ public final class PlayerFX {
      * @param m a {@link Model} osztály egy példánya
      */
     public void next(final Model m) {
-
         mp.stop();
         actualElementInPlaylist++;
-        this.mp = new MediaPlayer(m.getPlaylist().get(actualElementInPlaylist)
-            .asMedia());
+        actualMedia = m
+            .getPlaylist()
+            .get(actualElementInPlaylist).asMedia();
 
+        mp = new MediaPlayer(actualMedia);
         playButtonTextIsPlay = false;
         play();
     }
@@ -219,12 +212,13 @@ public final class PlayerFX {
     public void prev(final Model m) {
         mp.stop();
         actualElementInPlaylist--;
-        this.mp = new MediaPlayer(m.getPlaylist().get(actualElementInPlaylist)
-            .asMedia());
+        actualMedia = m
+            .getPlaylist()
+            .get(actualElementInPlaylist).asMedia();
 
+        mp = new MediaPlayer(actualMedia);
         playButtonTextIsPlay = false;
         play();
-        mp.getOnEndOfMedia();
 
     }
 
