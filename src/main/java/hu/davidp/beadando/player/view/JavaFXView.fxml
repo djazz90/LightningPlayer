@@ -84,7 +84,7 @@
                   <Label text="Bitrate" />
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
                   <Label text="Volume" />
-                  <Slider accessibleText="Volume" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="15.0" minWidth="55.0" prefHeight="15.0" prefWidth="55.0" />
+                  <Slider fx:id="volumeSlider" accessibleText="Volume" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="15.0" minWidth="55.0" prefHeight="15.0" prefWidth="55.0" />
                </children>
             </HBox>
          </items>

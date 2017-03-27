@@ -95,6 +95,7 @@ public class FXMLController implements Initializable {
     private File lastFolder;
 
     private static final double MAX_SEEKER_SLIDER_VALUE = 200.0;
+    private static final double INITIAL_VOLUME = 0.7;
 
     /*
      * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
@@ -113,6 +114,19 @@ public class FXMLController implements Initializable {
         seekerSlider.setMin(0.0);
         seekerSlider.setMax(MAX_SEEKER_SLIDER_VALUE);
 
+        //rendre 0.0-tól 1.0-ig állítom be a csúszka értékeit, mivel a {@link MediaPlayer}
+        //hangereje is ilyen tartományban helyezkedik el.
+        volumeSlider.setMin(0.0);
+        volumeSlider.setMax(1.0);
+        volumeSlider.setValue(INITIAL_VOLUME);
+
+        volumeSlider.valueProperty().addListener(observable -> {
+            if (volumeSlider.isValueChanging()) {
+                MediaPlayer mediaPlayer = PlayerFX.getInstance().getMp();
+                mediaPlayer.setVolume(volumeSlider.getValue());
+            }
+        });
+
         setAvailability();
 
         seekerSlider.valueProperty().addListener((observable) -> {
@@ -126,8 +140,6 @@ public class FXMLController implements Initializable {
             }
 
         });
-
-
 
     }
 
