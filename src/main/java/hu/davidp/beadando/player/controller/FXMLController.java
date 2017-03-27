@@ -185,12 +185,18 @@ public class FXMLController implements Initializable {
                 () -> {
                     duration = PlayerFX.getInstance().getActualMedia().getDuration();
                     log.info("Player is ready.");
+
+                    String artist = model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist();
+                    String title = model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle();
+                    PlayerFX.getPlayerStage().setTitle(artist + LOG_DELIMITER + title);
                 }
             );
 
             PlayerFX.getInstance().getMp().currentTimeProperty().addListener(
                 observable -> updateSeeker()
             );
+
+
 
         }
 
