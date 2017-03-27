@@ -7,8 +7,7 @@ import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -26,15 +25,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-public class PlayListMethods {
+@Slf4j
+public final class PlayListMethods {
 
-    /**
-     * Logger objektum naplózáshoz.
-     */
-    private static Logger logger = LoggerFactory.getLogger(PlayListMethods.class);
+    private PlayListMethods() {
+        //privát üres konstruktor, mert ez egy utility class
+    }
 
-
-    public void openMp3(final List<File> openedFiles, final Model model) {
+    public static void openMp3(final List<File> openedFiles, final Model model) {
         ObservableList<PlaylistElement> addedNewPLEs = FXCollections.observableArrayList();
         for (File file : openedFiles) {
             try {
@@ -42,8 +40,8 @@ public class PlayListMethods {
 
             } catch (UnsupportedTagException | InvalidDataException
                 | IOException e1) {
-                logger.error("File i/o error");
-                logger.error("at " + file.getAbsolutePath());
+                log.error("File i/o error");
+                log.error("at " + file.getAbsolutePath());
                 e1.printStackTrace();
             }
 
@@ -52,7 +50,7 @@ public class PlayListMethods {
         PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
     }
 
-    public void savePlaylist(final File savedFile, final Model model) {
+    public static void savePlaylist(final File savedFile, final Model model) {
         try {
             File file;
             String[] splitter = savedFile.toString().split("\\.");
@@ -72,19 +70,19 @@ public class PlayListMethods {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             //maga a mentés
             m.marshal(model, file);
-            logger.info("XML file successfully saved");
+            log.info("XML file successfully saved");
         } catch (JAXBException e1) {
-            logger.error("Can't process XML file");
+            log.error("Can't process XML file");
             e1.printStackTrace();
         }
     }
 
-    public Model openPlayList(final File openedFile) throws SAXException, IOException, JAXBException {
+    public static Model openPlayList(final File openedFile) throws SAXException, IOException, JAXBException {
         //beállítja a kívánt sémát
         //W3C_XML_SCHEMA_NS_URI mutatja az alapértelmezett xml sémát
         SchemaFactory schemaFactory = SchemaFactory
             .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        URL url = getClass().getResource("/spiff-xsd-schema.xsd");
+        URL url = PlayListMethods.class.getResource("/spiff-xsd-schema.xsd");
         Source xmlFile = new StreamSource(openedFile);
         //valiodációhoz szükséges séma példányosítása
         Schema schema = schemaFactory.newSchema(url);

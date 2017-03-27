@@ -3,6 +3,7 @@ package hu.davidp.beadando.player.controller;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,12 +19,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
@@ -35,18 +37,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.TooManyFields"})
+@Slf4j
 public class FXMLController implements Initializable {
 
     public static final String LOG_DELIMITER = " - ";
-    /**
-     * Logger objektum naplózáshoz.
-     */
-    private static Logger logger = LoggerFactory.getLogger(FXMLController.class);
 
     private static Model model;
-    private static PlayListMethods plm;
     private static final GlyphFont FONT_AWESOME_GLYPH_FONT = GlyphFontRegistry.font("FontAwesome");
-
 
     private TableView<PlaylistElement> playListTable;
 
@@ -90,8 +87,11 @@ public class FXMLController implements Initializable {
     @FXML
     private TabPane playListTabPane;
 
+    private static Duration duration;
 
-    private static File lastFolder;
+    private File lastFolder;
+
+    private static final double MAX_SEEKER_SLIDER_VALUE = 200.0;
 
     /*
      * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
@@ -108,8 +108,22 @@ public class FXMLController implements Initializable {
         stopButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STOP));
 
         seekerSlider.setMin(0.0);
+        seekerSlider.setMax(MAX_SEEKER_SLIDER_VALUE);
 
         setAvailability();
+
+        seekerSlider.valueProperty().addListener((observable) -> {
+            if (seekerSlider.isValueChanging()) {
+                MediaPlayer mediaPlayer = PlayerFX.getInstance().getMp();
+
+                double newPosition = seekerSlider.getValue() / MAX_SEEKER_SLIDER_VALUE;
+                Duration newDuration = new Duration(newPosition * duration.toMillis());
+
+                mediaPlayer.seek(newDuration);
+            }
+
+        });
+
     }
 
     public void setAvailability() {
@@ -143,10 +157,43 @@ public class FXMLController implements Initializable {
 
         if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PLAY));
-            logger.debug("playbutton font:" + playButton.getFont());
+            log.debug("playbutton font:" + playButton.getFont());
         } else {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
 
+        }
+        if (PlayerFX.getInstance().hasMedia()) {
+
+            PlayerFX.getInstance().getMp().setOnReady(
+                () -> {
+                    duration = PlayerFX.getInstance().getActualMedia().getDuration();
+                    log.info("Player is ready.");
+                }
+            );
+
+            PlayerFX.getInstance().getMp().currentTimeProperty().addListener(
+                observable -> updateSeeker()
+            );
+
+        }
+
+    }
+
+    protected void updateSeeker() {
+        if (seekerSlider != null && PlayerFX.getInstance().hasMedia()) {
+            Platform.runLater(() -> {
+
+                Duration currentTime = PlayerFX.getInstance().getMp().getCurrentTime();
+                seekerSlider.setDisable(duration.isUnknown());
+                if (!seekerSlider.isDisabled()
+                    && duration.greaterThan(Duration.ZERO)
+                    && !seekerSlider.isValueChanging()) {
+                    seekerSlider.setValue((currentTime.toSeconds() / duration.toSeconds())
+                        * MAX_SEEKER_SLIDER_VALUE);
+
+                }
+
+            });
         }
     }
 
@@ -173,13 +220,13 @@ public class FXMLController implements Initializable {
         PlayerFX.getInstance().prev(model);
         getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementInPlaylist());
         PlayerFX.getInstance().autonext(model, this);
-        logger.info("Prev button clicked.");
-        logger.info("Actual playlist element:");
+        log.info("Prev button clicked.");
+        log.info("Actual playlist element:");
         StringBuffer sb = new StringBuffer();
         sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist()).append(LOG_DELIMITER)
             .append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle()).append(LOG_DELIMITER)
             .append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
-        logger.info(sb.toString());
+        log.info(sb.toString());
         setAvailability();
     }
 
@@ -195,13 +242,13 @@ public class FXMLController implements Initializable {
             PlayerFX.getInstance().pause();
 
         }
-        logger.info("Play/Pause button clicked");
-        logger.info("Actual playlist element:");
+        log.info("Play/Pause button clicked");
+        log.info("Actual playlist element:");
         StringBuffer sb = new StringBuffer();
         sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist()).append(LOG_DELIMITER)
             .append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle()).append(LOG_DELIMITER)
             .append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
-        logger.info(sb.toString());
+        log.info(sb.toString());
         setAvailability();
     }
 
@@ -210,13 +257,13 @@ public class FXMLController implements Initializable {
         PlayerFX.getInstance().next(model);
         getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementInPlaylist());
         PlayerFX.getInstance().autonext(model, this);
-        logger.info("Next button clicked.");
-        logger.info("Actual playlist element:");
+        log.info("Next button clicked.");
+        log.info("Actual playlist element:");
         StringBuffer sb = new StringBuffer();
         sb.append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist()).append(LOG_DELIMITER)
             .append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle()).append(LOG_DELIMITER)
             .append(model.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getAlbum());
-        logger.info(sb.toString());
+        log.info(sb.toString());
         setAvailability();
     }
 
@@ -224,7 +271,7 @@ public class FXMLController implements Initializable {
     public void stopButtonAction(final ActionEvent e) {
 
         PlayerFX.getInstance().stop();
-        logger.info("Stop button clicked");
+        log.info("Stop button clicked");
         setAvailability();
     }
 
@@ -257,7 +304,7 @@ public class FXMLController implements Initializable {
         });
 
         playListTabPane.getTabs().get(0).setContent(playListTable);
-        logger.info("New playlist created");
+        log.info("New playlist created");
         tableDoubleClick();
         setAvailability();
 
@@ -279,7 +326,7 @@ public class FXMLController implements Initializable {
         List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
         if (openedFiles != null) {
 
-            plm.openMp3(openedFiles, model);
+            PlayListMethods.openMp3(openedFiles, model);
 
             model.setPlaylist(model.getPlaylist());
 
@@ -287,7 +334,7 @@ public class FXMLController implements Initializable {
 
             lastFolder = openedFiles.get(0).getParentFile();
         }
-        logger.info("sizeof playlist: " + model.getPlaylist().size());
+        log.info("sizeof playlist: " + model.getPlaylist().size());
         setAvailability();
     }
 
@@ -300,9 +347,9 @@ public class FXMLController implements Initializable {
 
         File savedFile = fc.showSaveDialog(PlayerFX.getPlayerStage());
         if (savedFile != null) {
-            plm.savePlaylist(savedFile, model);
+            PlayListMethods.savePlaylist(savedFile, model);
         }
-        logger.info("sizeof playlist: " + model.getPlaylist().size());
+        log.info("sizeof playlist: " + model.getPlaylist().size());
 
     }
 
@@ -319,26 +366,26 @@ public class FXMLController implements Initializable {
             try {
                 fileMenuClosePlistAction(e);
                 fileMenuNewPlistAction(e);
-                model = plm.openPlayList(openedFile);
+                model = PlayListMethods.openPlayList(openedFile);
 
                 playListTable.setItems(model.getPlaylist());
                 PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
                 setAvailability();
 
-                logger.info("XML file successfully opened");
+                log.info("XML file successfully opened");
             } catch (SAXException ex) {
-                logger.error("The XML file is not valid");
-                logger.error("Message: " + ex.getMessage());
+                log.error("The XML file is not valid");
+                log.error("Message: " + ex.getMessage());
             } catch (IOException ex) {
-                logger.error("File i/o error");
+                log.error("File i/o error");
 
             } catch (JAXBException e1) {
-                logger.error("Can't process XML file");
-                logger.error("Message: " + e1.getMessage());
+                log.error("Can't process XML file");
+                log.error("Message: " + e1.getMessage());
             }
 
         }
-        logger.info("sizeof playlist: " + model.getPlaylist().size());
+        log.info("sizeof playlist: " + model.getPlaylist().size());
 
     }
 
@@ -363,7 +410,6 @@ public class FXMLController implements Initializable {
 
     public static void setModel(final Model model) {
         FXMLController.model = model;
-        plm = new PlayListMethods();
     }
 
     public TableView<PlaylistElement> getPlayListTable() {

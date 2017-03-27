@@ -28,6 +28,7 @@ package hu.davidp.beadando.player.controller;
 
 import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlaylistElement;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -161,17 +162,16 @@ public final class PlayerFX {
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
-
     }
 
     /**
      * Az aktuális lejátszólista elem lejátszása.
      */
     public void play() {
-
         playButtonTextIsPlay = false;
-        mp.play();
-
+        Platform.runLater(() -> {
+            mp.play();
+        });
     }
 
     /**
@@ -208,7 +208,7 @@ public final class PlayerFX {
             .asMedia());
 
         playButtonTextIsPlay = false;
-        mp.play();
+        play();
     }
 
     /**
@@ -223,7 +223,7 @@ public final class PlayerFX {
             .asMedia());
 
         playButtonTextIsPlay = false;
-        mp.play();
+        play();
         mp.getOnEndOfMedia();
 
     }
@@ -250,18 +250,6 @@ public final class PlayerFX {
         this.mp = new MediaPlayer(actualMedia);
         this.playButtonTextIsPlay = false;
         this.hasMedia = true;
-    }
-
-    /**
-     * Beállítja a Play gomb megjelenített szövegét.
-     *
-     * @return a szöveg amire át kell állítani a gomb szövegét
-     */
-    public String changePlayButtonText() {
-        if (playButtonTextIsPlay) {
-            return "Play";
-        }
-        return "Pause";
     }
 
     /**
