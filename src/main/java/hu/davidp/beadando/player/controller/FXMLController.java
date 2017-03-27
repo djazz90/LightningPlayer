@@ -255,7 +255,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void fileMenuOpenMP3Action(ActionEvent e) {
-		if (model.getPlaylist() == null || model.getPlaylist().isEmpty()) {
+		if ((playListTabPane.getTabs().size()) < (model.MAX_PLAYLIST_NUM)) {
 			fileMenuNewPlistAction(e);
 		}
 
@@ -269,7 +269,9 @@ public class FXMLController implements Initializable {
 		List<File> openedFiles = fc.showOpenMultipleDialog(PlayerFX.getPlayerStage());
 		if (openedFiles != null) {
 
-			model.setPlaylist(plm.openMp3(openedFiles, model));
+			plm.openMp3(openedFiles, model);
+
+			model.setPlaylist(model.getPlaylist());
 
 			playListTable.setItems(model.getPlaylist());
 

@@ -35,7 +35,7 @@ public class PlayListMethods {
 
 
 
-	public ObservableList<PlaylistElement> openMp3(List<File> openedFiles, Model model) {
+	public void openMp3(List<File> openedFiles, Model model) {
 		ObservableList<PlaylistElement> addedNewPLEs = FXCollections.observableArrayList();
 		for (File file : openedFiles) {
 			try {
@@ -51,7 +51,6 @@ public class PlayListMethods {
 		}
 		model.getPlaylist().addAll(addedNewPLEs);
 		PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
-		return addedNewPLEs;
 	}
 
 	public void savePlaylist(File savedFile, Model model) {
