@@ -33,8 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -45,11 +44,8 @@ import java.util.List;
  *
  * @author Pintér Dávid
  */
+@Slf4j
 public final class PlayerFX {
-    /**
-     * Logger objektum naplózáshoz.
-     */
-    private static Logger logger = LoggerFactory.getLogger(PlayerFX.class);
     /**
      * {@link MediaPlayer} objektum.
      */
@@ -131,15 +127,15 @@ public final class PlayerFX {
                         next(m);
                         fxc.getPlayListTable().getSelectionModel().select(actualElementInPlaylist);
 
-                        logger.info("Auto next:");
-                        logger.info("Actual playlist element:");
+                        log.info("Auto next:");
+                        log.info("Actual playlist element:");
                         StringBuffer sb = new StringBuffer();
                         sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist())
                             .append(" - ").append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
                             .getTitle()).append(" - ")
                             .append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
                                 .getAlbum());
-                        logger.info(sb.toString());
+                        log.info(sb.toString());
                         autonext(m, fxc);
 
                     } else {

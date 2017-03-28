@@ -34,9 +34,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A program fő belépési pontja.
@@ -46,11 +44,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Pintér Dávid
  */
+@Slf4j
 public class LightningPlayerMainJavaFX extends Application {
-    /**
-     * Logger objektum naplózáshoz.
-     */
-    private static Logger logger = LoggerFactory.getLogger(LightningPlayerMainJavaFX.class);
 
     /**
      * A program fő belépési pontja.
@@ -71,7 +66,7 @@ public class LightningPlayerMainJavaFX extends Application {
      */
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        logger.info("LightningPlayer started");
+        log.info("LightningPlayer started");
 
         Model theModel = new Model();
         FXMLController.setModel(theModel);
@@ -85,7 +80,7 @@ public class LightningPlayerMainJavaFX extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-        logger.info("Application window created");
+        log.info("Application window created");
 
     }
 

@@ -63,7 +63,6 @@ public class PlaylistElement implements Serializable {
 
     private static final long serialVersionUID = 8751386371345087303L;
 
-    // TODO: album artwork
     /**
      * A {@link hu.davidp.beadando.player.controller.PlayerFX} objektum által lejátszható formátum.
      */
@@ -164,7 +163,6 @@ public class PlaylistElement implements Serializable {
         this.location = mp3File.getFilename();
         this.duration = mp3File.getLengthInMilliseconds();
         this.bitrate = mp3File.getBitrate();
-
 
         if (mp3File.hasId3v1Tag()) {
             id3v1Tag = mp3File.getId3v1Tag();
@@ -314,7 +312,6 @@ public class PlaylistElement implements Serializable {
         }
 
         this.trackNum = ifnullToEmpty(this.trackNum);
-
 
     }
 
