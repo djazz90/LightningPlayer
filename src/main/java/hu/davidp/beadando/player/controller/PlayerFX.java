@@ -27,6 +27,7 @@ package hu.davidp.beadando.player.controller;
  */
 
 import hu.davidp.beadando.player.model.Model;
+import hu.davidp.beadando.player.model.PlayerSettings;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -90,7 +91,7 @@ public final class PlayerFX {
 
         this.playButtonTextIsPlay = true;
         this.hasMedia = false;
-
+        PlayerSettings.initialize();
     }
 
     /**
