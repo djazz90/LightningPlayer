@@ -176,13 +176,12 @@ public class FXMLController implements Initializable {
             && PlayerFX.getInstance().getActualPlaylistSize() != 0 && PlayerFX.getInstance().hasMedia();
         stopButton.setDisable(!stopButtonEnabled);
 
-        if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
-            playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PLAY));
-            log.debug("playbutton font:" + playButton.getFont());
-        } else {
+        if (PlayerFX.getState() == PlayerFX.PlayerState.PLAYING) {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
-
+        } else {
+            playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PLAY));
         }
+
         if (PlayerFX.getInstance().hasMedia()) {
 
             PlayerFX.getInstance().getMp().setOnReady(
@@ -200,13 +199,11 @@ public class FXMLController implements Initializable {
                 observable -> updateSeeker()
             );
 
-
-
         }
 
     }
 
-    protected void updateSeeker() {
+    private void updateSeeker() {
         if (seekerSlider != null && PlayerFX.getInstance().hasMedia()) {
             Platform.runLater(() -> {
 
@@ -259,7 +256,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void playButtonAction(final ActionEvent e) {
-        if (PlayerFX.getInstance().isPlayButtonSaysPlay()) {
+        if (PlayerFX.getState() == PlayerFX.PlayerState.PAUSED ||
+            PlayerFX.getState() == PlayerFX.PlayerState.STOPPED) {
 
             PlayerFX.getInstance().play();
             PlayerFX.getInstance().autonext(model, this);
@@ -339,7 +337,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void fileMenuOpenMP3Action(final ActionEvent e) {
-        if ((playListTabPane.getTabs().size()) < (model.MAX_PLAYLIST_NUM)) {
+        if ((playListTabPane.getTabs().size()) < (Model.MAX_PLAYLIST_NUM)) {
             fileMenuNewPlistAction(e);
         }
 

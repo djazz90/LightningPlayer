@@ -34,6 +34,9 @@ import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -56,10 +59,6 @@ public final class PlayerFX {
      * Az aktuális {@link Media} objektum, amit éppen játszik a lejátszó.
      */
     private Media actualMedia;
-    /**
-     * Igaz, ha a Viewban a Play gomb felirata Play.
-     */
-    private boolean playButtonTextIsPlay;
 
     /**
      * Igaz, ha a lejátszóban van {@link Media}.
@@ -84,12 +83,31 @@ public final class PlayerFX {
 
     private static Stage playerStage;
 
+    @Getter
+    @Setter(AccessLevel.NONE)
+    private static PlayerState state = PlayerState.STOPPED;
+
+    public enum PlayerState {
+        PLAYING, STOPPED, PAUSED;
+
+        public String prettyPrintName() {
+            switch (this) {
+                case PLAYING:
+                    return "Playing";
+                case STOPPED:
+                    return "Stopped";
+                case PAUSED:
+                    return "Paused";
+                default:
+                    return null;
+            }
+        }
+    }
     /**
      * Singleton konstruktor a lejátszó számára.
      */
     private PlayerFX() {
 
-        this.playButtonTextIsPlay = true;
         this.hasMedia = false;
         PlayerSettings.initialize();
     }
@@ -142,7 +160,7 @@ public final class PlayerFX {
                     } else {
 
                         mp.stop();
-                        playButtonTextIsPlay = true;
+                        state = PlayerState.STOPPED;
                         fxc.setAvailability();
                     }
 
@@ -157,10 +175,11 @@ public final class PlayerFX {
      * Az aktuális lejátszólista elem lejátszása.
      */
     public void play() {
-        playButtonTextIsPlay = false;
+        state = PlayerState.PLAYING;
         Platform.runLater(
 
             () -> {
+
                 mp.setVolume(PlayerSettings.getVolumeLevel());
                 mp.play();
             });
@@ -170,8 +189,7 @@ public final class PlayerFX {
      * A lejátszás szüneteltetése.
      */
     public void pause() {
-
-        PlayerFX.this.playButtonTextIsPlay = true;
+        state = PlayerState.PAUSED;
         mp.pause();
 
     }
@@ -180,9 +198,7 @@ public final class PlayerFX {
      * A lejátszás megállítása.
      */
     public void stop() {
-
-        playButtonTextIsPlay = true;
-
+        state = PlayerState.STOPPED;
         mp.stop();
 
     }
@@ -199,7 +215,6 @@ public final class PlayerFX {
             .getPlaylist()
             .get(actualElementInPlaylist).asMedia();
         mp = new MediaPlayer(actualMedia);
-        playButtonTextIsPlay = false;
         play();
     }
 
@@ -216,7 +231,6 @@ public final class PlayerFX {
             .get(actualElementInPlaylist).asMedia();
 
         mp = new MediaPlayer(actualMedia);
-        playButtonTextIsPlay = false;
         play();
 
     }
@@ -241,17 +255,7 @@ public final class PlayerFX {
             mp.stop();
         }
         this.mp = new MediaPlayer(actualMedia);
-        this.playButtonTextIsPlay = false;
         this.hasMedia = true;
-    }
-
-    /**
-     * Visszaadja a {@link #playButtonTextIsPlay} értékét.
-     *
-     * @return igazzal tér vissza, ha a Play gomb szövege Play
-     */
-    public boolean isPlayButtonSaysPlay() {
-        return playButtonTextIsPlay;
     }
 
     /**
@@ -334,5 +338,6 @@ public final class PlayerFX {
     public static Stage getPlayerStage() {
         return playerStage;
     }
+
 
 }
