@@ -72,7 +72,7 @@
       </GridPane>
    </top>
    <bottom>
-      <SplitPane dividerPositions="0.5" prefHeight="22.0" prefWidth="586.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.7" prefHeight="22.0" prefWidth="586.0" BorderPane.alignment="CENTER">
          <items>
             <HBox prefHeight="20.0" prefWidth="586.0">
                <children>

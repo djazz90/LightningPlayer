@@ -161,6 +161,8 @@ public final class PlayerFX {
 
                         mp.stop();
                         state = PlayerState.STOPPED;
+                        mp = null;
+                        hasMedia = false;
                         fxc.setAvailability();
                     }
 

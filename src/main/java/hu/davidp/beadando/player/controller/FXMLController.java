@@ -205,6 +205,8 @@ public class FXMLController implements Initializable {
                 observable -> updateSeeker()
             );
 
+        } else {
+            seekerSlider.setDisable(true);
         }
 
     }
