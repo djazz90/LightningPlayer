@@ -2,6 +2,7 @@ package hu.davidp.beadando.player.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import hu.davidp.beadando.player.model.Model;
+import hu.davidp.beadando.player.model.PlayerSettings;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -22,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
@@ -84,6 +86,7 @@ public class FXMLController implements Initializable {
     @FXML
     private Slider seekerSlider;
 
+    @Getter
     @FXML
     private Slider volumeSlider;
 
@@ -95,7 +98,6 @@ public class FXMLController implements Initializable {
     private File lastFolder;
 
     private static final double MAX_SEEKER_SLIDER_VALUE = 200.0;
-    private static final double INITIAL_VOLUME = 0.7;
 
     /*
      * (non-Javadoc) beállítja a gombok láthatóságát, az a alapértelmezett
@@ -118,12 +120,14 @@ public class FXMLController implements Initializable {
         //hangereje is ilyen tartományban helyezkedik el.
         volumeSlider.setMin(0.0);
         volumeSlider.setMax(1.0);
-        volumeSlider.setValue(INITIAL_VOLUME);
+        volumeSlider.setValue(PlayerSettings.getVolumeLevel());
 
         volumeSlider.valueProperty().addListener(observable -> {
             if (volumeSlider.isValueChanging()) {
                 MediaPlayer mediaPlayer = PlayerFX.getInstance().getMp();
-                mediaPlayer.setVolume(volumeSlider.getValue());
+                PlayerSettings.setVolumeLevel(volumeSlider.getValue());
+                mediaPlayer.setVolume(PlayerSettings.getVolumeLevel());
+
             }
         });
 

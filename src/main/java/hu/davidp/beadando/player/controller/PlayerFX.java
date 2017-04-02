@@ -158,7 +158,12 @@ public final class PlayerFX {
      */
     public void play() {
         playButtonTextIsPlay = false;
-        Platform.runLater(() -> mp.play());
+        Platform.runLater(
+
+            () -> {
+                mp.setVolume(PlayerSettings.getVolumeLevel());
+                mp.play();
+            });
     }
 
     /**
@@ -193,7 +198,6 @@ public final class PlayerFX {
         actualMedia = m
             .getPlaylist()
             .get(actualElementInPlaylist).asMedia();
-
         mp = new MediaPlayer(actualMedia);
         playButtonTextIsPlay = false;
         play();
