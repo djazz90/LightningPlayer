@@ -97,9 +97,11 @@ public class FXMLController implements Initializable {
     @FXML
     private Label statusBarLabel;
 
-    private static Duration duration;
+    private Duration duration;
 
     private File lastFolder;
+
+    private MediaPlayer mediaPlayer;
 
     private static final double MAX_SEEKER_SLIDER_VALUE = 200.0;
 
@@ -113,12 +115,15 @@ public class FXMLController implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        mediaPlayer = PlayerFX.getInstance().getMp();
+
         nextButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_FORWARD));
         prevButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_BACKWARD));
         stopButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STOP));
 
         seekerSlider.setMin(0.0);
         seekerSlider.setMax(MAX_SEEKER_SLIDER_VALUE);
+
 
         //rendre 0.0-tól 1.0-ig állítom be a csúszka értékeit, mivel a {@link MediaPlayer}
         //hangereje is ilyen tartományban helyezkedik el.
@@ -128,7 +133,6 @@ public class FXMLController implements Initializable {
 
         volumeSlider.valueProperty().addListener(observable -> {
             if (volumeSlider.isValueChanging()) {
-                MediaPlayer mediaPlayer = PlayerFX.getInstance().getMp();
                 PlayerSettings.setVolumeLevel(volumeSlider.getValue());
                 mediaPlayer.setVolume(PlayerSettings.getVolumeLevel());
 
@@ -139,8 +143,6 @@ public class FXMLController implements Initializable {
 
         seekerSlider.valueProperty().addListener((observable) -> {
             if (seekerSlider.isValueChanging()) {
-                MediaPlayer mediaPlayer = PlayerFX.getInstance().getMp();
-
                 double newPosition = seekerSlider.getValue() / MAX_SEEKER_SLIDER_VALUE;
                 Duration newDuration = new Duration(newPosition * duration.toMillis());
 
@@ -189,8 +191,8 @@ public class FXMLController implements Initializable {
         statusBarLabel.setText(PlayerFX.getState().prettyPrintName());
 
         if (PlayerFX.getInstance().hasMedia()) {
-
-            PlayerFX.getInstance().getMp().setOnReady(
+            mediaPlayer = PlayerFX.getInstance().getMp();
+            mediaPlayer.setOnReady(
                 () -> {
                     duration = PlayerFX.getInstance().getActualMedia().getDuration();
                     log.info("Player is ready.");
@@ -201,7 +203,7 @@ public class FXMLController implements Initializable {
                 }
             );
 
-            PlayerFX.getInstance().getMp().currentTimeProperty().addListener(
+            mediaPlayer.currentTimeProperty().addListener(
                 observable -> updateSeeker()
             );
 
@@ -215,7 +217,7 @@ public class FXMLController implements Initializable {
         if (seekerSlider != null && PlayerFX.getInstance().hasMedia()) {
             Platform.runLater(() -> {
 
-                Duration currentTime = PlayerFX.getInstance().getMp().getCurrentTime();
+                Duration currentTime = mediaPlayer.getCurrentTime();
                 seekerSlider.setDisable(duration.isUnknown());
                 if (!seekerSlider.isDisabled()
                     && duration.greaterThan(Duration.ZERO)
@@ -424,7 +426,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void fileMenuClosePlistAction(final ActionEvent e) {
-        if (PlayerFX.getInstance().getMp() != null) {
+        if (mediaPlayer != null) {
             PlayerFX.getInstance().stop();
         }
 
