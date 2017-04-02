@@ -15,8 +15,7 @@ public final class PlayerSettings {
     private static final File PROPERTIES_FILE = new File("settings.properties");
 
     private static final String VOLUME_LEVEL_PROPERTY_NAME = "volume.level";
-    private static final String REPEAT_STRING_PROPERTY_NAME = "repeat";
-    private static final String SHUFFLE_STRING_PROPERTY_NAME = "shuffle";
+    private static final String NAVIGATION_STATE_PROPERTY_NAME = "navigation.state";
 
     @Getter
     @Setter
@@ -24,17 +23,16 @@ public final class PlayerSettings {
 
     @Getter
     @Setter
-    private static Boolean repeat = false;
+    private static NavigationState navigationState = NavigationState.NEXT_SONG;
 
-    @Getter
-    @Setter
-    private static Boolean shuffle = false;
+    public enum NavigationState {
+        NEXT_SONG, REPEAT_SONG, REPEAT_PLAYLIST, SHUFFLE
+    }
 
     public static void initialize() {
         if (!PROPERTIES_FILE.exists()) {
             properties.setProperty(VOLUME_LEVEL_PROPERTY_NAME, volumeLevel.toString());
-            properties.setProperty(REPEAT_STRING_PROPERTY_NAME, repeat.toString());
-            properties.setProperty(SHUFFLE_STRING_PROPERTY_NAME, shuffle.toString());
+            properties.setProperty(NAVIGATION_STATE_PROPERTY_NAME, navigationState.toString());
 
             try (FileOutputStream outputStream = new FileOutputStream(PROPERTIES_FILE)) {
                 properties.store(outputStream, null);
