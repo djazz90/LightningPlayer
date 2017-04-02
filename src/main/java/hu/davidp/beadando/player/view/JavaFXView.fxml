@@ -76,7 +76,7 @@
          <items>
             <HBox prefHeight="20.0" prefWidth="586.0">
                <children>
-                  <Label text="Stopped" />
+                  <Label fx:id="statusBarLabel" text="Stopped" />
                </children>
             </HBox>
             <HBox alignment="CENTER_RIGHT">

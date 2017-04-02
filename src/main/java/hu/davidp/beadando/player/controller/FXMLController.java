@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -92,6 +93,9 @@ public class FXMLController implements Initializable {
 
     @FXML
     private TabPane playListTabPane;
+
+    @FXML
+    private Label statusBarLabel;
 
     private static Duration duration;
 
@@ -181,6 +185,8 @@ public class FXMLController implements Initializable {
         } else {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PLAY));
         }
+
+        statusBarLabel.setText(PlayerFX.getState().prettyPrintName());
 
         if (PlayerFX.getInstance().hasMedia()) {
 
