@@ -280,15 +280,6 @@ public final class PlayerFX {
     }
 
     /**
-     * Beállitja a {@link #hasMedia} értékét.
-     *
-     * @param hasMedia a {@link #hasMedia} új értéke
-     */
-    public void setHasMedia(final boolean hasMedia) {
-        this.hasMedia = hasMedia;
-    }
-
-    /**
      * Beállítja az aktuális lejátszólista méretét a kívánt méretre.
      *
      * @param playlist a kívánt méret
