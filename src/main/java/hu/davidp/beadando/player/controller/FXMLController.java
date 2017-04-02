@@ -152,7 +152,7 @@ public class FXMLController implements Initializable {
     }
 
     public void setAvailability() {
-        boolean fileMenuNewPlistEnabled = playListTabPane.getTabs().size() < model.MAX_PLAYLIST_NUM;
+        boolean fileMenuNewPlistEnabled = playListTabPane.getTabs().size() < Model.MAX_PLAYLIST_NUM;
         fileMenuNewPlist.setDisable(!fileMenuNewPlistEnabled);
 
         boolean fileMenuSavePlistEnabled = model.getPlaylist() != null && !model.getPlaylist().isEmpty();
@@ -264,8 +264,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void playButtonAction(final ActionEvent e) {
-        if (PlayerFX.getState() == PlayerFX.PlayerState.PAUSED ||
-            PlayerFX.getState() == PlayerFX.PlayerState.STOPPED) {
+        if (PlayerFX.getState() == PlayerFX.PlayerState.PAUSED
+            || PlayerFX.getState() == PlayerFX.PlayerState.STOPPED) {
 
             PlayerFX.getInstance().play();
             PlayerFX.getInstance().autonext(model, this);

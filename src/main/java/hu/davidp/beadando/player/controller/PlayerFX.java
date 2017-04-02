@@ -103,6 +103,7 @@ public final class PlayerFX {
             }
         }
     }
+
     /**
      * Singleton konstruktor a lejátszó számára.
      */
@@ -340,6 +341,5 @@ public final class PlayerFX {
     public static Stage getPlayerStage() {
         return playerStage;
     }
-
 
 }

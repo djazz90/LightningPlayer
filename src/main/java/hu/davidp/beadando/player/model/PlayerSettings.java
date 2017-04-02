@@ -14,12 +14,14 @@ public final class PlayerSettings {
     private static Properties properties = new Properties();
     private static final File PROPERTIES_FILE = new File("settings.properties");
 
+    private static final Double DEFAULT_VOLUME_LEVEL = 0.7;
+
     private static final String VOLUME_LEVEL_PROPERTY_NAME = "volume.level";
     private static final String NAVIGATION_STATE_PROPERTY_NAME = "navigation.state";
 
     @Getter
     @Setter
-    private static Double volumeLevel = 0.7;
+    private static Double volumeLevel = DEFAULT_VOLUME_LEVEL;
 
     @Getter
     @Setter
