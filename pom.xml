@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.davidp.beadando</groupId>
     <artifactId>LightningPlayer</artifactId>
-    <version>0.8</version>
+    <version>0.8.1-SNAPSHOT</version>
     <description>Egyszerű MP3 lejátszó program, lejátszólista kezelési lehetőséggel, XML fájlba történő mentéssel és
         betöltéssel.
     </description>
@@ -155,6 +155,13 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
