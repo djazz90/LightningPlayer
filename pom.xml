@@ -245,6 +245,7 @@
                 <version>${findbugs.plugin.version}</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
+                    <detail>true</detail>
                     <effort>Max</effort>
                     <threshold>Medium</threshold>
                     <excludeFilterFile>${dir.codequality}/findbugs/findbugs-exclude.xml</excludeFilterFile>

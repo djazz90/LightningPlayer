@@ -46,16 +46,16 @@ public class ApplicationTestBase {
         File none = FileUtils.getFile("src", "test", "resources", "notagtest.mp3");
 
         PlaylistElement ple = new PlaylistElement(new Mp3File(id3v1only), new File(id3v1only.getAbsolutePath()));
-        assertEquals(ple.getAlbum(), "");
+        assertEquals("ccMixter", ple.getAlbum());
         assertFalse(ple.getTitle().isEmpty());
         PlaylistElement ple2 = new PlaylistElement(new Mp3File(id3v2only), new File(id3v2only.getAbsolutePath()));
-        assertEquals(ple2.getAlbum(), "");
+        assertEquals("ccMixter", ple2.getAlbum());
         assertFalse(ple2.getTitle().isEmpty());
         PlaylistElement ple3 = new PlaylistElement(new Mp3File(both), new File(both.getAbsolutePath()));
-        assertEquals(ple3.getAlbum(), "id3v1+v2");
+        assertEquals("ccMixter", ple3.getAlbum());
         assertFalse(ple3.getTitle().isEmpty());
         PlaylistElement ple4 = new PlaylistElement(new Mp3File(none), new File(none.getAbsolutePath()));
-        assertEquals(ple4.getAlbum(), "");
+        assertEquals("", ple4.getAlbum());
         assertFalse(ple4.getTitle().isEmpty());
 
     }
