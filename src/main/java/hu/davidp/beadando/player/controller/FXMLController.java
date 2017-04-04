@@ -141,14 +141,15 @@ public class FXMLController implements Initializable {
 
         setAvailability();
 
-        seekerSlider.valueProperty().addListener((observable) -> {
+
+        seekerSlider.valueProperty().addListener(observable -> {
             if (seekerSlider.isValueChanging()) {
+
                 double newPosition = seekerSlider.getValue() / MAX_SEEKER_SLIDER_VALUE;
                 Duration newDuration = new Duration(newPosition * duration.toMillis());
 
                 mediaPlayer.seek(newDuration);
             }
-
         });
 
     }
@@ -426,7 +427,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void fileMenuClosePlistAction(final ActionEvent e) {
-        if (mediaPlayer != null) {
+        if (PlayerFX.getInstance().hasMedia()) {
             PlayerFX.getInstance().stop();
         }
 
