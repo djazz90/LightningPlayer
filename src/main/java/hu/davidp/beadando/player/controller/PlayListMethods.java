@@ -47,7 +47,7 @@ public final class PlayListMethods {
 
         }
         model.getPlaylist().addAll(addedNewPLEs);
-        PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
+        //PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
     }
 
     public static void savePlaylist(final File savedFile, final Model model) {

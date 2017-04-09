@@ -67,6 +67,7 @@ public class ApplicationTestBase {
 
         File id3v1only = FileUtils.getFile("src", "test", "resources", "id3v1test.mp3");
         ple = new PlaylistElement(new Mp3File(id3v1only), new File(id3v1only.getAbsolutePath()));
+        PlayerFX.setPlayerModel(model);
         PlayerFX.getInstance().setActualMedia(ple.asMedia());
         PlayerFX.getInstance().getMp().setMute(true);
         PlayerFX.getInstance().play();
@@ -89,21 +90,22 @@ public class ApplicationTestBase {
         model.setPlaylist(FXCollections.observableArrayList());
         assertNotNull(model.getPlaylist());
         PlayListMethods.openMp3(filesToPlay, model);
+        PlayerFX.getInstance().setActualPlaylist(model.getPlaylist());
         assertEquals(4, model.getPlaylist().size());
-        assertEquals(4, PlayerFX.getInstance().getActualPlaylistSize());
+        assertEquals(4, PlayerFX.getInstance().getActualPlaylist().size());
 
         PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(0).asMedia());
         PlayerFX.getInstance().getMp().setMute(true);
         PlayerFX.getInstance().play();
         for (int i = 0; i < 3; i++) {
             assertEquals(i, PlayerFX.getInstance().getActualElementInPlaylist());
-            PlayerFX.getInstance().next(model);
+            PlayerFX.getInstance().next();
         }
         PlayerFX.getInstance().stop();
 
         for (int i = 3; i > 0; i--) {
             assertEquals(i, PlayerFX.getInstance().getActualElementInPlaylist());
-            PlayerFX.getInstance().prev(model);
+            PlayerFX.getInstance().prev();
         }
         PlayerFX.getInstance().stop();
 
@@ -114,7 +116,7 @@ public class ApplicationTestBase {
         model = PlayListMethods.openPlayList(f);
         assertNotNull(model.getPlaylist());
         assertEquals(4, model.getPlaylist().size());
-        assertEquals(4, PlayerFX.getInstance().getActualPlaylistSize());
+        assertEquals(4, PlayerFX.getInstance().getActualPlaylist().size());
     }
 
     @Test(expected = SAXException.class)

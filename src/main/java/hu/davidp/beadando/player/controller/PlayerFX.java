@@ -30,6 +30,7 @@ import hu.davidp.beadando.player.model.Model;
 import hu.davidp.beadando.player.model.PlayerSettings;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -38,8 +39,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 /**
  * Player osztály. A program lejátszója, MP3 fájlok lejátszását végzi. Működését
@@ -66,10 +65,6 @@ public final class PlayerFX {
     private boolean hasMedia;
 
     /**
-     * Az aktuális lejátszólista mérete, ahonnan a lejátszó játszik.
-     */
-    private int actualPlaylistSize;
-    /**
      * Az aktuálisan játszott lejátszólista elem sorszáma.
      */
     private int actualElementInPlaylist;
@@ -79,9 +74,23 @@ public final class PlayerFX {
      */
     private static PlayerFX instance = null;
 
+    @Getter
+    @Setter
     private static Scene playerScene;
 
+    @Getter
+    @Setter
     private static Stage playerStage;
+
+    @Getter
+    @Setter
+    private static Model playerModel;
+
+    @Getter
+    @Setter
+    @SuppressWarnings("PMD.ImmutableField")
+    // a pmd nem látja, hogy getelve és setelve van a kódban.
+    private ObservableList<PlaylistElement> actualPlaylist;
 
     @Getter
     @Setter(AccessLevel.NONE)
@@ -109,8 +118,11 @@ public final class PlayerFX {
      */
     private PlayerFX() {
 
-        this.hasMedia = false;
+        hasMedia = false;
         PlayerSettings.initialize();
+
+        actualPlaylist = playerModel.getPlaylist();
+
     }
 
     /**
@@ -125,6 +137,7 @@ public final class PlayerFX {
         synchronized (PlayerFX.class) {
             if (instance == null) {
                 instance = new PlayerFX();
+
             }
             return instance;
         }
@@ -134,44 +147,29 @@ public final class PlayerFX {
     /**
      * A lejátszó automatikusan a következő lejátszólista elemre lép, ha az
      * aktuális véget ér.
-     *
-     * @param m a {@link Model} osztály egy példánya
      */
-    public void autonext(final Model m, final FXMLController fxc) {
+    public void autonext(final FXMLController fxc) {
         fxc.setAvailability();
-        try {
-            mp.setOnEndOfMedia(
-                () -> {
 
-                    if (actualElementInPlaylist != actualPlaylistSize - 1) {
-                        next(m);
-                        fxc.getPlayListTable().getSelectionModel().select(actualElementInPlaylist);
+        mp.setOnEndOfMedia(
+            () -> {
 
-                        log.info("Auto next:");
-                        log.info("Actual playlist element:");
-                        StringBuffer sb = new StringBuffer();
-                        sb.append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist())
-                            .append(" - ").append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
-                            .getTitle()).append(" - ")
-                            .append(m.getPlaylist().get(PlayerFX.getInstance().getActualElementInPlaylist())
-                                .getAlbum());
-                        log.info(sb.toString());
-                        autonext(m, fxc);
+                if (actualElementInPlaylist != actualPlaylist.size() - 1) {
+                    next();
+                    fxc.getPlayListTable().getSelectionModel().select(actualElementInPlaylist);
 
-                    } else {
+                    autonext(fxc);
 
-                        mp.stop();
-                        state = PlayerState.STOPPED;
-                        mp = null;
-                        hasMedia = false;
-                        fxc.setAvailability();
-                    }
+                } else {
 
-                });
+                    mp.stop();
+                    state = PlayerState.STOPPED;
+                    mp = null;
+                    hasMedia = false;
+                    fxc.setAvailability();
+                }
 
-        } catch (NullPointerException ex) {
-            ex.printStackTrace();
-        }
+            });
     }
 
     /**
@@ -180,9 +178,7 @@ public final class PlayerFX {
     public void play() {
         state = PlayerState.PLAYING;
         Platform.runLater(
-
             () -> {
-
                 mp.setVolume(PlayerSettings.getVolumeLevel());
                 mp.play();
             });
@@ -208,33 +204,45 @@ public final class PlayerFX {
 
     /**
      * A következő lejátszólista elemre lép.
-     *
-     * @param m a {@link Model} osztály egy példánya
      */
-    public void next(final Model m) {
+    public void next() {
         mp.stop();
         actualElementInPlaylist++;
-        actualMedia = m
-            .getPlaylist()
+        actualMedia = actualPlaylist
             .get(actualElementInPlaylist).asMedia();
         mp = new MediaPlayer(actualMedia);
+        logActualPlaylistElement();
         play();
     }
 
     /**
      * Az előző lejátszólista elemre lép.
-     *
-     * @param m a {@link Model} osztály egy példánya
      */
-    public void prev(final Model m) {
+    public void prev() {
         mp.stop();
         actualElementInPlaylist--;
-        actualMedia = m
-            .getPlaylist()
+        actualMedia = actualPlaylist
             .get(actualElementInPlaylist).asMedia();
-
         mp = new MediaPlayer(actualMedia);
+        logActualPlaylistElement();
         play();
+
+    }
+
+    private void logActualPlaylistElement() {
+        //get calling method name and log it
+        final StackTraceElement callingStackTraceElement = Thread.currentThread().getStackTrace()[2];
+        final String callingMethod = callingStackTraceElement.getMethodName();
+
+        log.info("Calling method: {}", callingMethod);
+        log.info("Actual playlist element:");
+        StringBuilder sb = new StringBuilder();
+        sb.append(actualPlaylist.get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist())
+            .append(" - ").append(actualPlaylist.get(PlayerFX.getInstance().getActualElementInPlaylist())
+            .getTitle()).append(" - ")
+            .append(actualPlaylist.get(PlayerFX.getInstance().getActualElementInPlaylist())
+                .getAlbum());
+        log.info(sb.toString());
 
     }
 
@@ -262,35 +270,12 @@ public final class PlayerFX {
     }
 
     /**
-     * Visszaadja az aktuális lejetszólista méretét.
-     *
-     * @return az aktuális lejátszólista mérete
-     */
-    public int getActualPlaylistSize() {
-        return actualPlaylistSize;
-    }
-
-    /**
      * Visszaadja a {@link #hasMedia} értékét.
      *
      * @return igaz, ha van a lejátszónak {@link Media}-ja
      */
     public boolean hasMedia() {
         return hasMedia;
-    }
-
-    /**
-     * Beállítja az aktuális lejátszólista méretét a kívánt méretre.
-     *
-     * @param playlist a kívánt méret
-     */
-    public void setPlaylistSize(final List<PlaylistElement> playlist) {
-        if (playlist != null) {
-            actualPlaylistSize = playlist.size();
-        } else {
-            actualPlaylistSize = 0;
-        }
-
     }
 
     /**
@@ -318,19 +303,6 @@ public final class PlayerFX {
      */
     public MediaPlayer getMp() {
         return mp;
-    }
-
-    public static void setSceneAndStage(final Scene s, final Stage st) {
-        playerScene = s;
-        playerStage = st;
-    }
-
-    public static Scene getPlayerScene() {
-        return playerScene;
-    }
-
-    public static Stage getPlayerStage() {
-        return playerStage;
     }
 
 }
