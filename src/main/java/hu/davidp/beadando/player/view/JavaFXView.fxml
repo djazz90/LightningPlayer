@@ -45,6 +45,12 @@
                     <MenuItem fx:id="fileMenuExit" mnemonicParsing="false" onAction="#fileMenuExitAction" text="Exit LightningPlayer" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                        <MenuItem fx:id="settingsMenuLoad" mnemonicParsing="false" onAction="#settingsMenuLoadAction" text="Load" />
+                      <MenuItem fx:id="settingsMenuSave" mnemonicParsing="false" onAction="#settingsMenuSaveAction" text="Save" />
+                    </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />

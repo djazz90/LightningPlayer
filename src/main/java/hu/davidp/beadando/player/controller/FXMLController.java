@@ -39,7 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.TooManyFields"})
+//mivel 1 fxml-hez 1 controller tartozik, így a PMD ezen szabályai alól az osztályt fel lehet menteni
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.TooManyFields", "PMD.GodClass"})
 @Slf4j
 public class FXMLController implements Initializable {
 
@@ -73,6 +74,12 @@ public class FXMLController implements Initializable {
 
     @FXML
     private MenuItem fileMenuExit;
+
+    @FXML
+    private MenuItem settingsMenuLoad;
+
+    @FXML
+    private MenuItem settingsMenuSave;
 
     @FXML
     private Button prevButton;
@@ -123,7 +130,6 @@ public class FXMLController implements Initializable {
         seekerSlider.setMin(0.0);
         seekerSlider.setMax(MAX_SEEKER_SLIDER_VALUE);
 
-
         //rendre 0.0-tól 1.0-ig állítom be a csúszka értékeit, mivel a {@link MediaPlayer}
         //hangereje is ilyen tartományban helyezkedik el.
         volumeSlider.setMin(0.0);
@@ -132,14 +138,16 @@ public class FXMLController implements Initializable {
 
         volumeSlider.valueProperty().addListener(observable -> {
             if (volumeSlider.isValueChanging()) {
+
                 PlayerSettings.setVolumeLevel(volumeSlider.getValue());
-                mediaPlayer.setVolume(PlayerSettings.getVolumeLevel());
+                if (mediaPlayer != null) {
+                    mediaPlayer.setVolume(PlayerSettings.getVolumeLevel());
+                }
 
             }
         });
 
         setAvailability();
-
 
         seekerSlider.valueProperty().addListener(observable -> {
             if (seekerSlider.isValueChanging()) {
@@ -191,6 +199,7 @@ public class FXMLController implements Initializable {
         }
 
         statusBarLabel.setText(PlayerFX.getState().prettyPrintName());
+        volumeSlider.setValue(PlayerSettings.getVolumeLevel());
 
         if (PlayerFX.getInstance().hasMedia()) {
             mediaPlayer = PlayerFX.getInstance().getMp();
@@ -423,6 +432,28 @@ public class FXMLController implements Initializable {
     @FXML
     public void fileMenuExitAction(final ActionEvent e) {
         PlayerFX.getPlayerStage().close();
+    }
+
+    @FXML
+    public void settingsMenuLoadAction(final ActionEvent event) {
+        try {
+            PlayerSettings.load();
+            log.info("Settings successfully loaded!");
+        } catch (IOException e) {
+            log.info("Settings cannot be loaded!", e);
+        }
+        setAvailability();
+    }
+
+    @FXML
+    public void settingsMenuSaveAction(final ActionEvent event) {
+        try {
+            PlayerSettings.save();
+            log.info("Settings successfully saved!");
+        } catch (IOException e) {
+            log.info("Settings cannot be saved!", e);
+        }
+        setAvailability();
     }
 
     public TableView<PlaylistElement> getPlayListTable() {
