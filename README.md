@@ -8,7 +8,7 @@ Technology stack
 
 [Trello](https://trello.com/b/BuztadAe)
 
---- 
+---
 # Credits:   #
 
 Song used for testing:
@@ -28,3 +28,6 @@ Used trang to convert relax-ng to xsd:
 
 Downloaded trang jar from:  
 [http://www.java2s.com/Code/Jar/t/Downloadtrang20091111jar.htm](http://www.java2s.com/Code/Jar/t/Downloadtrang20091111jar.htm)  
+
+last.fm REST API:  
+http://www.last.fm/api
