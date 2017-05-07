@@ -13,7 +13,8 @@ import java.util.List;
 public class Artist {
     private String name;
 
-    private Image[] image;
+    @XmlElement(name = "image")
+    private List<Image> images;
 
     private String url;
 
