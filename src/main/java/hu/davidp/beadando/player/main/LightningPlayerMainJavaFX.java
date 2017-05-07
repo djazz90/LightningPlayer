@@ -27,6 +27,8 @@ package hu.davidp.beadando.player.main;
  */
 
 import hu.davidp.beadando.player.controller.PlayerFX;
+import hu.davidp.beadando.player.controller.ResponseController;
+import hu.davidp.beadando.player.lastfm.similar.artist.NoSimilarArtistFoundException;
 import hu.davidp.beadando.player.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -79,6 +81,12 @@ public class LightningPlayerMainJavaFX extends Application {
         PlayerFX.setPlayerScene(scene);
         PlayerFX.setPlayerStage(primaryStage);
         PlayerFX.getInstance();
+        try {
+            log.info(String.valueOf(ResponseController.getSimilarAtristsByName("The Postelles")));
+        } catch (NoSimilarArtistFoundException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
 
         primaryStage.setScene(scene);
         primaryStage.show();
