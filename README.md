@@ -6,7 +6,7 @@ Technology stack
  - Lombok
  - XSPF playlist
 
-[Trello](https://trello.com/b/BuztadAe)
+Issue tracking: [Trello](https://trello.com/b/BuztadAe)
 
 ---
 # Credits:   #
