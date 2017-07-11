@@ -27,8 +27,6 @@ package hu.davidp.beadando.player.main;
  */
 
 import hu.davidp.beadando.player.controller.PlayerFX;
-import hu.davidp.beadando.player.controller.ResponseController;
-import hu.davidp.beadando.player.lastfm.similar.artist.NoSimilarArtistFoundException;
 import hu.davidp.beadando.player.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -73,7 +71,6 @@ public class LightningPlayerMainJavaFX extends Application {
 
         PlayerFX.setPlayerModel(theModel);
 
-
         Parent root = FXMLLoader.load(getClass().getResource("/JavaFXView.fxml"));
 
         Scene scene = new Scene(root);
@@ -81,15 +78,17 @@ public class LightningPlayerMainJavaFX extends Application {
         PlayerFX.setPlayerScene(scene);
         PlayerFX.setPlayerStage(primaryStage);
         PlayerFX.getInstance();
-        try {
-            log.info(String.valueOf(ResponseController.getSimilarAtristsByName("The Postelles")));
-        } catch (NoSimilarArtistFoundException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
+//        try {
+//            log.info(String.valueOf(ResponseController.getSimilarAtristsByName("ThPostelles")));
+//        } catch (NoSimilarArtistFoundException e) {
+//            e.printStackTrace();
+//        }
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+
         log.info("Application window created");
 
     }

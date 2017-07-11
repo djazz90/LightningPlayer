@@ -33,46 +33,61 @@ public final class ResponseController {
     private static final String LIMIT_PARAMETER_NAME = "limit";
     private static final String LIMIT_PARAMETER_VALUE = "5";
 
+    private static Artist cachedArtist;
+
     private ResponseController() {
     }
 
     public static List<Artist> getSimilarAtristsByName(final String artistName) throws JAXBException, NoSimilarArtistFoundException {
+        synchronized (ResponseController.class) {
+            Lfm response = null;
+            if (cachedArtist == null || !artistName.equals(cachedArtist.getName())) {
+                try {
+                    //building full URI
+                    List<NameValuePair> parameterList = new ArrayList<>();
+                    parameterList.add(new BasicNameValuePair(METHOD_PARAM_NAME, GET_INFO_METHOD_NAME));
+                    parameterList.add(new BasicNameValuePair(ARTIST_PARAMETER_NAME, artistName));
+                    parameterList.add(new BasicNameValuePair(API_KEY_PARAMETER_NAME, PlayerSettings.getApiKey()));
+                    parameterList.add(new BasicNameValuePair(LIMIT_PARAMETER_NAME, LIMIT_PARAMETER_VALUE));
 
-        Lfm response = null;
+                    URIBuilder uriBuilder = new URIBuilder();
+                    uriBuilder.setScheme(AUDIOSCROBBLER_PROTOCOL_NAME)
+                        .setHost(AUDIOSCROBBLER_HOST_NAME)
+                        .setPath(AUDIOSCROBBLER_VERSION_PATH)
+                        .setParameters(parameterList)
+                        .build();
 
-        try {
-            //building full URI
-            List<NameValuePair> parameterList = new ArrayList<>();
-            parameterList.add(new BasicNameValuePair(METHOD_PARAM_NAME, GET_INFO_METHOD_NAME));
-            parameterList.add(new BasicNameValuePair(ARTIST_PARAMETER_NAME, artistName));
-            parameterList.add(new BasicNameValuePair(API_KEY_PARAMETER_NAME, PlayerSettings.getApiKey()));
-            parameterList.add(new BasicNameValuePair(LIMIT_PARAMETER_NAME, LIMIT_PARAMETER_VALUE));
+                    log.info("full calling url: {}", uriBuilder.toString());
+                    JAXBContext context = JAXBContext.newInstance(Lfm.class);
+                    //az unmarshaller végzi a betöltést az xml fájlból
+                    Unmarshaller unmarshaller = context.createUnmarshaller();
 
-            URIBuilder uriBuilder = new URIBuilder();
-            uriBuilder.setScheme(AUDIOSCROBBLER_PROTOCOL_NAME)
-                .setHost(AUDIOSCROBBLER_HOST_NAME)
-                .setPath(AUDIOSCROBBLER_VERSION_PATH)
-                .setParameters(parameterList)
-                .build();
+                    response = (Lfm) (unmarshaller.unmarshal(new URL(uriBuilder.toString())));
+                } catch (Exception e) {
+                    //ha nem sikerült találni info-t, akkor a cachet üríteni kell
+                    cachedArtist = null;
+                    throw new NoSimilarArtistFoundException("No similar artist found for the artist: " + artistName, e);
+                }
 
-            log.info("full calling url: {}", uriBuilder.toString());
-            JAXBContext context = JAXBContext.newInstance(Lfm.class);
-            //az unmarshaller végzi a betöltést az xml fájlból
-            Unmarshaller unmarshaller = context.createUnmarshaller();
+                log.info(response.getRootArtist().toString());
+                //log.info(response.getRootArtist().getSimilarArtists().toString());
+                cachedArtist = response.getRootArtist();
 
-            response = (Lfm) (unmarshaller.unmarshal(new URL(uriBuilder.toString())));
-        } catch (Exception e) {
-            throw new NoSimilarArtistFoundException("No similar artist found for the artist: " + artistName, e);
+
+            }
+
+            List<Artist> returned = cachedArtist.getSimilarArtists();
+
+            if (returned == null || returned.isEmpty()) {
+                throw new NoSimilarArtistFoundException("No similar artist found for the artist: " + artistName);
+            }
+
+            return returned;
         }
+    }
 
-        log.info(response.getRootArtist().toString());
-        //log.info(response.getRootArtist().getSimilarArtists().toString());
-        List<Artist> returned = response.getRootArtist().getSimilarArtists();
-
-        if (returned == null) {
-            returned = new ArrayList<>();
-        }
-
-        return returned;
+    public static List<Artist> getSimilarAtristsNowPlayling() throws JAXBException, NoSimilarArtistFoundException {
+        String currentArtist = PlayerFX.getInstance().getActualPlaylistElement().getArtist();
+        return getSimilarAtristsByName(currentArtist);
     }
 }

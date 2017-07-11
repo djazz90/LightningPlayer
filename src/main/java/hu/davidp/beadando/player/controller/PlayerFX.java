@@ -229,6 +229,10 @@ public final class PlayerFX {
 
     }
 
+    public PlaylistElement getActualPlaylistElement() {
+        return actualPlaylist.get(actualElementInPlaylist);
+    }
+
     private void logActualPlaylistElement() {
         //get calling method name and log it
         final StackTraceElement callingStackTraceElement = Thread.currentThread().getStackTrace()[2];

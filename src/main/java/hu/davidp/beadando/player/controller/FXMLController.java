@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -50,6 +51,10 @@ public class FXMLController implements Initializable {
 
     private TableView<PlaylistElement> playListTable;
 
+    private boolean needInfoDialog;
+
+    private ArtistInfoController artistInfoController;
+
     // menü
     @FXML
     private MenuBar menuBar;
@@ -91,6 +96,9 @@ public class FXMLController implements Initializable {
     private Button stopButton;
 
     @FXML
+    private Button infoButton;
+
+    @FXML
     private Slider seekerSlider;
 
     @Getter
@@ -126,6 +134,7 @@ public class FXMLController implements Initializable {
         nextButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_FORWARD));
         prevButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_BACKWARD));
         stopButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STOP));
+        infoButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.INFO_CIRCLE));
 
         seekerSlider.setMin(0.0);
         seekerSlider.setMax(MAX_SEEKER_SLIDER_VALUE);
@@ -191,6 +200,10 @@ public class FXMLController implements Initializable {
         boolean stopButtonEnabled = playlist != null
             && !playlist.isEmpty() && PlayerFX.getInstance().hasMedia();
         stopButton.setDisable(!stopButtonEnabled);
+
+        boolean infoButtonEnabled = playlist != null
+            && !playlist.isEmpty() && PlayerFX.getInstance().hasMedia();
+        infoButton.setDisable(!infoButtonEnabled);
 
         if (PlayerFX.getState() == PlayerFX.PlayerState.PLAYING) {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
@@ -297,10 +310,29 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void stopButtonAction(final ActionEvent e) {
-
         log.info("Stop button clicked");
         PlayerFX.getInstance().stop();
         setAvailability();
+    }
+
+    @FXML
+    public void infoButtonAction(final ActionEvent e) throws IOException {
+        log.info("Info button clicked");
+        if (artistInfoController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ArtistInfo.fxml"));
+
+            loader.load();
+            this.artistInfoController = loader.getController();
+            artistInfoController.initialize(null, null);
+        }
+        artistInfoController.refreshData();
+
+        if (artistInfoController.getPopOver().isShowing()) {
+            artistInfoController.getPopOver().hide();
+        } else {
+            artistInfoController.getPopOver().show(infoButton);
+        }
+
     }
 
     @FXML
@@ -460,4 +492,11 @@ public class FXMLController implements Initializable {
         return playListTable;
     }
 
+    public ArtistInfoController getArtistInfoController() {
+        return artistInfoController;
+    }
+
+    public void setArtistInfoController(final ArtistInfoController artistInfoController) {
+        this.artistInfoController = artistInfoController;
+    }
 }
