@@ -21,12 +21,15 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -111,6 +114,20 @@ public class FXMLController implements Initializable {
     @FXML
     private Label statusBarLabel;
 
+    @FXML
+    private ToggleButton shuffleButton;
+
+    @FXML
+    private ToggleButton repeatButton;
+
+    @FXML
+    private ToggleButton repeatOneButton;
+
+    @FXML
+    private HBox buttonsHBox;
+
+    private SegmentedButton navigationStateSegmentedButton;
+
     private Duration duration;
 
     private File lastFolder;
@@ -135,6 +152,15 @@ public class FXMLController implements Initializable {
         prevButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STEP_BACKWARD));
         stopButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.STOP));
         infoButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.INFO_CIRCLE));
+
+        shuffleButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.RANDOM));
+        repeatButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.REFRESH));
+        repeatOneButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.REPEAT));
+
+        navigationStateSegmentedButton = new SegmentedButton();
+        navigationStateSegmentedButton.getButtons().addAll(shuffleButton, repeatButton, repeatOneButton);
+        buttonsHBox.getChildren().add(navigationStateSegmentedButton);
+
 
         seekerSlider.setMin(0.0);
         seekerSlider.setMax(MAX_SEEKER_SLIDER_VALUE);
@@ -168,6 +194,8 @@ public class FXMLController implements Initializable {
             }
         });
 
+        fileMenuNewPlistAction(null);
+
     }
 
     public void setAvailability() {
@@ -183,27 +211,38 @@ public class FXMLController implements Initializable {
         fileMenuClosePlist.setDisable(!fileMenuClosePlistEnabled);
 
         boolean prevButtonEnabled = playlist != null
-            && playlist.size() > 1 && PlayerFX.getInstance().getActualElementInPlaylist() > 0
+            && playlist.size() > 1 && PlayerFX.getInstance().getPlaylistIndex() > 0
             && PlayerFX.getInstance().hasMedia();
         prevButton.setDisable(!prevButtonEnabled);
 
         boolean nextButtonEnabled = playlist != null
             && playlist.size() > 1
-            && PlayerFX.getInstance().getActualElementInPlaylist() < playlist.size() - 1
+            && (PlayerFX.getInstance().getPlaylistIndex() < playlist.size() - 1
+                || PlayerSettings.getNavigationState().equals(PlayerSettings.NavigationState.SHUFFLE)
+                || PlayerSettings.getNavigationState().equals(PlayerSettings.NavigationState.REPEAT_PLAYLIST))
             && PlayerFX.getInstance().hasMedia();
         nextButton.setDisable(!nextButtonEnabled);
 
-        boolean playButtonEnabled = playlist != null
+        boolean playlistIsAvailableAndPlayerHasMedia = playlist != null
             && !playlist.isEmpty() && PlayerFX.getInstance().hasMedia();
+
+        boolean playButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
         playButton.setDisable(!playButtonEnabled);
 
-        boolean stopButtonEnabled = playlist != null
-            && !playlist.isEmpty() && PlayerFX.getInstance().hasMedia();
+        boolean stopButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
         stopButton.setDisable(!stopButtonEnabled);
 
-        boolean infoButtonEnabled = playlist != null
-            && !playlist.isEmpty() && PlayerFX.getInstance().hasMedia();
+        boolean infoButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
         infoButton.setDisable(!infoButtonEnabled);
+
+        boolean shuffleButtonEnabled = playlistIsAvailableAndPlayerHasMedia && playlist.size() >= PlayerSettings.SHUFFLE_TRESHOLD;
+        shuffleButton.setDisable(!shuffleButtonEnabled);
+
+        boolean repeatButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
+        repeatButton.setDisable(!repeatButtonEnabled);
+
+        boolean repeatOneButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
+        repeatOneButton.setDisable(!repeatOneButtonEnabled);
 
         if (PlayerFX.getState() == PlayerFX.PlayerState.PLAYING) {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
@@ -221,8 +260,8 @@ public class FXMLController implements Initializable {
                     duration = PlayerFX.getInstance().getActualMedia().getDuration();
                     log.info("Player is ready.");
 
-                    String artist = playlist.get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist();
-                    String title = playlist.get(PlayerFX.getInstance().getActualElementInPlaylist()).getTitle();
+                    String artist = playlist.get(PlayerFX.getInstance().getPlaylistIndex()).getArtist();
+                    String title = playlist.get(PlayerFX.getInstance().getPlaylistIndex()).getTitle();
                     PlayerFX.getPlayerStage().setTitle(artist + LOG_DELIMITER + title);
                 }
             );
@@ -261,7 +300,7 @@ public class FXMLController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     // PlaylistElement rowData = row.getItem();
-                    PlayerFX.getInstance().setActualElementInPlaylist(row.getIndex());
+                    PlayerFX.getInstance().setPlaylistIndex(row.getIndex());
                     PlayerFX.getInstance().setActualMedia(PlayerFX.getInstance().getActualPlaylist().get(row.getIndex()).asMedia());
                     PlayerFX.getInstance().play();
                     PlayerFX.getInstance().autonext(this);
@@ -277,7 +316,7 @@ public class FXMLController implements Initializable {
     public void prevButtonAction(final ActionEvent e) {
         log.info("Prev button clicked.");
         PlayerFX.getInstance().prev();
-        getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementInPlaylist());
+        getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getPlaylistIndex());
         PlayerFX.getInstance().autonext(this);
         setAvailability();
     }
@@ -303,7 +342,7 @@ public class FXMLController implements Initializable {
     public void nextButtonAction(final ActionEvent e) {
         log.info("Next button clicked.");
         PlayerFX.getInstance().next();
-        getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getActualElementInPlaylist());
+        getPlayListTable().getSelectionModel().select(PlayerFX.getInstance().getPlaylistIndex());
         PlayerFX.getInstance().autonext(this);
         setAvailability();
     }
@@ -343,6 +382,7 @@ public class FXMLController implements Initializable {
         playListTabPane.getTabs().add(tab);
 
         playListTable = new TableView<>();
+        playListTable.setPlaceholder(new Label("Add files to fill your playlist"));
         List<TableColumn<PlaylistElement, String>> colNames = new ArrayList<>();
         for (String string : PlaylistElement.getColumnNamesForTable()) {
             TableColumn<PlaylistElement, String> cell = new TableColumn<>(string);
@@ -453,11 +493,11 @@ public class FXMLController implements Initializable {
             PlayerFX.getInstance().stop();
         }
 
-        PlayerFX.getInstance().setActualPlaylist(null);
+        PlayerFX.getInstance().getActualPlaylist().clear();
         if (!playListTabPane.getTabs().isEmpty()) {
             playListTabPane.getTabs().remove(0);
         }
-
+        deSelectNavigationStateButtons();
         setAvailability();
     }
 
@@ -486,6 +526,46 @@ public class FXMLController implements Initializable {
             log.info("Settings cannot be saved!", e);
         }
         setAvailability();
+    }
+
+    @FXML
+    public void shuffleButtonAction(final ActionEvent event) {
+        if (shuffleButton.isSelected()) {
+            PlayerSettings.setNavigationState(PlayerSettings.NavigationState.SHUFFLE);
+        }
+        setNextSongIfAllUnselected();
+        setAvailability();
+        log.info("Navigation state:" + LOG_DELIMITER + PlayerSettings.getNavigationState());
+    }
+    @FXML
+    public void repeatButtonAction(final ActionEvent event) {
+        if (repeatButton.isSelected()) {
+            PlayerSettings.setNavigationState(PlayerSettings.NavigationState.REPEAT_PLAYLIST);
+        }
+        setNextSongIfAllUnselected();
+        setAvailability();
+        log.info("Navigation state:" + LOG_DELIMITER + PlayerSettings.getNavigationState());
+    }
+    @FXML
+    public void repeatOneButtonAction(final ActionEvent event) {
+        if (repeatOneButton.isSelected()) {
+            PlayerSettings.setNavigationState(PlayerSettings.NavigationState.REPEAT_SONG);
+        }
+        setNextSongIfAllUnselected();
+        setAvailability();
+        log.info("Navigation state:" + LOG_DELIMITER + PlayerSettings.getNavigationState());
+    }
+
+
+    private void setNextSongIfAllUnselected() {
+        //ha egyik sincs kiválasztva, akkor visszaáll next song-ra a
+        if (!shuffleButton.isSelected() && !repeatButton.isSelected() && !repeatOneButton.isSelected()) {
+            PlayerSettings.setNavigationState(PlayerSettings.NavigationState.NEXT_SONG);
+        }
+    }
+
+    private void deSelectNavigationStateButtons() {
+        navigationStateSegmentedButton.getToggleGroup().getSelectedToggle().setSelected(false);
     }
 
     public TableView<PlaylistElement> getPlayListTable() {

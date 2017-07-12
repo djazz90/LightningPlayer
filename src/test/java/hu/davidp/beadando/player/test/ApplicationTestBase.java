@@ -98,13 +98,13 @@ public class ApplicationTestBase {
         PlayerFX.getInstance().getMp().setMute(true);
         PlayerFX.getInstance().play();
         for (int i = 0; i < 3; i++) {
-            assertEquals(i, PlayerFX.getInstance().getActualElementInPlaylist());
+            assertEquals(i, PlayerFX.getInstance().getPlaylistIndex());
             PlayerFX.getInstance().next();
         }
         PlayerFX.getInstance().stop();
 
         for (int i = 3; i > 0; i--) {
-            assertEquals(i, PlayerFX.getInstance().getActualElementInPlaylist());
+            assertEquals(i, PlayerFX.getInstance().getPlaylistIndex());
             PlayerFX.getInstance().prev();
         }
         PlayerFX.getInstance().stop();

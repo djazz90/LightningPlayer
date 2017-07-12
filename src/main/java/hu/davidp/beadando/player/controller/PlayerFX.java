@@ -35,10 +35,14 @@ import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Player osztály. A program lejátszója, MP3 fájlok lejátszását végzi. Működését
@@ -48,6 +52,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Pintér Dávid
  */
 @Slf4j
+@SuppressWarnings({"PMD.TooManyMethods"})
 public final class PlayerFX {
     /**
      * {@link MediaPlayer} objektum.
@@ -67,7 +72,7 @@ public final class PlayerFX {
     /**
      * Az aktuálisan játszott lejátszólista elem sorszáma.
      */
-    private int actualElementInPlaylist;
+    private int playlistIndex;
 
     /**
      * A lejátszó példánya.
@@ -154,14 +159,39 @@ public final class PlayerFX {
         mp.setOnEndOfMedia(
             () -> {
 
-                if (actualElementInPlaylist != actualPlaylist.size() - 1) {
-                    next();
-                    fxc.getPlayListTable().getSelectionModel().select(actualElementInPlaylist);
+                if (playlistIndex != actualPlaylist.size() - 1) {
+                    switch (PlayerSettings.getNavigationState()) {
+                        case REPEAT_SONG:
+                            repeatSong();
+                            break;
+                        case NEXT_SONG:
+                            next();
+                            break;
+                        case SHUFFLE:
+                            shuffle();
+                            break;
+                        default:
+                            break;
+                    }
+
+                    fxc.getPlayListTable().getSelectionModel().select(playlistIndex);
 
                     autonext(fxc);
 
                 } else {
-
+                    switch (PlayerSettings.getNavigationState()) {
+                        case REPEAT_SONG:
+                            repeatSong();
+                            return;
+                        case REPEAT_PLAYLIST:
+                            repeatPlaylist();
+                            return;
+                        case SHUFFLE:
+                            shuffle();
+                            return;
+                        default:
+                            break;
+                    }
                     mp.stop();
                     state = PlayerState.STOPPED;
                     mp = null;
@@ -202,17 +232,31 @@ public final class PlayerFX {
 
     }
 
+    public void repeatSong() {
+        mp.seek(new Duration(0.0));
+    }
+
     /**
      * A következő lejátszólista elemre lép.
      */
     public void next() {
-        mp.stop();
-        actualElementInPlaylist++;
-        actualMedia = actualPlaylist
-            .get(actualElementInPlaylist).asMedia();
-        mp = new MediaPlayer(actualMedia);
-        logActualPlaylistElement();
-        play();
+        switch (PlayerSettings.getNavigationState()) {
+            case SHUFFLE:
+                shuffle();
+                break;
+            case REPEAT_PLAYLIST:
+                repeatPlaylist();
+                break;
+            default:
+                mp.stop();
+                playlistIndex++;
+                actualMedia = actualPlaylist
+                    .get(playlistIndex).asMedia();
+                mp = new MediaPlayer(actualMedia);
+                logActualPlaylistElement();
+                play();
+                break;
+        }
     }
 
     /**
@@ -220,17 +264,48 @@ public final class PlayerFX {
      */
     public void prev() {
         mp.stop();
-        actualElementInPlaylist--;
+        playlistIndex--;
         actualMedia = actualPlaylist
-            .get(actualElementInPlaylist).asMedia();
+            .get(playlistIndex).asMedia();
         mp = new MediaPlayer(actualMedia);
         logActualPlaylistElement();
         play();
 
     }
 
+    public void repeatPlaylist() {
+        mp.stop();
+        playlistIndex = playlistIndex == actualPlaylist.size() - 1 ? 0 : playlistIndex + 1;
+        actualMedia = actualPlaylist
+            .get(playlistIndex).asMedia();
+        mp = new MediaPlayer(actualMedia);
+        logActualPlaylistElement();
+        play();
+    }
+
+    public void shuffle() {
+        LinkedList<Integer> temp = new LinkedList<>();
+        for (int i = 0; i < actualPlaylist.size(); i++) {
+            if (i == playlistIndex) {
+                continue;
+            }
+            temp.add(i);
+        }
+        int randomElementIndex
+            = ThreadLocalRandom.current().nextInt(temp.size());
+        log.info("Random Element Index: " + randomElementIndex);
+
+        mp.stop();
+        playlistIndex = temp.get(randomElementIndex);
+        actualMedia = actualPlaylist
+            .get(playlistIndex).asMedia();
+        mp = new MediaPlayer(actualMedia);
+        logActualPlaylistElement();
+        play();
+    }
+
     public PlaylistElement getActualPlaylistElement() {
-        return actualPlaylist.get(actualElementInPlaylist);
+        return actualPlaylist.get(playlistIndex);
     }
 
     private void logActualPlaylistElement() {
@@ -241,10 +316,10 @@ public final class PlayerFX {
         log.info("Calling method: {}", callingMethod);
         log.info("Actual playlist element:");
         StringBuilder sb = new StringBuilder();
-        sb.append(actualPlaylist.get(PlayerFX.getInstance().getActualElementInPlaylist()).getArtist())
-            .append(" - ").append(actualPlaylist.get(PlayerFX.getInstance().getActualElementInPlaylist())
+        sb.append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex()).getArtist())
+            .append(" - ").append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex())
             .getTitle()).append(" - ")
-            .append(actualPlaylist.get(PlayerFX.getInstance().getActualElementInPlaylist())
+            .append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex())
                 .getAlbum());
         log.info(sb.toString());
 
@@ -287,17 +362,17 @@ public final class PlayerFX {
      *
      * @return a lejátszólista elem sorszáma
      */
-    public int getActualElementInPlaylist() {
-        return actualElementInPlaylist;
+    public int getPlaylistIndex() {
+        return playlistIndex;
     }
 
     /**
      * Beállítja az aktuálisan játszott lejátszólista elem sorszámát.
      *
-     * @param actualElementInPlaylist a lejátszólista elem sorszáma
+     * @param playlistIndex a lejátszólista elem sorszáma
      */
-    public void setActualElementInPlaylist(final int actualElementInPlaylist) {
-        this.actualElementInPlaylist = actualElementInPlaylist;
+    public void setPlaylistIndex(final int playlistIndex) {
+        this.playlistIndex = playlistIndex;
     }
 
     /**

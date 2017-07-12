@@ -22,6 +22,8 @@ public final class PlayerSettings {
     private static final String NAVIGATION_STATE_PROPERTY_NAME = "navigation.state";
     private static final String API_KEY_PROPERTY_NAME = "api.key";
 
+    public static final int SHUFFLE_TRESHOLD = 3;
+
     @Getter
     @Setter
     private static Double volumeLevel = DEFAULT_VOLUME_LEVEL;
@@ -38,9 +40,11 @@ public final class PlayerSettings {
         NEXT_SONG, REPEAT_SONG, REPEAT_PLAYLIST, SHUFFLE
     }
 
+
     public static void initialize() {
         if (!PROPERTIES_FILE.exists()) {
             try {
+                // az összes beállítás mentése, majd logolás annak kimenetele szerint
                 save();
                 log.info("The initial property file is created!");
             } catch (IOException e) {
@@ -79,7 +83,6 @@ public final class PlayerSettings {
         properties.setProperty(NAVIGATION_STATE_PROPERTY_NAME, navigationState.toString());
         properties.setProperty(API_KEY_PROPERTY_NAME, apiKey);
 
-        // az összes beállítás mentése, majd logolás annak kimenetele szerint
         try (FileOutputStream outputStream = new FileOutputStream(PROPERTIES_FILE)) {
             properties.store(outputStream, null);
 

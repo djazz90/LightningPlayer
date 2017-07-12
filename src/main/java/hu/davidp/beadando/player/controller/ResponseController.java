@@ -40,7 +40,7 @@ public final class ResponseController {
 
     public static List<Artist> getSimilarAtristsByName(final String artistName) throws JAXBException, NoSimilarArtistFoundException {
         synchronized (ResponseController.class) {
-            Lfm response = null;
+            Lfm response;
             if (cachedArtist == null || !artistName.equals(cachedArtist.getName())) {
                 try {
                     //building full URI
