@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.davidp.beadando.player.controller.FXMLController">
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.davidp.beadando.player.controller.FXMLController">
    <top>
       <GridPane>
          <columnConstraints>
@@ -34,21 +34,21 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                        <MenuItem fx:id="fileMenuNewPlist" mnemonicParsing="false" onAction="#fileMenuNewPlistAction" text="New Playlist" />
+                        <MenuItem fx:id="fileMenuNewPlist" mnemonicParsing="false" text="New Playlist" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="fileMenuOpenMp3" mnemonicParsing="false" onAction="#fileMenuOpenMP3Action" text="Open Mp3 file(s)" />
-                        <MenuItem fx:id="fileMenuOpenPlist" mnemonicParsing="false" onAction="#fileMenuOpenPlistAction" text="Open Playlist" />
+                        <MenuItem fx:id="fileMenuOpenMp3" mnemonicParsing="false" text="Open Mp3 file(s)" />
+                        <MenuItem fx:id="fileMenuOpenPlist" mnemonicParsing="false" text="Open Playlist" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="fileMenuSavePlist" mnemonicParsing="false" onAction="#fileMenuSavePlistAction" text="Save Playlist" />
-                        <MenuItem fx:id="fileMenuClosePlist" mnemonicParsing="false" onAction="#fileMenuClosePlistAction" text="Close Playlist" />
+                        <MenuItem fx:id="fileMenuSavePlist" mnemonicParsing="false" text="Save Playlist" />
+                        <MenuItem fx:id="fileMenuClosePlist" mnemonicParsing="false" text="Close Playlist" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem fx:id="fileMenuExit" mnemonicParsing="false" onAction="#fileMenuExitAction" text="Exit LightningPlayer" />
+                    <MenuItem fx:id="fileMenuExit" mnemonicParsing="false" text="Exit LightningPlayer" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Settings">
                     <items>
-                        <MenuItem fx:id="settingsMenuLoad" mnemonicParsing="false" onAction="#settingsMenuLoadAction" text="Load" />
-                      <MenuItem fx:id="settingsMenuSave" mnemonicParsing="false" onAction="#settingsMenuSaveAction" text="Save" />
+                        <MenuItem fx:id="settingsMenuLoad" mnemonicParsing="false" text="Load" />
+                      <MenuItem fx:id="settingsMenuSave" mnemonicParsing="false" text="Save" />
                     </items>
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -61,18 +61,18 @@
             <Slider fx:id="seekerSlider" nodeOrientation="LEFT_TO_RIGHT" prefHeight="14.0" prefWidth="473.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
             <HBox fx:id="buttonsHBox" spacing="8.0" GridPane.rowIndex="2" GridPane.rowSpan="2147483647">
                <children>
-                  <Button fx:id="playButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#playButtonAction" prefHeight="25.0" text="Play">
+                  <Button fx:id="playButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="25.0" text="Play">
                      <HBox.margin>
                         <Insets left="8.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="prevButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#prevButtonAction" text="Prev" />
-                  <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#nextButtonAction" text="Next" />
-                  <Button fx:id="stopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#stopButtonAction" text="Stop" />
-                  <Button fx:id="infoButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#infoButtonAction" text="Info" />
-                  <ToggleButton fx:id="shuffleButton" mnemonicParsing="false" onAction="#shuffleButtonAction" />
-                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" onAction="#repeatButtonAction" />
-                  <ToggleButton fx:id="repeatOneButton" mnemonicParsing="false" onAction="#repeatOneButtonAction" />
+                  <Button fx:id="prevButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Prev" />
+                  <Button fx:id="nextButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Next" />
+                  <Button fx:id="stopButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Stop" />
+                  <Button fx:id="infoButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Info" />
+                  <ToggleButton fx:id="shuffleButton" mnemonicParsing="false" />
+                  <ToggleButton fx:id="repeatButton" mnemonicParsing="false" />
+                  <ToggleButton fx:id="repeatOneButton" mnemonicParsing="false" />
                </children>
             </HBox>
          </children>
