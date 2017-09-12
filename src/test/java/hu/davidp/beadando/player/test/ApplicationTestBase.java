@@ -6,6 +6,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import hu.davidp.beadando.player.controller.PlayListMethods;
 import hu.davidp.beadando.player.controller.PlayerFX;
 import hu.davidp.beadando.player.model.Model;
+import hu.davidp.beadando.player.model.PlayerSettings;
 import hu.davidp.beadando.player.model.PlaylistElement;
 import javafx.collections.FXCollections;
 import org.apache.commons.io.FileUtils;
@@ -61,7 +62,7 @@ public class ApplicationTestBase {
     }
 
     @Test
-    public void PlayerFXTest() throws UnsupportedTagException, InvalidDataException, IOException {
+    public void playerFXTest() throws UnsupportedTagException, InvalidDataException, IOException {
 
         PlaylistElement ple;
 
@@ -97,6 +98,7 @@ public class ApplicationTestBase {
         PlayerFX.getInstance().setActualMedia(model.getPlaylist().get(0).asMedia());
         PlayerFX.getInstance().getMp().setMute(true);
         PlayerFX.getInstance().play();
+        PlayerSettings.setNavigationState(PlayerSettings.NavigationState.NEXT_SONG);
         for (int i = 0; i < 3; i++) {
             assertEquals(i, PlayerFX.getInstance().getPlaylistIndex());
             PlayerFX.getInstance().next();
@@ -109,7 +111,7 @@ public class ApplicationTestBase {
         }
         PlayerFX.getInstance().stop();
 
-        File f = folder.newFile("saved.xml");
+        File f = folder.newFile("saved.xspf");
 
         PlayListMethods.savePlaylist(f, model);
 

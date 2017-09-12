@@ -54,10 +54,10 @@ public final class PlayListMethods {
         try {
             File file;
             String[] splitter = savedFile.toString().split("\\.");
-            if (splitter[splitter.length - 1].equals("xml")) {
+            if (splitter[splitter.length - 1].equals("xspf")) {
                 file = savedFile;
             } else {
-                file = new File(savedFile.toString() + ".xml");
+                file = new File(savedFile.toString() + ".xspf");
             }
             //a JAXBContext mutatja meg, hogy hol lépjen be a JAXB api.
             //a newInstance metódusnak pedig átadom a model osztályt
@@ -70,9 +70,9 @@ public final class PlayListMethods {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             //maga a mentés
             m.marshal(model, file);
-            log.info("XML file successfully saved");
+            log.info("XSPF file successfully saved");
         } catch (JAXBException e1) {
-            log.error("Can't process XML file");
+            log.error("Can't process XSPF file");
             e1.printStackTrace();
         }
     }

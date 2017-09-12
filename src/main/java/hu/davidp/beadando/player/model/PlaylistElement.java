@@ -47,6 +47,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Lejátszólista elem osztály. Ez tartalmazza az összes olyan fontos adatot ami
@@ -160,7 +162,7 @@ public class PlaylistElement implements Serializable {
     public PlaylistElement(final Mp3File mp3File, final File file) {
 
         this.media = new Media(toUnixURI(file.toURI().toString()));
-        this.location = mp3File.getFilename();
+        this.location = toUnixURI(file.toURI().toString());
         this.duration = mp3File.getLengthInMilliseconds();
         this.bitrate = mp3File.getBitrate();
 
@@ -285,7 +287,7 @@ public class PlaylistElement implements Serializable {
      * Lejátszólista beolvasása során használt metódus.
      */
     public void rebuildPlaylistElement() {
-        this.media = new Media(toUnixURI(new File(this.location).toURI().toString()));
+        this.media = new Media(this.location);
         this.artist = ifnullToEmpty(this.artist);
         this.album = ifnullToEmpty(this.album);
 
@@ -305,14 +307,13 @@ public class PlaylistElement implements Serializable {
         );
 
         try {
-            Mp3File mp3File = new Mp3File(new File(this.location));
+            Mp3File mp3File = new Mp3File(new File(new URI(this.location).getPath()));
             this.bitrate = mp3File.getBitrate();
-        } catch (IOException | UnsupportedTagException | InvalidDataException e) {
+        } catch (IOException | UnsupportedTagException | InvalidDataException | URISyntaxException e) {
             e.printStackTrace();
         }
 
         this.trackNum = ifnullToEmpty(this.trackNum);
-
     }
 
     /**

@@ -495,7 +495,7 @@ public class FXMLController implements Initializable {
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Save playlist files");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XSPF files(*.xspf)", "*.xspf"));
 
         File savedFile = fc.showSaveDialog(PlayerFX.getPlayerStage());
         if (savedFile != null) {
@@ -508,7 +508,7 @@ public class FXMLController implements Initializable {
     public void fileMenuOpenPlistAction() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Open playlist file");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files(*.xml)", "*.xml"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("XSPF files(*.xspf)", "*.xspf"));
 
         File openedFile = fc.showOpenDialog(PlayerFX.getPlayerStage());
 
@@ -521,15 +521,15 @@ public class FXMLController implements Initializable {
                 PlayerFX.getInstance().setActualPlaylist(PlayerFX.getPlayerModel().getPlaylist());
                 playListTable.setItems(PlayerFX.getInstance().getActualPlaylist());
 
-                log.info("XML file successfully opened");
+                log.info("XSPF file successfully opened");
             } catch (SAXException ex) {
-                log.error("The XML file is not valid");
+                log.error("The XSPF file is not valid");
                 log.error("Message: " + ex.getMessage());
             } catch (IOException ex) {
                 log.error("File i/o error");
 
             } catch (JAXBException e1) {
-                log.error("Can't process XML file");
+                log.error("Can't process XSPF file");
                 log.error("Message: " + e1.getMessage());
             }
 
@@ -557,10 +557,28 @@ public class FXMLController implements Initializable {
     public void settingsMenuLoadAction() {
         try {
             PlayerSettings.load();
+            loadSettingsToGui();
             log.info("Settings successfully loaded!");
         } catch (IOException e) {
             log.info("Settings cannot be loaded!", e);
         }
+    }
+
+    private void loadSettingsToGui() {
+        deSelectNavigationStateButtons();
+        switch (PlayerSettings.getNavigationState()) {
+            case SHUFFLE: shuffleButton.setSelected(true);
+                break;
+            case REPEAT_PLAYLIST: repeatButton.setSelected(true);
+                break;
+            case REPEAT_SONG: repeatOneButton.setSelected(true);
+                break;
+            case NEXT_SONG: deSelectNavigationStateButtons();
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown NavigationState!");
+        }
+        PlayerFX.getInstance().getMp().setVolume(PlayerSettings.getVolumeLevel());
     }
 
     public void settingsMenuSaveAction() {
