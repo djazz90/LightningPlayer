@@ -136,9 +136,6 @@ public final class PlayerFX {
      * @return a lejátszólista objektum
      */
     public static PlayerFX getInstance() {
-        // if (playerScene == null) {
-        // throw new RuntimeException("Nincs beállítva scene!");
-        // }
         synchronized (PlayerFX.class) {
             if (instance == null) {
                 instance = new PlayerFX();
@@ -293,10 +290,11 @@ public final class PlayerFX {
         }
         int randomElementIndex
             = ThreadLocalRandom.current().nextInt(temp.size());
-        log.info("Random Element Index: " + randomElementIndex);
+
 
         mp.stop();
         playlistIndex = temp.get(randomElementIndex);
+        log.info("Playlist Index: " + playlistIndex);
         actualMedia = actualPlaylist
             .get(playlistIndex).asMedia();
         mp = new MediaPlayer(actualMedia);

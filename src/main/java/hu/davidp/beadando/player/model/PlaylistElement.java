@@ -46,7 +46,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -61,9 +60,8 @@ import java.net.URISyntaxException;
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
 @Data
-public class PlaylistElement implements Serializable {
+public class PlaylistElement {
 
-    private static final long serialVersionUID = 8751386371345087303L;
 
     /**
      * A {@link hu.davidp.beadando.player.controller.PlayerFX} objektum által lejátszható formátum.

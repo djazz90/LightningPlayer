@@ -62,10 +62,10 @@ public class FXMLController implements Initializable {
     public static final String LOG_DELIMITER = " - ";
 
     private static final GlyphFont FONT_AWESOME_GLYPH_FONT = GlyphFontRegistry.font("FontAwesome");
+    public static final String SIZEOF_PLAYLIST = "sizeof playlist: ";
+    public static final String NAVIGATION_STATE_STRING = "Navigation state:";
 
     private TableView<PlaylistElement> playListTable;
-
-    private boolean needInfoDialog;
 
     private ArtistInfoController artistInfoController;
 
@@ -208,6 +208,7 @@ public class FXMLController implements Initializable {
         fileMenuNewPlistAction();
         initializeActionListeners();
         setAvailability();
+        loadSettingsToGui();
     }
 
     private void initializeActionListeners() {
@@ -249,15 +250,15 @@ public class FXMLController implements Initializable {
         }
 
         Runnable setAvailabilityRunner = this::setAvailability;
-        for (MenuItem menuItem : actionCommandMenuitemMap.keySet()) {
-            Command command = actionCommandMenuitemMap.get(menuItem);
+        for (Map.Entry<MenuItem, Command> entry : actionCommandMenuitemMap.entrySet()) {
+            Command command = entry.getValue();
             command.addCommand(setAvailabilityRunner);
-            menuItem.addEventHandler(ActionEvent.ACTION, e -> command.execute());
+            entry.getKey().addEventHandler(ActionEvent.ACTION, e -> command.execute());
         }
-        for (Node node : actionCommandNodeMap.keySet()) {
-            Command command = actionCommandNodeMap.get(node);
+        for (Map.Entry<Node, Command> entry : actionCommandNodeMap.entrySet()) {
+            Command command = entry.getValue();
             command.addCommand(setAvailabilityRunner);
-            node.addEventHandler(ActionEvent.ACTION, e -> command.execute());
+            entry.getKey().addEventHandler(ActionEvent.ACTION, e -> command.execute());
         }
     }
 
@@ -297,16 +298,6 @@ public class FXMLController implements Initializable {
 
         boolean infoButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
         infoButton.setDisable(!infoButtonEnabled);
-
-        boolean shuffleButtonEnabled =
-            playlistIsAvailableAndPlayerHasMedia && playlist.size() >= PlayerSettings.SHUFFLE_TRESHOLD;
-        shuffleButton.setDisable(!shuffleButtonEnabled);
-
-        boolean repeatButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
-        repeatButton.setDisable(!repeatButtonEnabled);
-
-        boolean repeatOneButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
-        repeatOneButton.setDisable(!repeatOneButtonEnabled);
 
         if (PlayerFX.getState() == PlayerFX.PlayerState.PLAYING) {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
@@ -363,7 +354,6 @@ public class FXMLController implements Initializable {
             TableRow<PlaylistElement> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    // PlaylistElement rowData = row.getItem();
                     PlayerFX.getInstance().setPlaylistIndex(row.getIndex());
                     PlayerFX.getInstance().setActualMedia(PlayerFX.getInstance().getActualPlaylist().get(row.getIndex()).asMedia());
                     PlayerFX.getInstance().play();
@@ -488,7 +478,7 @@ public class FXMLController implements Initializable {
 
             lastFolder = openedFiles.get(0).getParentFile();
         }
-        log.info("sizeof playlist: " + PlayerFX.getInstance().getActualPlaylist().size());
+        log.info(SIZEOF_PLAYLIST + PlayerFX.getInstance().getActualPlaylist().size());
     }
 
     public void fileMenuSavePlistAction() {
@@ -501,7 +491,7 @@ public class FXMLController implements Initializable {
         if (savedFile != null) {
             PlayListMethods.savePlaylist(savedFile, PlayerFX.getPlayerModel());
         }
-        log.info("sizeof playlist: " + PlayerFX.getPlayerModel().getPlaylist().size());
+        log.info(SIZEOF_PLAYLIST + PlayerFX.getPlayerModel().getPlaylist().size());
 
     }
 
@@ -534,7 +524,7 @@ public class FXMLController implements Initializable {
             }
 
         }
-        log.info("sizeof playlist: " + PlayerFX.getInstance().getActualPlaylist().size());
+        log.info(SIZEOF_PLAYLIST + PlayerFX.getInstance().getActualPlaylist().size());
 
     }
 
@@ -547,7 +537,6 @@ public class FXMLController implements Initializable {
         if (!playListTabPane.getTabs().isEmpty()) {
             playListTabPane.getTabs().remove(0);
         }
-        deSelectNavigationStateButtons();
     }
 
     public void fileMenuExitAction() {
@@ -558,6 +547,9 @@ public class FXMLController implements Initializable {
         try {
             PlayerSettings.load();
             loadSettingsToGui();
+            if (PlayerFX.getInstance().hasMedia()) {
+                PlayerFX.getInstance().getMp().setVolume(PlayerSettings.getVolumeLevel());
+            }
             log.info("Settings successfully loaded!");
         } catch (IOException e) {
             log.info("Settings cannot be loaded!", e);
@@ -578,7 +570,7 @@ public class FXMLController implements Initializable {
             default:
                 throw new UnsupportedOperationException("Unknown NavigationState!");
         }
-        PlayerFX.getInstance().getMp().setVolume(PlayerSettings.getVolumeLevel());
+        volumeSlider.setValue(PlayerSettings.getVolumeLevel());
     }
 
     public void settingsMenuSaveAction() {
@@ -595,7 +587,7 @@ public class FXMLController implements Initializable {
             PlayerSettings.setNavigationState(PlayerSettings.NavigationState.SHUFFLE);
         }
         setNextSongIfAllUnselected();
-        log.info("Navigation state:" + LOG_DELIMITER + PlayerSettings.getNavigationState());
+        log.info(NAVIGATION_STATE_STRING + LOG_DELIMITER + PlayerSettings.getNavigationState());
     }
 
     public void repeatButtonAction() {
@@ -603,7 +595,7 @@ public class FXMLController implements Initializable {
             PlayerSettings.setNavigationState(PlayerSettings.NavigationState.REPEAT_PLAYLIST);
         }
         setNextSongIfAllUnselected();
-        log.info("Navigation state:" + LOG_DELIMITER + PlayerSettings.getNavigationState());
+        log.info(NAVIGATION_STATE_STRING + LOG_DELIMITER + PlayerSettings.getNavigationState());
     }
 
     public void repeatOneButtonAction() {
@@ -611,7 +603,7 @@ public class FXMLController implements Initializable {
             PlayerSettings.setNavigationState(PlayerSettings.NavigationState.REPEAT_SONG);
         }
         setNextSongIfAllUnselected();
-        log.info("Navigation state:" + LOG_DELIMITER + PlayerSettings.getNavigationState());
+        log.info(NAVIGATION_STATE_STRING + LOG_DELIMITER + PlayerSettings.getNavigationState());
     }
 
     private void setNextSongIfAllUnselected() {
