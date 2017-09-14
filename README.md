@@ -1,4 +1,4 @@
-Simple mp3 player that supports xspf playlists(currently in .xml format)
+Simple mp3 player that supports xspf playlists
 
 Technology stack
  - JavaFX
