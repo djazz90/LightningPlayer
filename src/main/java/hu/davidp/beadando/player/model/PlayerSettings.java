@@ -3,6 +3,7 @@ package hu.davidp.beadando.player.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +14,7 @@ import java.util.Properties;
 @Slf4j
 public final class PlayerSettings {
     private static Properties properties = new Properties();
-    private static final File PROPERTIES_FILE = new File("settings.properties");
+    private static File propertiesFile;
 
     private static final Double DEFAULT_VOLUME_LEVEL = 0.7;
     private static final String DEFAULT_API_KEY = "none";
@@ -21,8 +22,6 @@ public final class PlayerSettings {
     private static final String VOLUME_LEVEL_PROPERTY_NAME = "volume.level";
     private static final String NAVIGATION_STATE_PROPERTY_NAME = "navigation.state";
     private static final String API_KEY_PROPERTY_NAME = "api.key";
-
-    public static final int SHUFFLE_TRESHOLD = 3;
 
     @Getter
     @Setter
@@ -40,9 +39,18 @@ public final class PlayerSettings {
         NEXT_SONG, REPEAT_SONG, REPEAT_PLAYLIST, SHUFFLE
     }
 
-
     public static void initialize() {
-        if (!PROPERTIES_FILE.exists()) {
+        File file = FileUtils.getFile(FileUtils.getUserDirectory(), "LightningPlayer");
+        //if it is creatable or already exists, it should create the settings file there.
+        //the folder needs to be writable too.
+        if ((file.mkdir() || file.exists()) && file.canWrite()) {
+            propertiesFile = FileUtils.getFile(file.getAbsolutePath(), "settings.properties");
+        } else {
+            //as default setting: create it to the main program folder (that should be always writable as a safety mesure)
+            propertiesFile = new File("settings.properties");
+        }
+        log.info("propertiesFile full path: {}", propertiesFile.getAbsolutePath());
+        if (!propertiesFile.exists()) {
             try {
                 // az összes beállítás mentése, majd logolás annak kimenetele szerint
                 save();
@@ -62,7 +70,7 @@ public final class PlayerSettings {
 
     public static void load() throws IOException {
         log.info("Loading settings...");
-        try (FileInputStream inputStream = new FileInputStream(PROPERTIES_FILE)) {
+        try (FileInputStream inputStream = new FileInputStream(propertiesFile)) {
             properties.load(inputStream);
             // az összes beállítás betöltése és logolása
             volumeLevel = Double.valueOf(properties.getProperty(VOLUME_LEVEL_PROPERTY_NAME));
@@ -83,14 +91,14 @@ public final class PlayerSettings {
         properties.setProperty(NAVIGATION_STATE_PROPERTY_NAME, navigationState.toString());
         properties.setProperty(API_KEY_PROPERTY_NAME, apiKey);
 
-        try (FileOutputStream outputStream = new FileOutputStream(PROPERTIES_FILE)) {
+        try (FileOutputStream outputStream = new FileOutputStream(propertiesFile)) {
             properties.store(outputStream, null);
 
         }
     }
 
     private PlayerSettings() {
-        //hidden utility class constructor
+        throw new AssertionError("Instance creation is not allowed for PlayerSettings class");
     }
 
 }
