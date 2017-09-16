@@ -99,7 +99,7 @@ public final class PlayerFX {
 
     @Getter
     @Setter(AccessLevel.NONE)
-    private static PlayerState state = PlayerState.STOPPED;
+    private PlayerState state = PlayerState.STOPPED;
 
     public enum PlayerState {
         PLAYING, STOPPED, PAUSED;
@@ -313,13 +313,13 @@ public final class PlayerFX {
 
         log.info("Calling method: {}", callingMethod);
         log.info("Actual playlist element:");
-        StringBuilder sb = new StringBuilder();
-        sb.append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex()).getArtist())
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex()).getArtist())
             .append(" - ").append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex())
             .getTitle()).append(" - ")
             .append(actualPlaylist.get(PlayerFX.getInstance().getPlaylistIndex())
                 .getAlbum());
-        log.info(sb.toString());
+        log.info(stringBuilder.toString());
 
     }
 

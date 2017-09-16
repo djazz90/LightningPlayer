@@ -299,13 +299,13 @@ public class FXMLController implements Initializable {
         boolean infoButtonEnabled = playlistIsAvailableAndPlayerHasMedia;
         infoButton.setDisable(!infoButtonEnabled);
 
-        if (PlayerFX.getState() == PlayerFX.PlayerState.PLAYING) {
+        if (PlayerFX.getInstance().getState() == PlayerFX.PlayerState.PLAYING) {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PAUSE));
         } else {
             playButton.setGraphic(FONT_AWESOME_GLYPH_FONT.create(FontAwesome.Glyph.PLAY));
         }
 
-        statusBarLabel.setText(PlayerFX.getState().prettyPrintName());
+        statusBarLabel.setText(PlayerFX.getInstance().getState().prettyPrintName());
         volumeSlider.setValue(PlayerSettings.getVolumeLevel());
 
         if (PlayerFX.getInstance().hasMedia()) {
@@ -375,8 +375,9 @@ public class FXMLController implements Initializable {
 
     public void playButtonAction() {
         log.info("Play/Pause button clicked");
-        if (PlayerFX.getState() == PlayerFX.PlayerState.PAUSED
-            || PlayerFX.getState() == PlayerFX.PlayerState.STOPPED) {
+        PlayerFX.PlayerState playerState = PlayerFX.getInstance().getState();
+        if (playerState == PlayerFX.PlayerState.PAUSED
+            || playerState == PlayerFX.PlayerState.STOPPED) {
 
             PlayerFX.getInstance().play();
             PlayerFX.getInstance().autonext(this);

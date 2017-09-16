@@ -42,12 +42,11 @@ public final class PlayListMethods {
                 | IOException e1) {
                 log.error("File i/o error");
                 log.error("at " + file.getAbsolutePath());
-                e1.printStackTrace();
+                log.error("", e1);
             }
 
         }
         model.getPlaylist().addAll(addedNewPLEs);
-        //PlayerFX.getInstance().setPlaylistSize(model.getPlaylist());
     }
 
     public static void savePlaylist(final File savedFile, final Model model) {
@@ -72,8 +71,7 @@ public final class PlayListMethods {
             m.marshal(model, file);
             log.info("XSPF file successfully saved");
         } catch (JAXBException e1) {
-            log.error("Can't process XSPF file");
-            e1.printStackTrace();
+            log.error("Can't process XSPF file", e1);
         }
     }
 
@@ -99,8 +97,9 @@ public final class PlayListMethods {
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
         Model preparedModel = (Model) (unmarshaller.unmarshal(openedFile));
-
-        preparedModel.getPlaylist().forEach(e -> e.rebuildPlaylistElement());
+        //betöltés után szükséges a nem tranziens objektumok feltöltése
+        // melyet az összes betöltött lejátszólista-elemre elvégzünk
+        preparedModel.getPlaylist().forEach(PlaylistElement::rebuildPlaylistElement);
 
         return preparedModel;
 

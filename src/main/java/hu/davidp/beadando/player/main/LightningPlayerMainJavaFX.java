@@ -78,11 +78,6 @@ public class LightningPlayerMainJavaFX extends Application {
         PlayerFX.setPlayerScene(scene);
         PlayerFX.setPlayerStage(primaryStage);
         PlayerFX.getInstance();
-//        try {
-//            log.info(String.valueOf(ResponseController.getSimilarAtristsByName("ThPostelles")));
-//        } catch (NoSimilarArtistFoundException e) {
-//            e.printStackTrace();
-//        }
 
         primaryStage.setScene(scene);
         primaryStage.show();

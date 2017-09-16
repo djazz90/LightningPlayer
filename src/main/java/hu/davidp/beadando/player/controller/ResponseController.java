@@ -70,7 +70,6 @@ public final class ResponseController {
                 }
 
                 log.info(response.getRootArtist().toString());
-                //log.info(response.getRootArtist().getSimilarArtists().toString());
                 cachedArtist = response.getRootArtist();
 
 

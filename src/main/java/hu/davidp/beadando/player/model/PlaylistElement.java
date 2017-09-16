@@ -38,6 +38,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -60,8 +61,8 @@ import java.net.URISyntaxException;
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
 @Data
+@Slf4j
 public class PlaylistElement {
-
 
     /**
      * A {@link hu.davidp.beadando.player.controller.PlayerFX} objektum által lejátszható formátum.
@@ -221,7 +222,6 @@ public class PlaylistElement {
                 path = file.getAbsolutePath().split("\\\\");
             }
             this.title = path[path.length - 1];
-            //this.title = file.getAbsolutePath();
             this.artist = ifnullToEmpty(this.artist);
             this.album = ifnullToEmpty(this.album);
             this.year = ifnullToEmpty(this.year);
@@ -239,7 +239,7 @@ public class PlaylistElement {
      * @return az átalakított URI String reprezentációja
      */
     private static String toUnixURI(final String s) {
-        StringBuffer sb = new StringBuffer(s);
+        StringBuilder sb = new StringBuilder(s);
 
         sb.insert(URI_OFFSET_START, "//");
         return sb.toString();
@@ -308,7 +308,7 @@ public class PlaylistElement {
             Mp3File mp3File = new Mp3File(new File(new URI(this.location).getPath()));
             this.bitrate = mp3File.getBitrate();
         } catch (IOException | UnsupportedTagException | InvalidDataException | URISyntaxException e) {
-            e.printStackTrace();
+            log.error("MP3 fiel is not rebuildable.", e);
         }
 
         this.trackNum = ifnullToEmpty(this.trackNum);
