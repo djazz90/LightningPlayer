@@ -16,12 +16,16 @@ public final class PlayerSettings {
     private static Properties properties = new Properties();
     private static File propertiesFile;
 
+    @Getter
+    private static File autoSavedPlaylistFile;
+
     private static final Double DEFAULT_VOLUME_LEVEL = 0.7;
     private static final String DEFAULT_API_KEY = "none";
 
     private static final String VOLUME_LEVEL_PROPERTY_NAME = "volume.level";
     private static final String NAVIGATION_STATE_PROPERTY_NAME = "navigation.state";
     private static final String API_KEY_PROPERTY_NAME = "api.key";
+    private static final String PLAYLIST_AUTO_SAVE_PROPERTY_NAME = "playlist.backup";
 
     @Getter
     @Setter
@@ -35,21 +39,24 @@ public final class PlayerSettings {
     @Setter
     private static String apiKey = DEFAULT_API_KEY;
 
+    @Getter
+    @Setter
+    private static PlaylistAutoSave playlistAutoSave = PlaylistAutoSave.PLAYLIST_AUTO_SAVE_AND_LOAD;
+
     public enum NavigationState {
         NEXT_SONG, REPEAT_SONG, REPEAT_PLAYLIST, SHUFFLE
     }
 
+    public enum PlaylistAutoSave {
+        PLAYLIST_AUTO_SAVE_AND_LOAD, PLAYLIST_AUTO_SAVE_AND_LOAD_OFF
+    }
+
     public static void initialize() {
-        File file = FileUtils.getFile(FileUtils.getUserDirectory(), "LightningPlayer");
-        //if it is creatable or already exists, it should create the settings file there.
-        //the folder needs to be writable too.
-        if ((file.mkdir() || file.exists()) && file.canWrite()) {
-            propertiesFile = FileUtils.getFile(file.getAbsolutePath(), "settings.properties");
-        } else {
-            //as default setting: create it to the main program folder (that should be always writable as a safety mesure)
-            propertiesFile = new File("settings.properties");
-        }
+        propertiesFile = FileUtils.getFile(createPlayerFolderInUserHome().getAbsolutePath(), "settings.properties");
+        autoSavedPlaylistFile = FileUtils.getFile(createPlayerFolderInUserHome().getAbsolutePath(), "backup-playlist.xspf");
         log.info("propertiesFile full path: {}", propertiesFile.getAbsolutePath());
+        log.info("autoSavedPlaylistFile full path: {}", autoSavedPlaylistFile.getAbsolutePath());
+
         if (!propertiesFile.exists()) {
             try {
                 // az összes beállítás mentése, majd logolás annak kimenetele szerint
@@ -81,7 +88,11 @@ public final class PlayerSettings {
 
             apiKey = properties.getProperty(API_KEY_PROPERTY_NAME);
             log.info("api key: {}", apiKey);
+
+            playlistAutoSave = PlaylistAutoSave.valueOf(properties.getProperty(PLAYLIST_AUTO_SAVE_PROPERTY_NAME));
+            log.info("playlist auto save: {}", playlistAutoSave.name());
         }
+
 
     }
 
@@ -90,10 +101,23 @@ public final class PlayerSettings {
         properties.setProperty(VOLUME_LEVEL_PROPERTY_NAME, volumeLevel.toString());
         properties.setProperty(NAVIGATION_STATE_PROPERTY_NAME, navigationState.toString());
         properties.setProperty(API_KEY_PROPERTY_NAME, apiKey);
+        properties.setProperty(PLAYLIST_AUTO_SAVE_PROPERTY_NAME, playlistAutoSave.toString());
 
         try (FileOutputStream outputStream = new FileOutputStream(propertiesFile)) {
             properties.store(outputStream, null);
 
+        }
+    }
+
+    private static File createPlayerFolderInUserHome() {
+        File file = FileUtils.getFile(FileUtils.getUserDirectory(), "LightningPlayer");
+        //if it is creatable or already exists, it should create the settings file there.
+        //the folder needs to be writable too.
+        if ((file.mkdir() || file.exists()) && file.canWrite()) {
+            return FileUtils.getFile(file.getAbsolutePath());
+        } else {
+            //as default setting: create it to the main program folder (that should be always writable as a safety mesure)
+            return new File("");
         }
     }
 

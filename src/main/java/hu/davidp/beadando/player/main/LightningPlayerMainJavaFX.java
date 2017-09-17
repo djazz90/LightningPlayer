@@ -70,13 +70,13 @@ public class LightningPlayerMainJavaFX extends Application {
         Model theModel = new Model();
 
         PlayerFX.setPlayerModel(theModel);
-
+        PlayerFX.setPlayerStage(primaryStage);
         Parent root = FXMLLoader.load(getClass().getResource("/JavaFXView.fxml"));
 
         Scene scene = new Scene(root);
 
         PlayerFX.setPlayerScene(scene);
-        PlayerFX.setPlayerStage(primaryStage);
+
         PlayerFX.getInstance();
 
         primaryStage.setScene(scene);

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>hu.davidp.beadando</groupId>
     <artifactId>LightningPlayer</artifactId>
-    <version>0.8.12-SNAPSHOT</version>
+    <version>0.8.13</version>
     <description>Egyszerű MP3 lejátszó program, lejátszólista kezelési lehetőséggel, XML fájlba történő mentéssel és
         betöltéssel.
     </description>

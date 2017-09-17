@@ -51,6 +51,7 @@ public final class PlayListMethods {
 
     public static void savePlaylist(final File savedFile, final Model model) {
         try {
+            log.info("Saving file: {}", savedFile.getAbsolutePath());
             File file;
             String[] splitter = savedFile.toString().split("\\.");
             if (splitter[splitter.length - 1].equals("xspf")) {

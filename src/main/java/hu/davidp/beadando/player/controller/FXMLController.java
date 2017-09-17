@@ -209,6 +209,9 @@ public class FXMLController implements Initializable {
         initializeActionListeners();
         setAvailability();
         loadSettingsToGui();
+        PlayerFX.getPlayerStage().setOnCloseRequest(e -> {
+            fileMenuExitAction();
+        });
     }
 
     private void initializeActionListeners() {
@@ -541,7 +544,9 @@ public class FXMLController implements Initializable {
     }
 
     public void fileMenuExitAction() {
-        PlayerFX.getPlayerStage().close();
+        log.info("Exiting player...");
+        settingsMenuSaveAction();
+        Platform.exit();
     }
 
     public void settingsMenuLoadAction() {
@@ -578,6 +583,12 @@ public class FXMLController implements Initializable {
         try {
             PlayerSettings.save();
             log.info("Settings successfully saved!");
+            boolean autoSaveEnabled = PlayerSettings.getPlaylistAutoSave()
+                .equals(PlayerSettings.PlaylistAutoSave.PLAYLIST_AUTO_SAVE_AND_LOAD);
+
+            if (autoSaveEnabled && PlayerFX.getInstance().getActualPlaylist().size() > 0) {
+                PlayListMethods.savePlaylist(PlayerSettings.getAutoSavedPlaylistFile(), PlayerFX.getPlayerModel());
+            }
         } catch (IOException e) {
             log.info("Settings cannot be saved!", e);
         }
