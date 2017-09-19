@@ -112,8 +112,8 @@ public final class PlayerSettings {
     private static File createPlayerFolderInUserHome() {
         File file = FileUtils.getFile(FileUtils.getUserDirectory(), "LightningPlayer");
         //if it is creatable or already exists, it should create the settings file there.
-        //the folder needs to be writable too.
-        if ((file.mkdir() || file.exists()) && file.canWrite()) {
+        //the folder needs to be writable and readable too.
+        if ((file.mkdir() || file.exists()) && file.canWrite() && file.canRead()) {
             return FileUtils.getFile(file.getAbsolutePath());
         } else {
             //as default setting: create it to the main program folder (that should be always writable as a safety mesure)

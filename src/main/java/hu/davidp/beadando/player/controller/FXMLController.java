@@ -565,13 +565,17 @@ public class FXMLController implements Initializable {
     private void loadSettingsToGui() {
         deSelectNavigationStateButtons();
         switch (PlayerSettings.getNavigationState()) {
-            case SHUFFLE: shuffleButton.setSelected(true);
+            case SHUFFLE:
+                shuffleButton.setSelected(true);
                 break;
-            case REPEAT_PLAYLIST: repeatButton.setSelected(true);
+            case REPEAT_PLAYLIST:
+                repeatButton.setSelected(true);
                 break;
-            case REPEAT_SONG: repeatOneButton.setSelected(true);
+            case REPEAT_SONG:
+                repeatOneButton.setSelected(true);
                 break;
-            case NEXT_SONG: deSelectNavigationStateButtons();
+            case NEXT_SONG:
+                deSelectNavigationStateButtons();
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown NavigationState!");
