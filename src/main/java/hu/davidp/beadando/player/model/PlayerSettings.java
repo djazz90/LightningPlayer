@@ -17,7 +17,7 @@ public final class PlayerSettings {
     private static File propertiesFile;
 
     @Getter
-    private static File autoSavedPlaylistFile;
+    private static File playlistBackupFile;
 
     private static final Double DEFAULT_VOLUME_LEVEL = 0.7;
     private static final String DEFAULT_API_KEY = "none";
@@ -26,6 +26,7 @@ public final class PlayerSettings {
     private static final String NAVIGATION_STATE_PROPERTY_NAME = "navigation.state";
     private static final String API_KEY_PROPERTY_NAME = "api.key";
     private static final String PLAYLIST_AUTO_SAVE_PROPERTY_NAME = "playlist.backup";
+    private static final String PLAYLIST_BACKUP_FILE_NAME = "backup-playlist.xspf";
 
     @Getter
     @Setter
@@ -53,9 +54,9 @@ public final class PlayerSettings {
 
     public static void initialize() {
         propertiesFile = FileUtils.getFile(createPlayerFolderInUserHome().getAbsolutePath(), "settings.properties");
-        autoSavedPlaylistFile = FileUtils.getFile(createPlayerFolderInUserHome().getAbsolutePath(), "backup-playlist.xspf");
+        playlistBackupFile = FileUtils.getFile(createPlayerFolderInUserHome().getAbsolutePath(), PLAYLIST_BACKUP_FILE_NAME);
         log.info("propertiesFile full path: {}", propertiesFile.getAbsolutePath());
-        log.info("autoSavedPlaylistFile full path: {}", autoSavedPlaylistFile.getAbsolutePath());
+        log.info("playlistBackupFile full path: {}", playlistBackupFile.getAbsolutePath());
 
         if (!propertiesFile.exists()) {
             try {

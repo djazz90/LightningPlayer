@@ -205,7 +205,15 @@ public class FXMLController implements Initializable {
             }
         });
 
-        fileMenuNewPlistAction();
+        switch (PlayerSettings.getPlaylistAutoSave()) {
+            case PLAYLIST_AUTO_SAVE_AND_LOAD:
+                openPlaylistFileAndShowOnGui(PlayerSettings.getPlaylistBackupFile());
+                break;
+            case PLAYLIST_AUTO_SAVE_AND_LOAD_OFF:
+            default:
+                fileMenuNewPlistAction();
+        }
+
         initializeActionListeners();
         setAvailability();
         loadSettingsToGui();
@@ -506,12 +514,16 @@ public class FXMLController implements Initializable {
 
         File openedFile = fc.showOpenDialog(PlayerFX.getPlayerStage());
 
-        if (openedFile != null) {
+        openPlaylistFileAndShowOnGui(openedFile);
+    }
 
+    private void openPlaylistFileAndShowOnGui(final File file) {
+
+        if (file != null) {
             try {
                 fileMenuClosePlistAction();
                 fileMenuNewPlistAction();
-                PlayerFX.setPlayerModel(PlayListMethods.openPlayList(openedFile));
+                PlayerFX.setPlayerModel(PlayListMethods.openPlayList(file));
                 PlayerFX.getInstance().setActualPlaylist(PlayerFX.getPlayerModel().getPlaylist());
                 playListTable.setItems(PlayerFX.getInstance().getActualPlaylist());
 
@@ -521,15 +533,12 @@ public class FXMLController implements Initializable {
                 log.error("Message: " + ex.getMessage());
             } catch (IOException ex) {
                 log.error("File i/o error");
-
             } catch (JAXBException e1) {
                 log.error("Can't process XSPF file");
                 log.error("Message: " + e1.getMessage());
             }
-
         }
         log.info(SIZEOF_PLAYLIST + PlayerFX.getInstance().getActualPlaylist().size());
-
     }
 
     public void fileMenuClosePlistAction() {
@@ -591,7 +600,7 @@ public class FXMLController implements Initializable {
                 .equals(PlayerSettings.PlaylistAutoSave.PLAYLIST_AUTO_SAVE_AND_LOAD);
 
             if (autoSaveEnabled && PlayerFX.getInstance().getActualPlaylist().size() > 0) {
-                PlayListMethods.savePlaylist(PlayerSettings.getAutoSavedPlaylistFile(), PlayerFX.getPlayerModel());
+                PlayListMethods.savePlaylist(PlayerSettings.getPlaylistBackupFile(), PlayerFX.getPlayerModel());
             }
         } catch (IOException e) {
             log.info("Settings cannot be saved!", e);
