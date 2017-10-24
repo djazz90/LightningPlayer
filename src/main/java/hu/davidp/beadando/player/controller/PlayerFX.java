@@ -382,4 +382,9 @@ public final class PlayerFX {
         return mp;
     }
 
+    public int getPlaylistSize() {
+        return actualPlaylist.size();
+    }
+
+
 }

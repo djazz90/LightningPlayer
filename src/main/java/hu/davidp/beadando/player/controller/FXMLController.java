@@ -257,7 +257,7 @@ public class FXMLController implements Initializable {
 
         if (allRequiredFields.size()
             != actionCommandNodeMap.size() + actionCommandMenuitemMap.size()) {
-            throw new NotEnoughCommandsCreatedException("Not enough commands created fot the objects");
+            throw new NotEnoughCommandsCreatedException("Not enough commands created for the objects");
         }
 
         Runnable setAvailabilityRunner = this::setAvailability;
@@ -519,7 +519,7 @@ public class FXMLController implements Initializable {
 
     private void openPlaylistFileAndShowOnGui(final File file) {
 
-        if (file != null) {
+        if (file.exists() && file.canRead()) {
             try {
                 fileMenuClosePlistAction();
                 fileMenuNewPlistAction();
@@ -537,6 +537,8 @@ public class FXMLController implements Initializable {
                 log.error("Can't process XSPF file");
                 log.error("Message: " + e1.getMessage());
             }
+        } else {
+            log.info("The file cannot be read or does not exist! File name:" + file.getName());
         }
         log.info(SIZEOF_PLAYLIST + PlayerFX.getInstance().getActualPlaylist().size());
     }
