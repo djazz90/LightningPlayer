@@ -214,12 +214,20 @@ public class FXMLController implements Initializable {
                 fileMenuNewPlistAction();
         }
 
+
+
         initializeActionListeners();
         setAvailability();
         loadSettingsToGui();
         PlayerFX.getPlayerStage().setOnCloseRequest(e -> {
             fileMenuExitAction();
         });
+
+        List<PlaylistElement> actualPlaylist = PlayerFX.getInstance().getActualPlaylist();
+
+        if (actualPlaylist == null || actualPlaylist.isEmpty()) {
+            fileMenuNewPlistAction();
+        }
     }
 
     private void initializeActionListeners() {

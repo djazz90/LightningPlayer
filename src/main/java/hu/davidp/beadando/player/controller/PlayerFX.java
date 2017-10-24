@@ -281,19 +281,24 @@ public final class PlayerFX {
     }
 
     public void shuffle() {
-        LinkedList<Integer> temp = new LinkedList<>();
-        for (int i = 0; i < actualPlaylist.size(); i++) {
-            if (i == playlistIndex) {
-                continue;
+        int randomElementIndex;
+        //csak akkor van értelme a véletlenszerű lejátszásnak, ha több mint 1 elem van
+        //a lejátszólistában. Egyébként ugyanazt fogja játszani, mint ami eddig ment,
+        //azaz úgy viselkedik, mintha adott szám ismétés lenne
+        if (actualPlaylist.size() > 1) {
+            LinkedList<Integer> temp = new LinkedList<>();
+            for (int i = 0; i < actualPlaylist.size(); i++) {
+                if (i == playlistIndex) {
+                    continue;
+                }
+                temp.add(i);
             }
-            temp.add(i);
+            randomElementIndex
+                = ThreadLocalRandom.current().nextInt(temp.size());
+            playlistIndex = temp.get(randomElementIndex);
         }
-        int randomElementIndex
-            = ThreadLocalRandom.current().nextInt(temp.size());
-
-
         mp.stop();
-        playlistIndex = temp.get(randomElementIndex);
+
         log.info("Playlist Index: " + playlistIndex);
         actualMedia = actualPlaylist
             .get(playlistIndex).asMedia();
@@ -382,7 +387,7 @@ public final class PlayerFX {
         return mp;
     }
 
-    public int getPlaylistSize() {
+    public int getActualPlaylistSize() {
         return actualPlaylist.size();
     }
 
