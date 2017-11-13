@@ -110,7 +110,7 @@
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/java/hu/davidp/beadando/player/view</directory>
+                <directory>src/main/java/hu/davidp/player/view</directory>
                 <includes>
                     <include>**/*.fxml</include>
                 </includes>
@@ -132,7 +132,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>hu.davidp.beadando.player.main.LightningPlayerMainJavaFX</mainClass>
+                    <mainClass>hu.davidp.player.main.LightningPlayerMainJavaFX</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -140,7 +140,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>8.1.2</version>
                 <configuration>
-                    <mainClass>hu.davidp.beadando.player.main.LightningPlayerMainJavaFX</mainClass>
+                    <mainClass>hu.davidp.player.main.LightningPlayerMainJavaFX</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -154,7 +154,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>hu.davidp.beadando.player.main.LightningPlayerMainJavaFX</mainClass>
+                            <mainClass>hu.davidp.player.main.LightningPlayerMainJavaFX</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
