@@ -31,7 +31,6 @@ import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import hu.davidp.player.controller.PlayerFX;
 import javafx.collections.MapChangeListener;
 import javafx.scene.media.Media;
 import lombok.AccessLevel;
